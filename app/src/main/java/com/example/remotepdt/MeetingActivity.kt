@@ -104,11 +104,5 @@ class MeetingActivity : AppCompatActivity() {
             }
             webcamEnabled=!webcamEnabled
         }
-
-        // leave meeting
-        findViewById<View>(R.id.btnLeave).setOnClickListener { view: View? ->
-            // this will make the local participant leave the meeting
-            meeting!!.leave()
-        }
     }
 }
