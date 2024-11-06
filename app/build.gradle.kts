@@ -49,4 +49,7 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    implementation("live.videosdk:rtc-android-sdk:0.1.37")
+    // library to perform Network call to generate a meeting id
+    implementation("com.amitshekhar.android:android-networking:1.0.2")
 }
