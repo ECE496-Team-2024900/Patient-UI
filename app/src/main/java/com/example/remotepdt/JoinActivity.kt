@@ -46,17 +46,9 @@ class JoinActivity : AppCompatActivity() {
         setContentView(R.layout.activity_join)
 
         val btnCreate = findViewById<Button>(R.id.btnCreateMeeting)
-        val btnJoin = findViewById<Button>(R.id.btnJoinMeeting)
-        val etMeetingId = findViewById<EditText>(R.id.etMeetingId)
 
         btnCreate.setOnClickListener { v: View? ->
             createMeeting(sampleToken)
-        }
-        btnJoin.setOnClickListener { v: View? ->
-            val intent = Intent(this@JoinActivity, MeetingActivity::class.java)
-            intent.putExtra("token", sampleToken)
-            intent.putExtra("meetingId", etMeetingId.text.toString())
-            startActivity(intent)
         }
         checkSelfPermission(REQUESTED_PERMISSIONS[0], PERMISSION_REQ_ID)
         checkSelfPermission(REQUESTED_PERMISSIONS[1], PERMISSION_REQ_ID)
@@ -77,6 +69,7 @@ class JoinActivity : AppCompatActivity() {
                         val intent = Intent(this@JoinActivity, MeetingActivity::class.java)
                         intent.putExtra("token", sampleToken)
                         intent.putExtra("meetingId", meetingId)
+                        AndroidNetworking.put("http://localhost:5000/session/add_meeting_id/${meetingId}")
                         startActivity(intent)
                     } catch (e: JSONException) {
                         e.printStackTrace()
