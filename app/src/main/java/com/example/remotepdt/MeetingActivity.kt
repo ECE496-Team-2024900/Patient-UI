@@ -2,10 +2,10 @@ package com.example.remotepdt
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import live.videosdk.rtc.android.Meeting
 import live.videosdk.rtc.android.Participant
@@ -17,6 +17,7 @@ class MeetingActivity : AppCompatActivity() {
     private var meeting: Meeting? = null
     private var micEnabled = true
     private var webcamEnabled = true
+    private var frontFacing = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,7 +25,7 @@ class MeetingActivity : AppCompatActivity() {
 
         val token = intent.getStringExtra("token")
         val meetingId = intent.getStringExtra("meetingId")
-        val participantName = "John Doe"
+        val participantName = "patient"
 
         // 1. Configuration VideoSDK with Token
         VideoSDK.config(token)
@@ -40,12 +41,10 @@ class MeetingActivity : AppCompatActivity() {
         //4. Join VideoSDK Meeting
         meeting!!.join()
 
-        (findViewById<View>(R.id.tvMeetingId) as TextView).text = meetingId
-
         setActionListeners()
 
         val rvParticipants = findViewById<RecyclerView>(R.id.rvParticipants)
-        rvParticipants.layoutManager = GridLayoutManager(this, 2)
+        rvParticipants.layoutManager = GridLayoutManager(this, 2, LinearLayoutManager.HORIZONTAL, false)
         rvParticipants.adapter = ParticipantAdapter(meeting!!)
     }
 
@@ -103,6 +102,21 @@ class MeetingActivity : AppCompatActivity() {
                 Toast.makeText(this@MeetingActivity, "Webcam Enabled", Toast.LENGTH_SHORT).show()
             }
             webcamEnabled=!webcamEnabled
+        }
+
+
+        // toggle webcam orientation
+        findViewById<View>(R.id.btnWebcamToggle).setOnClickListener { view: View? ->
+            if (frontFacing) {
+                // this will disable the local participant webcam
+                meeting!!.changeWebcam()
+                Toast.makeText(this@MeetingActivity, "Webcam Back-Facing", Toast.LENGTH_SHORT).show()
+            } else {
+                // this will enable the local participant webcam
+                meeting!!.changeWebcam()
+                Toast.makeText(this@MeetingActivity, "Webcam Front-Facing", Toast.LENGTH_SHORT).show()
+            }
+            frontFacing=!frontFacing
         }
     }
 }

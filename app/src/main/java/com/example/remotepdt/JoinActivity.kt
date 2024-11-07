@@ -69,6 +69,10 @@ class JoinActivity : AppCompatActivity() {
                         val intent = Intent(this@JoinActivity, MeetingActivity::class.java)
                         intent.putExtra("token", sampleToken)
                         intent.putExtra("meetingId", meetingId)
+                        Toast.makeText(
+                            this@JoinActivity, meetingId,
+                            Toast.LENGTH_SHORT
+                        ).show()
                         AndroidNetworking.put("http://localhost:5000/session/add_meeting_id/${meetingId}")
                         startActivity(intent)
                     } catch (e: JSONException) {

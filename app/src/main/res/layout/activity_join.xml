@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#DEEBF9"
     android:gravity="center"
     android:orientation="vertical"
     tools:context=".JoinActivity">
@@ -12,5 +13,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:text="Start Video Call" />
+        android:backgroundTint="#004AAD"
+        android:text="Ready for call" />
 </LinearLayout>

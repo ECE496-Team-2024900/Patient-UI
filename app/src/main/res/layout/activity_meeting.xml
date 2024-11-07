@@ -3,17 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="#DEEBF9"
     android:layout_height="match_parent"
     android:gravity="center"
     android:orientation="vertical"
     tools:context=".MeetingActivity">
-
-    <TextView
-        android:id="@+id/tvMeetingId"
-        style="@style/TextAppearance.AppCompat.Display1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Meeting Id" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvParticipants"
@@ -27,17 +21,30 @@
 
         <Button
             android:id="@+id/btnMic"
+            android:backgroundTint="#004AAD"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginVertical="8dp"
-            android:text="Mic"/>
+            android:layout_marginHorizontal="2dp"
+            android:text="Toggle Mic"/>
 
         <Button
             android:id="@+id/btnWebcam"
+            android:backgroundTint="#004AAD"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginVertical="8dp"
-            android:text="Webcam" />
+            android:layout_marginHorizontal="2dp"
+            android:text="Toggle Cam" />
+
+        <Button
+            android:id="@+id/btnWebcamToggle"
+            android:backgroundTint="#004AAD"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="8dp"
+            android:layout_marginHorizontal="2dp"
+            android:text="Flip Cam" />
 
     </LinearLayout>
 
