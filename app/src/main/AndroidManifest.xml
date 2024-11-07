@@ -5,6 +5,12 @@
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false" />
+
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
     <application
         android:name=".MainApplication"
         android:allowBackup="true"
@@ -16,26 +22,35 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.RemotePDT"
         tools:targetApi="31">
+
+        <!-- Set Instruction1Activity as the launcher activity -->
         <activity
-            android:name=".JoinActivity"
-            android:exported="true"
-            android:theme="@style/Theme.RemotePDT">
+            android:name=".Instruction1Activity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Other activities -->
+        <activity
+            android:name=".Instruction2Activity"
+            android:exported="false" />
+        <activity
+            android:name=".Instruction3Activity"
+            android:exported="false" />
+        <activity
+            android:name=".JoinActivity"
+            android:exported="true"
+            android:theme="@style/Theme.RemotePDT" />
         <activity
             android:name=".MeetingActivity"
-            android:exported="false" >
+            android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
     </application>
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.CAMERA" />
+
 </manifest>
