@@ -40,10 +40,16 @@ class JoinActivity : AppCompatActivity() {
 
     //Replace with the token you generated from the VideoSDK Dashboard
     private var sampleToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcGlrZXkiOiI5YTcwZWFiNS1lZGUzLTQ2NGUtODllYS1mNmY2MjNhNjA0YjYiLCJwZXJtaXNzaW9ucyI6WyJhbGxvd19qb2luIl0sImlhdCI6MTczMDkyMjU0NSwiZXhwIjoxNzYyNDU4NTQ1fQ.61pgTL01Al9aCgVDHRNZlEf_34SQVGKGk3XNyGtvvj0"
+    private var BeUrl = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_join)
+        if (System.getProperty("idea.active") == "true") {
+            BeUrl = "http://localhost:5000"
+        } else {
+            BeUrl = "deployment-url"
+        }
 
         val btnCreate = findViewById<Button>(R.id.btnCreateMeeting)
 
@@ -73,7 +79,7 @@ class JoinActivity : AppCompatActivity() {
                             this@JoinActivity, meetingId,
                             Toast.LENGTH_SHORT
                         ).show()
-                        AndroidNetworking.put("http://localhost:5000/session/add_meeting_id/${meetingId}")
+                        AndroidNetworking.put("${BeUrl}/treatment/add_meeting_id/${meetingId}")
                         startActivity(intent)
                     } catch (e: JSONException) {
                         e.printStackTrace()
