@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#DEEBF9"
+    android:gravity="center_horizontal|top"
+    android:orientation="vertical"
+    tools:context=".Instruction1Activity">
+
+    <!-- Title TextView -->
+
+    <!-- ImageView for instruction image -->
+
+    <!-- Instruction TextView -->
+
+    <!-- Next Button -->
+
+    <TextView
+        android:id="@+id/sessionNumberTitle"
+        android:layout_width="271dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-black"
+        android:text="@string/session_label"
+        android:textAlignment="center"
+        android:textColor="#004AAD"
+        android:textSize="42sp"
+        android:textStyle="bold"
+        android:translationY="30dp" />
+
+    <TextView
+        android:id="@+id/sessionDateText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Wednesday, January 1, 2025"
+        android:textAlignment="center"
+        android:textColor="#004AAD"
+        android:textSize="27sp"
+        android:translationY="30dp" />
+
+    <TextView
+        android:id="@+id/sessionTimeText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Starts at 12:30 PM"
+        android:textAlignment="center"
+        android:textColor="#004AAD"
+        android:textSize="27sp"
+        android:translationY="30dp" />
+
+    <Button
+        android:id="@+id/btnStartSession"
+        android:layout_width="275dp"
+        android:layout_height="99dp"
+        android:backgroundTint="#004AAD"
+        android:text="Start Session"
+        android:textSize="24sp"
+        android:translationY="80dp"
+        app:cornerRadius="8dp" />
+
+</LinearLayout>

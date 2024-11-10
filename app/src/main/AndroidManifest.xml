@@ -21,11 +21,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.RemotePDT"
+        android:networkSecurityConfig="@xml/network_security_config"
         tools:targetApi="31">
 
-        <!-- Set Instruction1Activity as the launcher activity -->
+        <!-- Set LoginActivity as the launcher activity -->
         <activity
-            android:name=".Instruction1Activity"
+            android:name=".LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -34,6 +35,12 @@
         </activity>
 
         <!-- Other activities -->
+        <activity
+            android:name=".TreatmentSessionActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Instruction1Activity"
+            android:exported="false" />
         <activity
             android:name=".Instruction2Activity"
             android:exported="false" />
