@@ -1,11 +1,11 @@
 package com.example.remotepdt
 
+import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
-import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -15,7 +15,6 @@ import com.androidnetworking.error.ANError
 import com.androidnetworking.interfaces.JSONObjectRequestListener
 import org.json.JSONException
 import org.json.JSONObject
-import android.Manifest
 
 
 class JoinActivity : AppCompatActivity() {
@@ -46,7 +45,7 @@ class JoinActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_join)
         if (System.getProperty("idea.active") == "true") {
-            BeUrl = "http://localhost:5000"
+            BeUrl =  "http://127.0.0.1:8000"
         } else {
             BeUrl = "deployment-url"
         }
@@ -79,7 +78,15 @@ class JoinActivity : AppCompatActivity() {
                             this@JoinActivity, meetingId,
                             Toast.LENGTH_SHORT
                         ).show()
-                        AndroidNetworking.put("${BeUrl}/treatment/add_meeting_id/${meetingId}")
+
+                        val jsonObject = JSONObject()
+                        try {
+                            jsonObject.put("id", "1")
+                            jsonObject.put("video_call_id", meetingId)
+                        } catch (e: JSONException) {
+                            e.printStackTrace()
+                        }
+                        AndroidNetworking.put("${BeUrl}/treatment/add_video_call_id").addJSONObjectBody(jsonObject)
                         startActivity(intent)
                     } catch (e: JSONException) {
                         e.printStackTrace()
