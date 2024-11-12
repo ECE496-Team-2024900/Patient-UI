@@ -13,7 +13,4 @@ data class TreatmentStatusResponse(
 interface TreatmentStatusService {
     @GET("api/treatment-status/{patient_id}/")
     fun getTreatmentStatus(@Path("patient_id") patientId: String): Call<TreatmentStatusResponse>
-
-    @POST("api/treatment-approve/{patient_id}/")
-    fun approveTreatment(@Path("patient_id") patientId: String, @Body packetData: String): Call<TreatmentStatusResponse>
 }
