@@ -50,13 +50,12 @@ class TreatmentManager(
 
             override fun onFailure(call: Call<TreatmentStatusResponse>, t: Throwable) {
                 // Telling user that there was an error
-                Toast.makeText(context, "Error with retrieving clinician approval", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Error with getting clinician approval", Toast.LENGTH_SHORT).show()
             }
         })
     }
 
-    // Placeholder function for Bluetooth communication (replace with actual Bluetooth code)
     private fun sendBTDevicePacket(packetData: String) {
-        // Your Bluetooth logic to send the packet data to the Bluetooth device
+        // BT logic to send the packet data to the Bluetooth device
     }
 }
