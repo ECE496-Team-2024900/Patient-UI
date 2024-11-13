@@ -6,15 +6,14 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class TreatmentManager(
-    private val treatmentId: String,        // Patient ID to track treatment approval
-    private val treatmentStatusService: TreatmentStatusService,  // Retrofit API service
-    private val context: android.content.Context,           // Context for Toast messages
-    private val handler: Handler          // Handler for polling
+    private val treatmentId: String,
+    private val treatmentStatusService: TreatmentStatusService,
+    private val context: android.content.Context,
+    private val handler: Handler
 ) {
 
     private val pollingInterval: Long = 5000  // Poll every 5 seconds
 
-    // Start polling for treatment status
     fun startPolling() {
         val runnable = object : Runnable {
             override fun run() {
@@ -25,12 +24,10 @@ class TreatmentManager(
         handler.post(runnable)
     }
 
-    // Stop polling (optional, to be called from the calling class when needed)
     fun stopPolling() {
         handler.removeCallbacksAndMessages(null)
     }
 
-    // Polling method to check treatment status
     private fun checkTreatmentStatus() {
         treatmentStatusService.getTreatmentStatus(treatmentId).enqueue(object : Callback<TreatmentStatusResponse> {
             override fun onResponse(

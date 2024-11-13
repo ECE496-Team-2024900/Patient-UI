@@ -4,7 +4,6 @@ import retrofit2.http.Query
 
 // Data model for the response
 data class TreatmentStatusResponse(
-    val status: String,
     val packet: String? = null
 )
 

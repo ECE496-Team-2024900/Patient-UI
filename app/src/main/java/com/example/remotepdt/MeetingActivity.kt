@@ -86,6 +86,7 @@ class MeetingActivity : AppCompatActivity() {
                 context = this@MeetingActivity,
                 handler = handler
             )
+            treatmentManager.startPolling()
         }
 
         override fun onParticipantJoined(participant: Participant) {
