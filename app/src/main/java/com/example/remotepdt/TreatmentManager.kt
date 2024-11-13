@@ -7,7 +7,7 @@ import retrofit2.Response
 
 class TreatmentManager(
     private val treatmentId: String,        // Patient ID to track treatment approval
-    private val treatmentApiService: TreatmentStatusService,  // Retrofit API service
+    private val treatmentStatusService: TreatmentStatusService,  // Retrofit API service
     private val context: android.content.Context,           // Context for Toast messages
     private val handler: Handler          // Handler for polling
 ) {
@@ -32,7 +32,7 @@ class TreatmentManager(
 
     // Polling method to check treatment status
     private fun checkTreatmentStatus() {
-        treatmentApiService.getTreatmentStatus(treatmentId).enqueue(object : Callback<TreatmentStatusResponse> {
+        treatmentStatusService.getTreatmentStatus(treatmentId).enqueue(object : Callback<TreatmentStatusResponse> {
             override fun onResponse(
                 call: Call<TreatmentStatusResponse>,
                 response: Response<TreatmentStatusResponse>
@@ -42,9 +42,8 @@ class TreatmentManager(
                         // Approved
                         val treatmentStatus = response.body()
                         treatmentStatus?.let {
-                            it.packet_data?.let { packetData ->
-                                sendBTDevicePacket(packetData)  // Placeholder for Bluetooth function
-                                Toast.makeText(context, "Treatment Approved! Sending packet...", Toast.LENGTH_SHORT).show()
+                            it.packet?.let { p ->
+                                sendBTDevicePacket(p)
                                 stopPolling()
                             }
                         }
@@ -53,8 +52,8 @@ class TreatmentManager(
             }
 
             override fun onFailure(call: Call<TreatmentStatusResponse>, t: Throwable) {
-                // Handle failure (e.g., network issues)
-                Toast.makeText(context, "Error checking treatment status", Toast.LENGTH_SHORT).show()
+                // Telling user that there was an error
+                Toast.makeText(context, "Error with retrieving clinician approval", Toast.LENGTH_SHORT).show()
             }
         })
     }

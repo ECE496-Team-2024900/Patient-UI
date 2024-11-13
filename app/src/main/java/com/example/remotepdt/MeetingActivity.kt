@@ -1,4 +1,6 @@
 package com.example.remotepdt
+import TreatmentManager
+import TreatmentStatusService
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -11,6 +13,10 @@ import live.videosdk.rtc.android.Meeting
 import live.videosdk.rtc.android.Participant
 import live.videosdk.rtc.android.VideoSDK
 import live.videosdk.rtc.android.listeners.MeetingEventListener
+import android.os.Handler
+import android.os.Looper
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 class MeetingActivity : AppCompatActivity() {
     // declare the variables we will be using to handle the meeting
@@ -18,6 +24,14 @@ class MeetingActivity : AppCompatActivity() {
     private var micEnabled = true
     private var webcamEnabled = true
     private var frontFacing = true
+
+    // For polling
+    private lateinit var treatmentManager: TreatmentManager
+    private var handler = Handler(Looper.getMainLooper())
+    private lateinit var treatmentStatusService: TreatmentStatusService
+
+    // later, should be keeping track of which treatment this is
+    private var treatmentId = "123"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,6 +72,20 @@ class MeetingActivity : AppCompatActivity() {
             Log.d("#meeting", "onMeetingLeft()")
             meeting = null
             if (!isDestroyed) finish()
+
+            // Starting polling
+            val retrofit = Retrofit.Builder()
+                .baseUrl("http://127.0.0.1:8001")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+
+            treatmentStatusService = retrofit.create(TreatmentStatusService::class.java)
+            treatmentManager = TreatmentManager(
+                treatmentId = treatmentId,
+                treatmentStatusService = treatmentStatusService,
+                context = this@MeetingActivity,
+                handler = handler
+            )
         }
 
         override fun onParticipantJoined(participant: Participant) {
