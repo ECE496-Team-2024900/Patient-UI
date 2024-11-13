@@ -8,7 +8,7 @@ data class TreatmentStatusResponse(
 )
 
 interface TreatmentStatusService {
-    @GET("approval")
+    @GET("status")
     fun getTreatmentStatus(
         @Query("treatment_id") treatmentId: String,
     ): Call<TreatmentStatusResponse>
