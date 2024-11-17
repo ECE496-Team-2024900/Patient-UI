@@ -58,6 +58,9 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+        <activity
+            android:name=".PainScoreActivity"
+            android:exported="false" />
     </application>
 
 </manifest>
