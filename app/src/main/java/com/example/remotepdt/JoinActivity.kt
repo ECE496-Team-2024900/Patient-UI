@@ -39,16 +39,11 @@ class JoinActivity : AppCompatActivity() {
 
     //Replace with the token you generated from the VideoSDK Dashboard
     private var sampleToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcGlrZXkiOiI5YTcwZWFiNS1lZGUzLTQ2NGUtODllYS1mNmY2MjNhNjA0YjYiLCJwZXJtaXNzaW9ucyI6WyJhbGxvd19qb2luIl0sImlhdCI6MTczMDkyMjU0NSwiZXhwIjoxNzYyNDU4NTQ1fQ.61pgTL01Al9aCgVDHRNZlEf_34SQVGKGk3XNyGtvvj0"
-    private var BeUrl = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_join)
-        if (System.getProperty("idea.active") == "true") {
-            BeUrl =  "http://127.0.0.1:8000"
-        } else {
-            BeUrl = "deployment-url"
-        }
+        AndroidNetworking.initialize(getApplicationContext());
 
         val btnCreate = findViewById<Button>(R.id.btnCreateMeeting)
 
@@ -74,10 +69,6 @@ class JoinActivity : AppCompatActivity() {
                         val intent = Intent(this@JoinActivity, MeetingActivity::class.java)
                         intent.putExtra("token", sampleToken)
                         intent.putExtra("meetingId", meetingId)
-                        Toast.makeText(
-                            this@JoinActivity, meetingId,
-                            Toast.LENGTH_SHORT
-                        ).show()
 
                         val jsonObject = JSONObject()
                         try {
@@ -86,8 +77,14 @@ class JoinActivity : AppCompatActivity() {
                         } catch (e: JSONException) {
                             e.printStackTrace()
                         }
-                        AndroidNetworking.put("${BeUrl}/treatment/add_video_call_id").addJSONObjectBody(jsonObject)
-                        startActivity(intent)
+                        AndroidNetworking.put("http://10.0.2.2:8000/treatment/add_video_call_id").addJSONObjectBody(jsonObject).build().getAsJSONObject(object : JSONObjectRequestListener {
+                            override fun onResponse(response: JSONObject?) {
+                                startActivity(intent)
+                            }
+                            override fun onError(anError: ANError?) {
+                                println("Error: ${anError}");
+                            }
+                        })
                     } catch (e: JSONException) {
                         e.printStackTrace()
                     }
