@@ -49,4 +49,5 @@
     <string name="invalid_date">Invalid Date</string>
     <string name="invalid_time">Invalid Time</string>
     <string name="starts_at">Starts at %1$s</string> <!-- %1$s will be replaced with the time -->
+    <string name="session_date">%1$s</string> <!-- %1$s will be replaced with the date -->
 </resources>
