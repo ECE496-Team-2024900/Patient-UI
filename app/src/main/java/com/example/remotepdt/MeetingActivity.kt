@@ -31,7 +31,7 @@ class MeetingActivity : AppCompatActivity() {
     private lateinit var treatmentStatusService: TreatmentStatusService
 
     // later, should be keeping track of which treatment this is
-    private var treatmentId = "123"
+    private var treatmentId = "1"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
