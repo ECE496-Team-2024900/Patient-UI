@@ -43,4 +43,11 @@
         libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
+
+    <!-- Strings for TreatmentSessionActivity -->
+    <string name="session_label">Session %1$d</string> <!-- Define a string with a placeholder for the session number -->
+    <string name="invalid_date">Invalid Date</string>
+    <string name="invalid_time">Invalid Time</string>
+    <string name="starts_at">Starts at %1$s</string> <!-- %1$s will be replaced with the time -->
+    <string name="session_date">%1$s</string> <!-- %1$s will be replaced with the date -->
 </resources>

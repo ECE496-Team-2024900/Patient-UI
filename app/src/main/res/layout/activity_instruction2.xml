@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#DEEBF9"
+    android:gravity="center"
+    android:orientation="vertical"
+    tools:context=".Instruction2Activity">
+
+    <!-- Title TextView -->
+    <TextView
+        android:id="@+id/titleText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Session is in Progress"
+        android:textSize="24sp"
+        android:textColor="#000"
+        android:layout_marginBottom="16dp" />
+
+    <!-- ImageView for instruction image -->
+    <ImageView
+        android:id="@+id/instructionImage"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:src="@drawable/instruction_image2"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Instruction TextView -->
+    <TextView
+        android:id="@+id/instructionText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Please insert the solvent vial\nPress Next when you are ready"
+        android:gravity="center"
+        android:textSize="18sp"
+        android:layout_marginBottom="32dp" />
+
+    <!-- Next Button -->
+    <Button
+        android:id="@+id/btnNext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Next"
+        android:backgroundTint="#004AAD" />
+</LinearLayout>
