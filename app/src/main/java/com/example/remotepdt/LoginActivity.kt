@@ -16,9 +16,8 @@ class LoginActivity : AppCompatActivity() {
         // Set an OnClickListener on the Login button
         btnLogin.setOnClickListener {
             // Start TreatmentSessionActivity when the button is clicked
-            val intent = Intent(this, TreatmentSessionActivity::class.java)
-            //*****NOTE: below line to be moved later to whichever page(s) are before the TreatmentSessionActivity
-            intent.putExtra("treatment_id", 1) //id of 1 is a placeholder for now
+            val intent = Intent(this, WelcomeActivity::class.java)
+            intent.putExtra("email", "mickey.mouse@disney.org") //use placeholder email for now
             startActivity(intent)
         }
     }

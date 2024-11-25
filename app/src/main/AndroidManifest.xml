@@ -36,6 +36,9 @@
 
         <!-- Other activities -->
         <activity
+            android:name=".WelcomeActivity"
+            android:exported="false" />
+        <activity
             android:name=".TreatmentSessionActivity"
             android:exported="false" />
         <activity
