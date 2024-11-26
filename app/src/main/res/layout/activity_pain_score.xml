@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#DEEBF9"
+    android:gravity="center|top"
+    android:orientation="vertical"
+    tools:context=".Instruction1Activity">
+
+    <!-- Title TextView -->
+
+    <!-- ImageView for instruction image -->
+
+    <!-- Instruction TextView -->
+
+    <!-- Next Button -->
+
+    <TextView
+        android:id="@+id/painScoreTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-black"
+        android:text="Please provide feedback"
+        android:textAlignment="center"
+        android:textColor="#004AAD"
+        android:textSize="42sp"
+        android:textStyle="bold"
+        android:translationY="30dp" />
+
+    <TextView
+        android:id="@+id/painScorePrompt"
+        android:layout_width="373dp"
+        android:layout_height="wrap_content"
+        android:text="Rate your pain during the treatment on a scale of 1-10 (1 being none, 10 being extreme)"
+        android:textAlignment="viewStart"
+        android:textColor="#004AAD"
+        android:textSize="27sp"
+        android:translationY="50dp" />
+
+    <Button
+        android:id="@+id/btnDone"
+        android:layout_width="272dp"
+        android:layout_height="99dp"
+        android:backgroundTint="#004AAD"
+        android:text="Done!"
+        android:textSize="28sp"
+        android:translationY="440dp"
+        app:cornerRadius="8dp" />
+
+    <EditText
+        android:id="@+id/painScoreInput"
+        android:layout_width="372dp"
+        android:layout_height="79dp"
+        android:background="@drawable/rounded_box"
+        android:ems="10"
+        android:hint="Enter your rating"
+        android:inputType="number"
+        android:padding="12dp"
+        android:textColor="#004AAD"
+        android:textSize="25sp" />
+
+</LinearLayout>
