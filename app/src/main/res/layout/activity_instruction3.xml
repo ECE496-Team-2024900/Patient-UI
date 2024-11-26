@@ -19,11 +19,11 @@
         android:layout_marginBottom="16dp" />
 
     <!-- ImageView for instruction image -->
-    <ImageView
+    <pl.droidsonroids.gif.GifImageView
         android:id="@+id/instructionImage"
         android:layout_width="200dp"
         android:layout_height="200dp"
-        android:src="@drawable/instruction_image3"
+        android:src="@drawable/instruction_image1"
         android:layout_marginBottom="16dp" />
 
     <!-- Instruction TextView -->
