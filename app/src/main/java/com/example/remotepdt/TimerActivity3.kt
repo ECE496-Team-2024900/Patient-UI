@@ -43,7 +43,7 @@ class TimerActivity3 : AppCompatActivity() {
     }
 
     private fun fetchWashTimer() {
-        val url = "http://127.0.0.1:8000/treatment/timer/1/" // Replace with your actual API endpoint
+        val url = "http://127.0.0.1:8000/treatment/timer/1" // Replace with your actual API endpoint
 
         AndroidNetworking.get(url)
             .setPriority(Priority.MEDIUM)

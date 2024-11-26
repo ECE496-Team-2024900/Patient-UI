@@ -5,6 +5,6 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 
 interface ApiService {
-    @GET("treatment/timer/{treatment_id}/")
+    @GET("treatment/timer/{treatment_id}")
     fun getTreatmentTimer(@Path("treatment_id") treatmentId: Int): Call<TreatmentSession>
 }
