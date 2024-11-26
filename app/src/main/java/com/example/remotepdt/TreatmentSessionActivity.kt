@@ -30,6 +30,7 @@ class TreatmentSessionActivity : AppCompatActivity() {
 
         // Used to determine if start session button should be disabled/enabled
         var sessionTime: Calendar? = null
+        var sessionComplete = true
 
         // Get session details (session number, date, time) given treatment session id
         AndroidNetworking.get("${BeUrl}/treatment/get_session_info")
@@ -40,6 +41,9 @@ class TreatmentSessionActivity : AppCompatActivity() {
                     // Set session number
                     val sessionNumber = response.optInt("session_number",-1)
                     sessionNumberTitle.text = getString(R.string.session_label, sessionNumber)
+
+                    // Set session complete
+                    sessionComplete = response.optBoolean("completed")
 
                     // Set date
                     val dateStr = response.optString("date")
@@ -96,9 +100,19 @@ class TreatmentSessionActivity : AppCompatActivity() {
 
             // Check if sessionTime is available and if current time is after the session time
             if (sessionTime != null && currentTime.after(sessionTime)) {
-                // Start Instruction1Activity when the button is clicked
-                val intent = Intent(this, Instruction1Activity::class.java)
-                startActivity(intent)
+                // Check that session is not already complete
+                if (sessionComplete == false) {
+                    // Start Instruction1Activity when the button is clicked
+                    val intent = Intent(this, Instruction1Activity::class.java)
+                    startActivity(intent)
+                } else {
+                    // Show a message if the session is already complete
+                    Toast.makeText(
+                        this@TreatmentSessionActivity,
+                        "This session is already complete.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             } else {
                 // Show a message if the session has not started yet
                 Toast.makeText(
