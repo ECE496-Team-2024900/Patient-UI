@@ -28,15 +28,9 @@ class TimerActivity2 : AppCompatActivity() {
 
         timerText = findViewById(R.id.timerText)
         progressBar = findViewById(R.id.progressBar)
-        val nextButton = findViewById<Button>(R.id.btnNext)
 
         // Set the ProgressBar max value to 100 for percentage-based progress
         progressBar?.max = 100
-
-        // Set up the "Next" button click listener to navigate to TimerActivity3
-        nextButton.setOnClickListener {
-            navigateToNextActivity()
-        }
 
         // Fetch treatment session data from the backend for light timer
         fetchLightTimer()
