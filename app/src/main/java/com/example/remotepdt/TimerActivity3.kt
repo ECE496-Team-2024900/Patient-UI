@@ -90,6 +90,8 @@ class TimerActivity3 : AppCompatActivity() {
 
     private fun navigateToNextActivity() {
         // This method can be left empty or used for any further navigation logic
+        val intent = Intent(this, PainScoreActivity::class.java)
+        startActivity(intent)
         finish() // Close TimerActivity3
     }
 }

@@ -1,4 +1,5 @@
 package com.example.remotepdt
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -57,7 +58,11 @@ class MeetingActivity : AppCompatActivity() {
         override fun onMeetingLeft() {
             Log.d("#meeting", "onMeetingLeft()")
             meeting = null
-            if (!isDestroyed) finish()
+            if (!isDestroyed) {
+                val intent = Intent(this@MeetingActivity, TimerActivity1::class.java)
+                startActivity(intent)
+                finish()
+            }
         }
 
         override fun onParticipantJoined(participant: Participant) {
