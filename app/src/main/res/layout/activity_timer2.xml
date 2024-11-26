@@ -62,10 +62,4 @@
         android:layout_marginBottom="32dp" />
 
     <!-- Next Button -->
-    <Button
-        android:id="@+id/btnNext"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Next"
-        android:backgroundTint="#004AAD" />
 </LinearLayout>
