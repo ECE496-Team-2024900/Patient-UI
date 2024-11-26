@@ -58,7 +58,7 @@ class TimerActivity2 : AppCompatActivity() {
 
                 override fun onError(anError: ANError) {
                     // Handle error
-                    Toast.makeText(this@TimerActivity2, "Error fetching data", Toast.LENGTH_SHORT).show()
+                    //Toast.makeText(this@TimerActivity2, "Error fetching data", Toast.LENGTH_SHORT).show()
                     startTimer() // Start the timer with the default duration
                 }
             })
