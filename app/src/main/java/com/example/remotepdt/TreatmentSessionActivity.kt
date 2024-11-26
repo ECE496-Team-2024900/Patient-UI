@@ -33,7 +33,7 @@ class TreatmentSessionActivity : AppCompatActivity() {
         var sessionComplete = true
 
         // Get session details (session number, date, time) given treatment session id
-        AndroidNetworking.get("${BeUrl}/get_session_info")
+        AndroidNetworking.get("${BeUrl}/treatment/get_session_info")
             .addQueryParameter("id", treatmentId.toString())
             .build()
             .getAsJSONObject(object : JSONObjectRequestListener {
