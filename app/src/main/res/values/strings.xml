@@ -44,6 +44,9 @@
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
 
+    <!-- Strings for WelcomeActivity -->
+    <string name="welcome_title">Welcome, %1$s!</string> <!-- Define a string with a placeholder for the patient name -->
+
     <!-- Strings for TreatmentSessionActivity -->
     <string name="session_label">Session %1$d</string> <!-- Define a string with a placeholder for the session number -->
     <string name="invalid_date">Invalid Date</string>
