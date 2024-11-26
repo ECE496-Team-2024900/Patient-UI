@@ -53,4 +53,8 @@ dependencies {
     implementation("live.videosdk:rtc-android-sdk:0.1.37")
     // library to perform Network call to generate a meeting id
     implementation("com.amitshekhar.android:android-networking:1.0.2")
+    //to use timer
+    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation ("com.squareup.okhttp3:okhttp:4.9.0") //for network calls
 }
