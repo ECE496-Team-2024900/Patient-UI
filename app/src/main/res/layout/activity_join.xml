@@ -8,11 +8,39 @@
     android:orientation="vertical"
     tools:context=".JoinActivity">
 
+    <!-- Title TextView -->
+    <TextView
+        android:id="@+id/titleText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Session is in Progress"
+        android:textSize="24sp"
+        android:textColor="#000"
+        android:layout_marginBottom="16dp" />
+
+    <!-- ImageView for instruction image -->
+    <pl.droidsonroids.gif.GifImageView
+        android:id="@+id/instructionImage"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:src="@drawable/instruction_image1"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Instruction TextView -->
+    <TextView
+        android:id="@+id/instructionText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Please insert the drug vial\nPress Start video call when you are ready"
+        android:gravity="center"
+        android:textSize="18sp"
+        android:layout_marginBottom="32dp" />
+
     <Button
         android:id="@+id/btnCreateMeeting"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:backgroundTint="#004AAD"
-        android:text="Ready for call" />
+        android:text="Start Video Call" />
 </LinearLayout>
