@@ -59,7 +59,7 @@ class MeetingActivity : AppCompatActivity() {
             Log.d("#meeting", "onMeetingLeft()")
             meeting = null
             if (!isDestroyed) {
-                val intent = Intent(this@MeetingActivity, TimerActivity1::class.java)
+                val intent = Intent(this@MeetingActivity, LoaderActivity::class.java)
                 startActivity(intent)
                 finish()
             }
