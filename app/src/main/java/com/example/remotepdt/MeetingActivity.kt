@@ -58,6 +58,8 @@ class MeetingActivity : AppCompatActivity() {
         override fun onMeetingLeft() {
             Log.d("#meeting", "onMeetingLeft()")
             meeting = null
+            val intent = Intent(this@MeetingActivity, LoaderActivity::class.java)
+            startActivity(intent)
             if (!isDestroyed) {
                 val intent = Intent(this@MeetingActivity, TimerActivity1::class.java)
                 startActivity(intent)
