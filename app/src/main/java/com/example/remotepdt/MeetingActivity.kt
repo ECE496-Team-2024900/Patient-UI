@@ -1,4 +1,5 @@
 package com.example.remotepdt
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -57,6 +58,11 @@ class MeetingActivity : AppCompatActivity() {
         override fun onMeetingLeft() {
             Log.d("#meeting", "onMeetingLeft()")
             meeting = null
+
+            // Navigate to LoaderActivity when the meeting ends
+            val intent = Intent(this@MeetingActivity, LoaderActivity::class.java)
+            startActivity(intent)
+
             if (!isDestroyed) finish()
         }
 
