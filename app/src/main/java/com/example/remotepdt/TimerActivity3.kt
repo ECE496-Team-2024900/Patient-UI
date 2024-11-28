@@ -18,6 +18,7 @@ class TimerActivity3 : AppCompatActivity() {
     private var timerText: TextView? = null
     private var progressBar: ProgressBar? = null
     private var timerDuration: Long = 10000L // Default to 10 seconds if no duration is fetched
+    private var countDownTimer: CountDownTimer? = null // Reference to the timer
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,7 +44,8 @@ class TimerActivity3 : AppCompatActivity() {
     }
 
     private fun fetchWashTimer() {
-        val url = "http://127.0.0.1:8000/treatment/timer/1" // Replace with your actual API endpoint
+        //val url = "http://127.0.0.1:8000/treatment/timer/1"
+        val url = "http://10.0.2.2:8000/treatment/timer/1" //android emulator
 
         AndroidNetworking.get(url)
             .setPriority(Priority.MEDIUM)
@@ -51,7 +53,7 @@ class TimerActivity3 : AppCompatActivity() {
             .getAsJSONObject(object : JSONObjectRequestListener {
                 override fun onResponse(response: JSONObject) {
                     // Parse the JSON response to get the wash timer duration
-                    val washTimerDuration = response.optLong("estimated_duration_for_wash_administration", 10000L)
+                    val washTimerDuration = response.optLong("wash_timer", 10000L)
                     timerDuration = washTimerDuration // Use fetched duration or default
                     startTimer()
                 }
@@ -66,7 +68,7 @@ class TimerActivity3 : AppCompatActivity() {
 
     private fun startTimer() {
         // Start a countdown timer with the fetched or default duration
-        object : CountDownTimer(timerDuration, 1000) {
+        countDownTimer = object : CountDownTimer(timerDuration, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 val minutes = (millisUntilFinished / 1000) / 60
                 val seconds = (millisUntilFinished / 1000) % 60
@@ -92,4 +94,12 @@ class TimerActivity3 : AppCompatActivity() {
         // This method can be left empty or used for any further navigation logic
         finish() // Close TimerActivity3
     }
+    private fun finishTimerAndNavigate() {
+        // Complete the timer and navigate to the next activity
+        countDownTimer?.cancel() // Cancel the current timer
+        timerText?.text = "00:00" // Set timer text to 00:00
+        progressBar?.progress = 100 // Set progress bar to 100%
+        navigateToNextActivity()
+    }
+
 }
