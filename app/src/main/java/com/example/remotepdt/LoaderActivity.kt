@@ -31,7 +31,8 @@ class LoaderActivity : AppCompatActivity() {
     }
 
     private fun checkClinicianApproval() {
-        val url = "http://127.0.0.1:8001/hardware/approval?id=1"
+        //val url = "http://127.0.0.1:8001/hardware/approval?id=1"
+        val url = "http://10.0.2.2:8001/hardware/approval?id=1"
 
         AndroidNetworking.get(url)
             .setPriority(Priority.HIGH)
@@ -54,23 +55,23 @@ class LoaderActivity : AppCompatActivity() {
                     val statusCode = anError.errorCode
                     val errorBody = anError.errorBody
 
-/*                    Log.e("LoaderActivity", "Error detail: ${anError.errorDetail}")
+                    Log.e("LoaderActivity", "Error detail: ${anError.errorDetail}")
                     Log.e("LoaderActivity", "Error message: ${anError.message}")
                     Log.e("LoaderActivity", "Error code: $statusCode")
                     Log.e("LoaderActivity", "Error body: $errorBody")
 
                     if (statusCode != 0) {
                         // Server responded with an error code
-                        Toast.makeText(this@LoaderActivity, "Server error: $statusCode", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@LoaderActivity, "THE error: $statusCode", Toast.LENGTH_SHORT).show()
                     } else {
                         // No server response (connection issue)
                         Toast.makeText(this@LoaderActivity, "Connection error: ${anError.errorDetail}", Toast.LENGTH_SHORT).show()
-                    }*/
+                    }
 
                     // Transition to the next activity after 10 seconds
-                    Handler(Looper.getMainLooper()).postDelayed({
+/*                    Handler(Looper.getMainLooper()).postDelayed({
                         navigateToTimerActivity1()
-                    }, 10000) // 10 seconds in milliseconds
+                    }, 10000) // 10 seconds in milliseconds*/
                 }
 
 
