@@ -1,10 +1,13 @@
 package com.example.remotepdt
 
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.content.res.Resources
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
+import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -22,6 +25,13 @@ class WoundListActivity : AppCompatActivity() {
         setContentView(R.layout.activity_wound_list)
 
         AndroidNetworking.initialize(getApplicationContext())
+
+        // Adding back button functionality
+        val backButton = findViewById<ImageButton>(R.id.backButton)
+        backButton.setOnClickListener{
+            val intent = Intent(this, WelcomeActivity::class.java)
+            startActivity(intent)
+        }
 
         val buttonContainer = findViewById<LinearLayout>(R.id.button_container)
 
@@ -51,8 +61,8 @@ class WoundListActivity : AppCompatActivity() {
                                 setTextColor(Color.parseColor("#000000")) // Setting text color to black
 
                                 // Set the drawable as the background
-                                setBackgroundDrawable(resources.getDrawable(R.drawable.border_button, null))
-                                backgroundTintList = ColorStateList.valueOf(Color.parseColor("#B1EDFF"))
+                                background = resources.getDrawable(R.drawable.border_button, null)
+                                backgroundTintList = null
 
                                 setOnClickListener {
                                     Toast.makeText(
