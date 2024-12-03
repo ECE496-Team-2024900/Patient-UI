@@ -10,10 +10,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.androidnetworking.AndroidNetworking
 import com.androidnetworking.error.ANError
-import com.androidnetworking.interfaces.JSONArrayRequestListener
 import com.androidnetworking.interfaces.JSONObjectRequestListener
 import com.google.android.material.button.MaterialButton
-import org.json.JSONArray
 import org.json.JSONObject
 
 class WoundListActivity : AppCompatActivity() {
@@ -37,7 +35,7 @@ class WoundListActivity : AppCompatActivity() {
                     val woundIds = response.optJSONArray("message")
                     val status = response.optInt("status")
                     Log.d("DebugTag", "Got status $status")
-                    if(true) {
+                    if(woundIds.length() > 0) {
                         Log.d("DebugTag", "Got length ${woundIds.length()}")
                         for (i in 0 until woundIds.length()) {
                             val woundId = woundIds.getInt(i)
@@ -45,7 +43,7 @@ class WoundListActivity : AppCompatActivity() {
                             // Creating wound button dynamically in wound list
                             val button = MaterialButton(this@WoundListActivity).apply {
                                 layoutParams = LinearLayout.LayoutParams(
-                                    270.dpToPx(), // Convert 271dp to pixels
+                                    271.dpToPx(), // Convert 271dp to pixels
                                     99.dpToPx()   // Convert 99dp to pixels
                                 )
                                 text = "Wound $woundId" // Setting button text
@@ -68,7 +66,7 @@ class WoundListActivity : AppCompatActivity() {
                             // Adding the new button to the button container
                             buttonContainer.addView(button)
                         }
-                    } else if (status == 204) {
+                    } else {
                         // No wounds exist
                         Toast.makeText(
                             this@WoundListActivity,
