@@ -1,5 +1,6 @@
 package com.example.remotepdt
 
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.content.res.Resources
 import android.graphics.Color
@@ -56,12 +57,11 @@ class WoundListActivity : AppCompatActivity() {
                                 setBackgroundDrawable(resources.getDrawable(R.drawable.border_button, null))
                                 backgroundTintList = ColorStateList.valueOf(Color.parseColor("#B1EDFF"))
 
+                                // Navigate to WoundDetailActivity when clicked
                                 setOnClickListener {
-                                    Toast.makeText(
-                                        this@WoundListActivity,
-                                        "Wound ID: $woundId",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
+                                    val intent = Intent(this@WoundListActivity, WoundDetailActivity::class.java)
+                                    intent.putExtra("woundId", woundId) // Pass the wound ID
+                                    startActivity(intent) // Navigate to the detail page
                                 }
                             }
 
