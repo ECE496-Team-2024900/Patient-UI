@@ -29,8 +29,7 @@ class WoundListActivity : AppCompatActivity() {
         // Adding back button functionality
         val backButton = findViewById<ImageButton>(R.id.backButton)
         backButton.setOnClickListener{
-            val intent = Intent(this, WelcomeActivity::class.java)
-            startActivity(intent)
+            finish()
         }
 
         val buttonContainer = findViewById<LinearLayout>(R.id.button_container)
