@@ -71,7 +71,7 @@ class WelcomeActivity : AppCompatActivity() {
         btnCurrentWounds.setOnClickListener {
             // Navigate to current wounds page when the button is clicked
             // NOTE: replace TreatmentSessionActivity with CurrentWoundsActivity once implemented
-            val intent = Intent(this, TreatmentSessionActivity::class.java)
+            val intent = Intent(this, WoundListActivity::class.java)
             intent.putExtra("treatment_id", 1) //id of 1 is a placeholder for now
             startActivity(intent)
         }
