@@ -41,10 +41,7 @@ class WoundListActivity : AppCompatActivity() {
             .build()
             .getAsJSONObject(object : JSONObjectRequestListener {
                 override fun onResponse(response: JSONObject) {
-                    Log.d("DebugTag", "Got a response")
                     val woundIds = response.optJSONArray("message")
-                    val status = response.optInt("status")
-                    Log.d("DebugTag", "Got status $status")
                     if(woundIds.length() > 0) {
                         Log.d("DebugTag", "Got length ${woundIds.length()}")
                         for (i in 0 until woundIds.length()) {
@@ -87,7 +84,6 @@ class WoundListActivity : AppCompatActivity() {
                 }
 
                 override fun onError(anError: ANError) {
-                    Log.d("DebugTag", "Got an error")
                     Toast.makeText(
                         this@WoundListActivity,
                         "Error: ${anError.message}",
