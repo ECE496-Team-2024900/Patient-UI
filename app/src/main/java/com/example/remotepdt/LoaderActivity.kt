@@ -41,8 +41,9 @@ class LoaderActivity : AppCompatActivity() {
                 override fun onResponse(response: JSONObject) {
                     // Check for the "message" field in the response
                     val message = response.optString("message", "")
+                    Toast.makeText(this@LoaderActivity, message, Toast.LENGTH_SHORT).show()
 
-                    if (message == "Approval received") {
+                    if (message == "Approval recieved") {
                         // Navigate to TimerActivity1 if message matches
                         navigateToTimerActivity1()
                     } else {
