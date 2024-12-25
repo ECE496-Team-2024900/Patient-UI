@@ -41,10 +41,10 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/emailInput"
+            android:background="#ffffff"
             android:layout_width="match_parent"
             android:layout_marginHorizontal="20dp"
             android:layout_height="55dp"
-            android:backgroundTint="#ffffff"
             android:hint="Tap to enter your registered email" />
     </com.google.android.material.textfield.TextInputLayout>
 
