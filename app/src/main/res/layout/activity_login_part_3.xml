@@ -95,6 +95,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
+        android:layout_marginTop="40dp"
         android:id="@+id/btnSignup"
         android:layout_width="184dp"
         android:layout_height="99dp"
