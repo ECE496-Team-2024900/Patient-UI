@@ -46,9 +46,6 @@
             android:name=".Instruction2Activity"
             android:exported="false" />
         <activity
-            android:name=".Instruction3Activity"
-            android:exported="false" />
-        <activity
             android:name=".JoinActivity"
             android:exported="true"
             android:theme="@style/Theme.RemotePDT" />
