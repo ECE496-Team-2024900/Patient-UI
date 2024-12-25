@@ -12,6 +12,8 @@ import com.google.firebase.auth.auth
 
 class LoginActivity2 : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        lateinit var auth: FirebaseAuth
+        auth = Firebase.auth
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login_part_2)
         val email = intent.getStringExtra("email") ?: ""
@@ -20,8 +22,7 @@ class LoginActivity2 : AppCompatActivity() {
         emailInput.hint = email
         val btnLoggingIn = findViewById<Button>(R.id.btnLoggingIn)
         val password = passwordInput.getText().toString()
-        lateinit var auth: FirebaseAuth
-        auth = Firebase.auth
+
         btnLoggingIn.setOnClickListener {
             auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this) { task ->
@@ -31,7 +32,7 @@ class LoginActivity2 : AppCompatActivity() {
                         startActivity(intent)
                     } else {
                         Toast.makeText(
-                            baseContext,
+                            this@LoginActivity2,
                             "Authentication failed.",
                             Toast.LENGTH_SHORT,
                         ).show()

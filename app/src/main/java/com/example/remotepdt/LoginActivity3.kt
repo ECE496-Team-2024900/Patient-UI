@@ -42,7 +42,7 @@ class LoginActivity3 : AppCompatActivity() {
                             startActivity(intent)
                         } else {
                             Toast.makeText(
-                                baseContext,
+                                this@LoginActivity3,
                                 "Authentication failed.",
                                 Toast.LENGTH_SHORT,
                             ).show()

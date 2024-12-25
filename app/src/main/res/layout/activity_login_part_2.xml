@@ -68,7 +68,7 @@
             android:layout_height="55dp"
             android:background="#ffffff"
             android:inputType="textPassword"
-            android:hint="Tap to enter your desired password" />
+            android:hint="Tap to enter your password" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
