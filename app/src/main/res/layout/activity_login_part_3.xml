@@ -67,6 +67,7 @@
             android:layout_marginHorizontal="20dp"
             android:layout_height="55dp"
             android:background="#ffffff"
+            android:inputType="textPassword"
             android:hint="Tap to enter your desired password" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -91,6 +92,7 @@
             android:layout_marginHorizontal="20dp"
             android:layout_height="55dp"
             android:background="#ffffff"
+            android:inputType="textPassword"
             android:hint="Tap to enter your desired password again" />
     </com.google.android.material.textfield.TextInputLayout>
 
