@@ -12,7 +12,7 @@ import com.androidnetworking.interfaces.JSONObjectRequestListener
 import org.json.JSONObject
 
 class LoginActivity : AppCompatActivity() {
-    private var BeUrl = "http://10.0.2.2:8000"
+    private var BeUrl = "http://10.0.2.2:8003"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
