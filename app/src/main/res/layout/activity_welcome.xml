@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#DEEBF9"
+    android:gravity="center"
+    android:orientation="vertical"
+    tools:context=".Instruction1Activity">
+
+    <!-- Title TextView -->
+
+    <!-- ImageView for instruction image -->
+
+    <!-- Instruction TextView -->
+
+    <!-- Next Button -->
+
+    <TextView
+        android:id="@+id/welcomeTitle"
+        android:layout_width="256dp"
+        android:layout_height="122dp"
+        android:fontFamily="sans-serif-black"
+        android:text="@string/welcome_title"
+        android:textAlignment="center"
+        android:textColor="#004AAD"
+        android:textSize="42sp"
+        android:textStyle="bold"
+        android:translationY="-190dp" />
+
+    <Button
+        android:id="@+id/btnCurrentWounds"
+        android:layout_width="271dp"
+        android:layout_height="99dp"
+        android:backgroundTint="#004AAD"
+        android:text="Current Session"
+        android:textSize="24sp"
+        android:translationY="-150dp"
+        app:cornerRadius="8dp" />
+
+    <Button
+        android:id="@+id/btnLogout"
+        android:layout_width="271dp"
+        android:layout_height="99dp"
+        android:backgroundTint="#004AAD"
+        android:text="Logout"
+        android:textSize="24sp"
+        android:translationY="150dp"
+        app:cornerRadius="8dp" />
+
+</LinearLayout>
