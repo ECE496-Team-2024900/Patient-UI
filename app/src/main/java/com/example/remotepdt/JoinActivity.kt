@@ -1,11 +1,11 @@
 package com.example.remotepdt
 
+import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
-import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -15,7 +15,6 @@ import com.androidnetworking.error.ANError
 import com.androidnetworking.interfaces.JSONObjectRequestListener
 import org.json.JSONException
 import org.json.JSONObject
-import android.Manifest
 
 
 class JoinActivity : AppCompatActivity() {
@@ -40,16 +39,11 @@ class JoinActivity : AppCompatActivity() {
 
     //Replace with the token you generated from the VideoSDK Dashboard
     private var sampleToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcGlrZXkiOiI5YTcwZWFiNS1lZGUzLTQ2NGUtODllYS1mNmY2MjNhNjA0YjYiLCJwZXJtaXNzaW9ucyI6WyJhbGxvd19qb2luIl0sImlhdCI6MTczMDkyMjU0NSwiZXhwIjoxNzYyNDU4NTQ1fQ.61pgTL01Al9aCgVDHRNZlEf_34SQVGKGk3XNyGtvvj0"
-    private var BeUrl = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_join)
-        if (System.getProperty("idea.active") == "true") {
-            BeUrl = "http://localhost:5000"
-        } else {
-            BeUrl = "deployment-url"
-        }
+        AndroidNetworking.initialize(getApplicationContext());
 
         val btnCreate = findViewById<Button>(R.id.btnCreateMeeting)
 
@@ -75,12 +69,22 @@ class JoinActivity : AppCompatActivity() {
                         val intent = Intent(this@JoinActivity, MeetingActivity::class.java)
                         intent.putExtra("token", sampleToken)
                         intent.putExtra("meetingId", meetingId)
-                        Toast.makeText(
-                            this@JoinActivity, meetingId,
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        AndroidNetworking.put("${BeUrl}/treatment/add_meeting_id/${meetingId}")
-                        startActivity(intent)
+
+                        val jsonObject = JSONObject()
+                        try {
+                            jsonObject.put("id", "1")
+                            jsonObject.put("video_call_id", meetingId)
+                        } catch (e: JSONException) {
+                            e.printStackTrace()
+                        }
+                        AndroidNetworking.put("http://10.0.2.2:8000/treatment/add_video_call_id").addJSONObjectBody(jsonObject).build().getAsJSONObject(object : JSONObjectRequestListener {
+                            override fun onResponse(response: JSONObject?) {
+                                startActivity(intent)
+                            }
+                            override fun onError(anError: ANError?) {
+                                println("Error: ${anError}");
+                            }
+                        })
                     } catch (e: JSONException) {
                         e.printStackTrace()
                     }

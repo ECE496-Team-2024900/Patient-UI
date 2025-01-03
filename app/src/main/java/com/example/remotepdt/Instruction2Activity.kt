@@ -15,8 +15,8 @@ class Instruction2Activity : AppCompatActivity() {
 
         // Set an OnClickListener on the Next button
         btnNext.setOnClickListener {
-            // Start Instruction3Activity when the button is clicked
-            val intent = Intent(this, Instruction3Activity::class.java)
+            // Start JoinActivity when the button is clicked
+            val intent = Intent(this, JoinActivity::class.java)
             startActivity(intent)
         }
     }
