@@ -12,6 +12,7 @@ import com.androidnetworking.AndroidNetworking
 import com.androidnetworking.error.ANError
 import com.androidnetworking.interfaces.JSONObjectRequestListener
 import org.json.JSONObject
+import android.graphics.Color
 
 class ResetPasswordActivity : AppCompatActivity() {
 
@@ -25,44 +26,45 @@ class ResetPasswordActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_reset_password)
         AndroidNetworking.enableLogging()
-        // Initialize views
+
+        // Initialize Views
         etEmail = findViewById(R.id.etEmail)
         etNewPassword = findViewById(R.id.etNewPassword)
         etConfirmPassword = findViewById(R.id.etConfirmPassword)
         btnSubmitCode = findViewById(R.id.btnSubmitCode)
         btnBack = findViewById(R.id.btnBack)
 
+        // Get the email from the intent
+        val email = intent.getStringExtra("EMAIL_EXTRA")
+        if (!email.isNullOrEmpty()) {
+            etEmail.setText(email)
+            etEmail.isEnabled = false // Make it non-editable
+            etEmail.setTextColor(Color.parseColor("#A9A9A9"))
+            // Set slightly grey color
+        }
 
-        // Initialize AndroidNetworking
-        AndroidNetworking.initialize(applicationContext)
-
-        // Set up button click listener
+        // Submit Button Click Listener
         btnSubmitCode.setOnClickListener {
-            val email = etEmail.text.toString().trim()
             val newPassword = etNewPassword.text.toString().trim()
             val confirmPassword = etConfirmPassword.text.toString().trim()
 
-            if (validateInputs(email, newPassword, confirmPassword)) {
-                // Proceed with password update
-                updatePasswordInDatabase(email, newPassword)
+            if (validateInputs(email.orEmpty(), newPassword, confirmPassword)) {
+                updatePasswordInDatabase(email.orEmpty(), newPassword)
+                Toast.makeText(this, "Password has been updated", Toast.LENGTH_SHORT).show()
                 val intent = Intent(this, LoginActivity::class.java)
                 startActivity(intent)
                 finish() // Close current activity
-                //Display update message
-                Toast.makeText(this, "Password has been updated", Toast.LENGTH_SHORT).show()
             } else {
-                // Display error message
                 Toast.makeText(this, "Passwords do not match or are invalid", Toast.LENGTH_SHORT).show()
             }
         }
 
-        // Set up Back button click listener
+        // Back Button Click Listener
         btnBack.setOnClickListener {
             val intent = Intent(this, ForgotPasswordActivity::class.java)
             startActivity(intent)
             finish() // Close current activity
         }
-
     }
 
     private fun validateInputs(email: String, newPassword: String, confirmPassword: String): Boolean {
@@ -92,16 +94,13 @@ class ResetPasswordActivity : AppCompatActivity() {
     }
 
     private fun updatePasswordInDatabase(email: String, newPassword: String) {
-        // Construct the URL for the password update endpoint
         val updatePasswordUrl = "http://10.0.2.2:8000/user/update_password/"
 
-        // Create the payload for the request
         val payload = JSONObject().apply {
             put("email", email)
             put("newPassword", newPassword)
         }
 
-        // Send the request to update the password
         AndroidNetworking.post(updatePasswordUrl)
             .addJSONObjectBody(payload)
             .build()
@@ -111,11 +110,9 @@ class ResetPasswordActivity : AppCompatActivity() {
                     val message = response.optString("message")
 
                     if (status == 200) {
-                        // Password successfully updated
                         Toast.makeText(this@ResetPasswordActivity, "Password successfully updated", Toast.LENGTH_SHORT).show()
-                        finish() // Close the activity
+                        finish()
                     } else {
-                        // Handle failure
                         Toast.makeText(this@ResetPasswordActivity, "Error: $message", Toast.LENGTH_SHORT).show()
                     }
                 }

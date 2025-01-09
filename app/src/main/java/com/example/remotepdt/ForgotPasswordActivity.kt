@@ -27,22 +27,14 @@ class ForgotPasswordActivity : AppCompatActivity() {
         // Submit Button Click Listener
         btnSubmit.setOnClickListener {
             val email = etEmail.text.toString().trim()
-            val code = etVerificationCode.text.toString().trim()
 
-//            when {
-//                email.isEmpty() -> {
-//                    Toast.makeText(this, "Please enter your email", Toast.LENGTH_SHORT).show()
-//                }
-//                code.isEmpty() -> {
-//                    Toast.makeText(this, "Please enter the verification code", Toast.LENGTH_SHORT).show()
-//                }
-//                else -> {
-//                    // Handle verification logic
-//                    Toast.makeText(this, "Code verified!", Toast.LENGTH_SHORT).show()
-//                }
-//            }
-            val intent = Intent(this, ResetPasswordActivity::class.java)
-            startActivity(intent)
+            if (email.isEmpty()) {
+                Toast.makeText(this, "Please enter your email", Toast.LENGTH_SHORT).show()
+            } else {
+                val intent = Intent(this, ResetPasswordActivity::class.java)
+                intent.putExtra("EMAIL_EXTRA", email) // Pass email to ResetPasswordActivity
+                startActivity(intent)
+            }
         }
 
         // Resend Code Button Click Listener
