@@ -10,13 +10,6 @@
     tools:context=".Instruction1Activity">
 
     <!-- Title TextView -->
-
-    <!-- ImageView for instruction image -->
-
-    <!-- Instruction TextView -->
-
-    <!-- Next Button -->
-
     <TextView
         android:id="@+id/sessionNumberTitle"
         android:layout_width="271dp"
@@ -28,6 +21,7 @@
         android:textSize="42sp"
         android:textStyle="bold" />
 
+    <!-- Date TextView -->
     <TextView
         android:id="@+id/sessionDateText"
         android:layout_width="match_parent"
@@ -37,6 +31,7 @@
         android:textColor="#004AAD"
         android:textSize="27sp" />
 
+    <!-- Time TextView -->
     <TextView
         android:id="@+id/sessionTimeText"
         android:layout_width="match_parent"
@@ -46,6 +41,7 @@
         android:textColor="#004AAD"
         android:textSize="27sp" />
 
+    <!-- Start Session Button -->
     <Button
         android:id="@+id/btnStartSession"
         android:layout_width="275dp"
