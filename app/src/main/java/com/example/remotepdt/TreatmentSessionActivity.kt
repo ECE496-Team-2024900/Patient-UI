@@ -64,7 +64,7 @@ class TreatmentSessionActivity : AppCompatActivity() {
                     // Set time
                     val timeStr = response.optString("time")
                     val timeInputFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-                    val timeOutputFormat = SimpleDateFormat("h:mm a", Locale.getDefault())  // Desired output format for time (12-hour clock)
+                    val timeOutputFormat = SimpleDateFormat("h:mm a", Locale.getDefault())  // Output format for time (12-hour clock)
 
                     try {
                         val time = timeInputFormat.parse(timeStr)  // Parse the time string
