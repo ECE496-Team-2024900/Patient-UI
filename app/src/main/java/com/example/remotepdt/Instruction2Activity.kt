@@ -1,4 +1,3 @@
-//Instructions to patient before the video call: Instruction connect the wound cover
 package com.example.remotepdt
 
 import android.content.Intent
