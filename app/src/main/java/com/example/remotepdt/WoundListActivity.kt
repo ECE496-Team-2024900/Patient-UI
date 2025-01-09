@@ -6,16 +6,17 @@ import android.content.res.Resources
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
+import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.androidnetworking.AndroidNetworking
 import com.androidnetworking.error.ANError
-import com.androidnetworking.interfaces.JSONArrayRequestListener
 import com.androidnetworking.interfaces.JSONObjectRequestListener
 import com.google.android.material.button.MaterialButton
-import org.json.JSONArray
 import org.json.JSONObject
+import org.json.JSONArray
 
 class WoundListActivity : AppCompatActivity() {
     private var BeUrl = "http://10.0.2.2:8000"
@@ -26,6 +27,12 @@ class WoundListActivity : AppCompatActivity() {
 
         AndroidNetworking.initialize(getApplicationContext())
 
+        // Adding back button functionality
+        val backButton = findViewById<ImageButton>(R.id.backButton)
+        backButton.setOnClickListener{
+            finish()
+        }
+
         val buttonContainer = findViewById<LinearLayout>(R.id.button_container)
 
         // Request to get wound list
@@ -34,11 +41,8 @@ class WoundListActivity : AppCompatActivity() {
             .build()
             .getAsJSONObject(object : JSONObjectRequestListener {
                 override fun onResponse(response: JSONObject) {
-                    Log.d("DebugTag", "Got a response")
                     val woundIds = response.optJSONArray("message")
-                    val status = response.optInt("status")
-                    Log.d("DebugTag", "Got status $status")
-                    if(true) {
+                    if(woundIds.length() > 0) {
                         Log.d("DebugTag", "Got length ${woundIds.length()}")
                         for (i in 0 until woundIds.length()) {
                             val woundId = woundIds.getInt(i)
@@ -46,7 +50,7 @@ class WoundListActivity : AppCompatActivity() {
                             // Creating wound button dynamically in wound list
                             val button = MaterialButton(this@WoundListActivity).apply {
                                 layoutParams = LinearLayout.LayoutParams(
-                                    270.dpToPx(), // Convert 271dp to pixels
+                                    271.dpToPx(), // Convert 271dp to pixels
                                     99.dpToPx()   // Convert 99dp to pixels
                                 )
                                 text = "Wound $woundId" // Setting button text
@@ -54,8 +58,8 @@ class WoundListActivity : AppCompatActivity() {
                                 setTextColor(Color.parseColor("#000000")) // Setting text color to black
 
                                 // Set the drawable as the background
-                                setBackgroundDrawable(resources.getDrawable(R.drawable.border_button, null))
-                                backgroundTintList = ColorStateList.valueOf(Color.parseColor("#B1EDFF"))
+                                background = resources.getDrawable(R.drawable.border_button, null)
+                                backgroundTintList = null
 
                                 // Navigate to WoundDetailActivity when clicked
                                 setOnClickListener {
@@ -68,7 +72,7 @@ class WoundListActivity : AppCompatActivity() {
                             // Adding the new button to the button container
                             buttonContainer.addView(button)
                         }
-                    } else if (status == 204) {
+                    } else {
                         // No wounds exist
                         Toast.makeText(
                             this@WoundListActivity,
@@ -79,7 +83,6 @@ class WoundListActivity : AppCompatActivity() {
                 }
 
                 override fun onError(anError: ANError) {
-                    Log.d("DebugTag", "Got an error")
                     Toast.makeText(
                         this@WoundListActivity,
                         "Error: ${anError.message}",
