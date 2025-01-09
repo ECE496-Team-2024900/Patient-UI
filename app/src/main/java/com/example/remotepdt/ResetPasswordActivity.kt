@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.androidnetworking.AndroidNetworking
@@ -18,6 +19,7 @@ class ResetPasswordActivity : AppCompatActivity() {
     private lateinit var etNewPassword: EditText
     private lateinit var etConfirmPassword: EditText
     private lateinit var btnSubmitCode: Button
+    private lateinit var btnBack: ImageButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,6 +30,8 @@ class ResetPasswordActivity : AppCompatActivity() {
         etNewPassword = findViewById(R.id.etNewPassword)
         etConfirmPassword = findViewById(R.id.etConfirmPassword)
         btnSubmitCode = findViewById(R.id.btnSubmitCode)
+        btnBack = findViewById(R.id.btnBack)
+
 
         // Initialize AndroidNetworking
         AndroidNetworking.initialize(applicationContext)
@@ -39,12 +43,26 @@ class ResetPasswordActivity : AppCompatActivity() {
             val confirmPassword = etConfirmPassword.text.toString().trim()
 
             if (validateInputs(email, newPassword, confirmPassword)) {
+                // Proceed with password update
                 updatePasswordInDatabase(email, newPassword)
+                val intent = Intent(this, LoginActivity::class.java)
+                startActivity(intent)
+                finish() // Close current activity
+                //Display update message
+                Toast.makeText(this, "Password has been updated", Toast.LENGTH_SHORT).show()
+            } else {
+                // Display error message
+                Toast.makeText(this, "Passwords do not match or are invalid", Toast.LENGTH_SHORT).show()
             }
+        }
 
+        // Set up Back button click listener
+        btnBack.setOnClickListener {
             val intent = Intent(this, ForgotPasswordActivity::class.java)
             startActivity(intent)
+            finish() // Close current activity
         }
+
     }
 
     private fun validateInputs(email: String, newPassword: String, confirmPassword: String): Boolean {
