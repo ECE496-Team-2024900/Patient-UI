@@ -1,5 +1,6 @@
 package com.example.remotepdt
 
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.content.res.Resources
 import android.graphics.Color
@@ -26,6 +27,7 @@ class CurrentTreatmentsListActivity : AppCompatActivity() {
         AndroidNetworking.initialize(applicationContext)
 
         val buttonContainer = findViewById<LinearLayout>(R.id.button_container)
+
         // Request to get current treatment sessions
         AndroidNetworking.get("${BeUrl}/treatment/get_all_treatments")
             .build()
@@ -71,6 +73,16 @@ class CurrentTreatmentsListActivity : AppCompatActivity() {
                                     // Set the drawable as the background
                                     setBackgroundDrawable(resources.getDrawable(R.drawable.border_button, null))
                                     backgroundTintList = ColorStateList.valueOf(Color.parseColor("#B1EDFF"))
+
+                                    // Add click listener to navigate to TreatmentSessionActivity
+                                    setOnClickListener {
+                                        val intent = Intent(
+                                            this@CurrentTreatmentsListActivity,
+                                            TreatmentSessionActivity::class.java
+                                        )
+                                        intent.putExtra("treatment_id", treatmentId) // Pass treatment ID
+                                        startActivity(intent)
+                                    }
                                 }
 
                                 // Adding the new button to the button container

@@ -92,7 +92,8 @@ class TreatmentSessionActivity : AppCompatActivity() {
 
         // Find the Start Session button by its ID
         val btnStartSession = findViewById<Button>(R.id.btnStartSession)
-
+        val btnRequestReschedule = findViewById<Button>(R.id.btnRequestReschedule)
+        val btnBackToTreatments = findViewById<Button>(R.id.btnBackToTreatments)
         // Set an OnClickListener on the Start Session button
         btnStartSession.setOnClickListener {
             // Get the current time
@@ -121,6 +122,18 @@ class TreatmentSessionActivity : AppCompatActivity() {
                     Toast.LENGTH_SHORT
                 ).show()
             }
+        }
+        btnRequestReschedule.setOnClickListener {
+            // Do nothing for now
+            Toast.makeText(this, "Reschedule request feature coming soon!", Toast.LENGTH_SHORT).show()
+        }
+
+        // Set OnClickListener for Back to Treatments Button
+        btnBackToTreatments.setOnClickListener {
+            // Navigate back to CurrentTreatmentsListActivity
+            val intent = Intent(this, CurrentTreatmentsListActivity::class.java)
+            startActivity(intent)
+            finish() // Optionally finish the current activity
         }
     }
 }

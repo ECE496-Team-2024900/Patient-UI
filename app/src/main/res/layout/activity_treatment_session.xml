@@ -10,13 +10,6 @@
     tools:context=".Instruction1Activity">
 
     <!-- Title TextView -->
-
-    <!-- ImageView for instruction image -->
-
-    <!-- Instruction TextView -->
-
-    <!-- Next Button -->
-
     <TextView
         android:id="@+id/sessionNumberTitle"
         android:layout_width="271dp"
@@ -52,6 +45,27 @@
         android:layout_height="99dp"
         android:backgroundTint="#004AAD"
         android:text="Start Session"
+        android:textSize="24sp"
+        android:translationY="15dp"
+        app:cornerRadius="8dp" />
+
+    <!-- New Buttons -->
+    <Button
+        android:id="@+id/btnRequestReschedule"
+        android:layout_width="275dp"
+        android:layout_height="99dp"
+        android:backgroundTint="#004AAD"
+        android:text="Request Reschedule"
+        android:textSize="24sp"
+        android:translationY="15dp"
+        app:cornerRadius="8dp" />
+
+    <Button
+        android:id="@+id/btnBackToTreatments"
+        android:layout_width="275dp"
+        android:layout_height="99dp"
+        android:backgroundTint="#004AAD"
+        android:text="Back to Treatments"
         android:textSize="24sp"
         android:translationY="15dp"
         app:cornerRadius="8dp" />
