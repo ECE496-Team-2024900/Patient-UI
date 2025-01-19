@@ -28,7 +28,7 @@ class WelcomeActivity : AppCompatActivity() {
         // Find TextView by ID
         val welcomeTitle = findViewById<TextView>(R.id.welcomeTitle)
 
-        // Get patient details 
+        // Get patient details - pass in the patient email as a parameter
         AndroidNetworking.get("${BeUrl}/users/get_patient_info")
             .addQueryParameter("email", email)
             .build()
@@ -37,6 +37,7 @@ class WelcomeActivity : AppCompatActivity() {
                     try {
                         val message = response.opt("message")
                         if (message is JSONObject) {
+                            // Patient details successfully returned, access the patient's first name for welcome message
                             val patientName = message.optString("first_name", "")
                             welcomeTitle.text = getString(R.string.welcome_title, patientName)
                         } else if (message is String) {
@@ -48,6 +49,7 @@ class WelcomeActivity : AppCompatActivity() {
                             ).show()
                         }
                     } catch (e: Exception) {
+                        // Error occurred when trying to process patient details
                         e.printStackTrace()
                         Toast.makeText(
                             this@WelcomeActivity,
@@ -57,6 +59,7 @@ class WelcomeActivity : AppCompatActivity() {
                     }
                 }
 
+                // Error occurred when trying to retrieve patient details
                 override fun onError(anError: ANError) {
                     anError.printStackTrace()
                     val errorMessage = anError.message ?: "An error occurred retrieving patient info"
