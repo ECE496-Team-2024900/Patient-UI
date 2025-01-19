@@ -7,6 +7,9 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.androidnetworking.AndroidNetworking
+import com.androidnetworking.error.ANError
+import com.androidnetworking.interfaces.JSONObjectRequestListener
 import com.google.firebase.Firebase
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
@@ -15,16 +18,59 @@ import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.auth.auth
+import org.json.JSONObject
 import java.util.concurrent.TimeUnit
 
 class MultifactorActivity : AppCompatActivity() {
     private var auth: FirebaseAuth = Firebase.auth
     private lateinit var storedVerificationId: String
     private lateinit var resendToken: PhoneAuthProvider.ForceResendingToken
+    private lateinit var patientPhoneNumber: String
+    private var BeUrl = "http://10.0.2.2:8003"
+    private var email = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_multifactor)
+        email = intent.getStringExtra("email") ?: ""
+
+        // Get patient details
+        AndroidNetworking.get("${BeUrl}/users/get_patient_info")
+            .addQueryParameter("email", email)
+            .build()
+            .getAsJSONObject(object : JSONObjectRequestListener {
+                override fun onResponse(response: JSONObject) {
+                    try {
+                        val message = response.opt("message")
+                        if (message is JSONObject) {
+                            patientPhoneNumber = message.optString("phone_number", "")
+                        } else if (message is String) {
+                            // Error message returned from backend
+                            Toast.makeText(
+                                this@MultifactorActivity,
+                                message,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        Toast.makeText(
+                            this@MultifactorActivity,
+                            "Failure in processing the patient info.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+
+                override fun onError(anError: ANError) {
+                    anError.printStackTrace()
+                    val errorMessage = anError.message ?: "An error occurred retrieving patient info"
+                    Toast.makeText(
+                        this@MultifactorActivity, errorMessage,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            })
 
         //TODO: add billing to Firebase account once moving app to production
         //until then, the code has this test phone number added with the verification code 123456
@@ -62,6 +108,7 @@ class MultifactorActivity : AppCompatActivity() {
                     val user = task.result?.user
                     val intent = Intent(this@MultifactorActivity, WelcomeActivity::class.java)
                     intent.putExtra("user", user)
+                    intent.putExtra("email", email)
                     startActivity(intent)
                 } else {
                     // Sign in failed, display a message and update the UI
