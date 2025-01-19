@@ -27,7 +27,7 @@ class LoginActivity2 : AppCompatActivity() {
             auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this) { task ->
                     if (task.isSuccessful) {
-                        val intent = Intent(this@LoginActivity2, WelcomeActivity::class.java)
+                        val intent = Intent(this@LoginActivity2, MultifactorActivity::class.java)
                         intent.putExtra("email", email)
                         startActivity(intent)
                     } else {

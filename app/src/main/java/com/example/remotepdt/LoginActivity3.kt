@@ -37,7 +37,7 @@ class LoginActivity3 : AppCompatActivity() {
                 auth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this) { task ->
                         if (task.isSuccessful) {
-                            val intent = Intent(this@LoginActivity3, WelcomeActivity::class.java)
+                            val intent = Intent(this@LoginActivity3, MultifactorActivity::class.java)
                             intent.putExtra("email", email)
                             startActivity(intent)
                         } else {

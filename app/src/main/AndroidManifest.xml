@@ -31,6 +31,9 @@
             android:name=".LoginActivity2"
             android:exported="false" />
         <activity
+            android:name=".MultifactorActivity"
+            android:exported="false" />
+        <activity
             android:name=".LoginActivity3"
             android:exported="false" />
         <activity
