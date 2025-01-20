@@ -9,7 +9,7 @@
     android:orientation="vertical"
     tools:context=".Instruction1Activity">
 
-    <!-- Title TextView -->
+    <!-- TextView for Title (Session Number) -->
     <TextView
         android:id="@+id/sessionNumberTitle"
         android:layout_width="271dp"
@@ -21,7 +21,7 @@
         android:textSize="42sp"
         android:textStyle="bold" />
 
-    <!-- Date TextView -->
+    <!-- TextView for Session Date --
     <TextView
         android:id="@+id/sessionDateText"
         android:layout_width="match_parent"
@@ -31,7 +31,7 @@
         android:textColor="#004AAD"
         android:textSize="27sp" />
 
-    <!-- Time TextView -->
+    <!-- TextView for Session Time -->
     <TextView
         android:id="@+id/sessionTimeText"
         android:layout_width="match_parent"

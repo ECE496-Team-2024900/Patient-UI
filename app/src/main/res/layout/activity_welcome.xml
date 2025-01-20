@@ -10,13 +10,6 @@
     tools:context=".Instruction1Activity">
 
     <!-- Title TextView -->
-
-    <!-- ImageView for instruction image -->
-
-    <!-- Instruction TextView -->
-
-    <!-- Next Button -->
-
     <TextView
         android:id="@+id/welcomeTitle"
         android:layout_width="256dp"
@@ -29,6 +22,7 @@
         android:textStyle="bold"
         android:translationY="-190dp" />
 
+    <!-- Current Session Button -->
     <Button
         android:id="@+id/btnCurrentWounds"
         android:layout_width="271dp"
@@ -39,6 +33,7 @@
         android:translationY="-150dp"
         app:cornerRadius="8dp" />
 
+    <!-- Logout Button -->
     <Button
         android:id="@+id/btnLogout"
         android:layout_width="271dp"

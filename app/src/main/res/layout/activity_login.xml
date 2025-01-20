@@ -9,20 +9,14 @@
     android:orientation="vertical"
     tools:context=".Instruction1Activity">
 
-    <!-- Title TextView -->
-
-    <!-- ImageView for instruction image -->
-
-    <!-- Instruction TextView -->
-
-    <!-- Next Button -->
-
+    <!-- ImageView for logo image -->
     <ImageView
         android:id="@+id/logo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:srcCompat="@drawable/product_logo" />
 
+    <!-- Login Button -->
     <Button
         android:id="@+id/btnLogin"
         android:layout_width="271dp"
