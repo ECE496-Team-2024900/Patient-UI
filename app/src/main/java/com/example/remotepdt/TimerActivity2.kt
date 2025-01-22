@@ -51,20 +51,13 @@ class TimerActivity2 : AppCompatActivity() {
             .build()
             .getAsJSONObject(object : JSONObjectRequestListener {
                 override fun onResponse(response: JSONObject) {
-                    // Parse the JSON response to get the light timer duration
-                    val lightTimerDuration = response.optLong("light_timer", 10000L)
-                    timerDuration = lightTimerDuration // Use fetched duration or default
+                    // Parse the JSON response to get the wash timer duration
+                    val washTimerDuration = response.optLong("light_timer", 10000L)
+                    timerDuration = washTimerDuration // Use fetched duration or default
                     startTimer()
                 }
 
                 override fun onError(anError: ANError) {
-                    // Log the error and start the timer with the default duration
-                    Log.e("TimerActivity2", "Error fetching wash timer: ${anError.errorDetail}")
-                    Toast.makeText(
-                        this@TimerActivity2,
-                        "Error fetching data, starting default timer",
-                        Toast.LENGTH_SHORT
-                    ).show()
                     startTimer() // Start the timer with the default duration
                 }
             })
@@ -115,6 +108,6 @@ class TimerActivity2 : AppCompatActivity() {
     private fun navigateToNextActivity() {
         val intent = Intent(this, TimerActivity3::class.java)
         startActivity(intent)
-        finish() // Optional: Close TimerActivity2 to prevent going back
+        finish()
     }
 }

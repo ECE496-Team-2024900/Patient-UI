@@ -60,8 +60,9 @@ class MeetingActivity : AppCompatActivity() {
             meeting = null
 
             // Navigate to LoaderActivity when the meeting ends
-            val intent = Intent(this@MeetingActivity, LoaderActivity::class.java) //remove from if statement if repeated in if statement
-            startActivity(intent) //remove from if statement if repeated in if statement
+
+            val intent = Intent(this@MeetingActivity, LoaderActivity::class.java)
+            startActivity(intent)
 
             if (!isDestroyed) finish()
         }
