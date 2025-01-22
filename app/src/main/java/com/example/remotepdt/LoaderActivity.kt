@@ -31,7 +31,8 @@ class LoaderActivity : AppCompatActivity() {
     }
 
     private fun checkClinicianApproval() {
-        val url = "http://127.0.0.1:8001/hardware/approval?id=1"
+        //val url = "http://127.0.0.1:8001/hardware/approval?id=1"
+        val url = "http://10.0.2.2:8001/hardware/approval?id=1"
 
         AndroidNetworking.get(url)
             .setPriority(Priority.HIGH)
@@ -40,8 +41,9 @@ class LoaderActivity : AppCompatActivity() {
                 override fun onResponse(response: JSONObject) {
                     // Check for the "message" field in the response
                     val message = response.optString("message", "")
+                    Toast.makeText(this@LoaderActivity, message, Toast.LENGTH_SHORT).show()
 
-                    if (message == "Approval received") {
+                    if (message == "Approval recieved") {
                         // Navigate to TimerActivity1 if message matches
                         navigateToTimerActivity1()
                     } else {
@@ -55,9 +57,9 @@ class LoaderActivity : AppCompatActivity() {
                     val errorBody = anError.errorBody
 
                     // Transition to the next activity after 10 seconds
-                    Handler(Looper.getMainLooper()).postDelayed({
+/*                    Handler(Looper.getMainLooper()).postDelayed({
                         navigateToTimerActivity1()
-                    }, 10000) // 10 seconds in milliseconds
+                    }, 10000) // 10 seconds in milliseconds*/
                 }
 
 
