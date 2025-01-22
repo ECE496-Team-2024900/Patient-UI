@@ -34,11 +34,6 @@ class TimerActivity1 : AppCompatActivity() {
         // Set the ProgressBar max value to 100 for percentage-based progress
         progressBar?.max = 100
 
-        // Set up the "Next" button click listener to navigate to TimerActivity2
-        nextButton.setOnClickListener {
-            finishTimerAndNavigate()
-        }
-
         // Fetch treatment session data from the backend
         fetchTreatmentSession()
     }
@@ -97,6 +92,7 @@ class TimerActivity1 : AppCompatActivity() {
     private fun finishTimerAndNavigate() {
         // Complete the timer and navigate to the next activity
         countDownTimer?.cancel() // Cancel the current timer
+        countDownTimer = null
         timerText?.text = "00:00" // Set timer text to 00:00
         progressBar?.progress = 100 // Set progress bar to 100%
         navigateToNextActivity()

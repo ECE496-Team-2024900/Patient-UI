@@ -60,6 +60,7 @@ class MeetingActivity : AppCompatActivity() {
             meeting = null
 
             // Navigate to LoaderActivity when the meeting ends
+
             val intent = Intent(this@MeetingActivity, LoaderActivity::class.java)
             startActivity(intent)
 
