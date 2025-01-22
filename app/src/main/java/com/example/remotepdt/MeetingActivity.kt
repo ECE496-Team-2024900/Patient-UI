@@ -1,4 +1,5 @@
 package com.example.remotepdt
+
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -8,17 +9,22 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.androidnetworking.AndroidNetworking
+import com.androidnetworking.error.ANError
+import com.androidnetworking.interfaces.JSONObjectRequestListener
 import live.videosdk.rtc.android.Meeting
 import live.videosdk.rtc.android.Participant
 import live.videosdk.rtc.android.VideoSDK
 import live.videosdk.rtc.android.listeners.MeetingEventListener
+import org.json.JSONObject
 
 class MeetingActivity : AppCompatActivity() {
-    // declare the variables we will be using to handle the meeting
+    // Declare the variables we will be using to handle the meeting
     private var meeting: Meeting? = null
     private var micEnabled = true
     private var webcamEnabled = true
     private var frontFacing = true
+    private var BeUrl = "http://10.0.2.2:8000"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,19 +33,21 @@ class MeetingActivity : AppCompatActivity() {
         val token = intent.getStringExtra("token")
         val meetingId = intent.getStringExtra("meetingId")
         val participantName = "patient"
+        val treatmentId = intent.getIntExtra("treatment_id", -1)
 
-        // 1. Configuration VideoSDK with Token
+        // 1. Configure VideoSDK with Token
         VideoSDK.config(token)
 
         // 2. Initialize VideoSDK Meeting
         meeting = VideoSDK.initMeeting(
             this@MeetingActivity, meetingId, participantName,
-            micEnabled, webcamEnabled, null, null, false, null, null)
+            micEnabled, webcamEnabled, null, null, false, null, null
+        )
 
-        // 3. Add event listener for listening upcoming events
+        // 3. Add event listener for listening to upcoming events
         meeting!!.addEventListener(meetingEventListener)
 
-        //4. Join VideoSDK Meeting
+        // 4. Join VideoSDK Meeting
         meeting!!.join()
 
         setActionListeners()
@@ -47,9 +55,44 @@ class MeetingActivity : AppCompatActivity() {
         val rvParticipants = findViewById<RecyclerView>(R.id.rvParticipants)
         rvParticipants.layoutManager = GridLayoutManager(this, 2, LinearLayoutManager.HORIZONTAL, false)
         rvParticipants.adapter = ParticipantAdapter(meeting!!)
+
+        // Check treatment completion status
+        checkTreatmentStatus(treatmentId)
     }
 
-    // creating the MeetingEventListener
+    // Function to check if the treatment is completed
+    private fun checkTreatmentStatus(treatmentId: Int) {
+        AndroidNetworking.get("$BeUrl/treatment/get_treatment_status")
+            .addQueryParameter("id", treatmentId.toString())
+            .build()
+            .getAsJSONObject(object : JSONObjectRequestListener {
+                override fun onResponse(response: JSONObject) {
+                    val completed = response.optBoolean("completed", false)
+                    if (completed) {
+                        // Navigate to CurrentTreatmentsListActivity
+                        val intent = Intent(this@MeetingActivity, CurrentTreatmentsListActivity::class.java)
+                        startActivity(intent)
+                        finish()
+                    } else {
+                        // Navigate to LoaderActivity
+                        val intent = Intent(this@MeetingActivity, LoaderActivity::class.java)
+                        startActivity(intent)
+                        finish()
+                    }
+                }
+
+                override fun onError(anError: ANError) {
+                    // Handle error
+                    Toast.makeText(
+                        this@MeetingActivity,
+                        "Error: ${anError.message}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            })
+    }
+
+    // Creating the MeetingEventListener
     private val meetingEventListener: MeetingEventListener = object : MeetingEventListener() {
         override fun onMeetingJoined() {
             Log.d("#meeting", "onMeetingJoined()")
@@ -83,47 +126,46 @@ class MeetingActivity : AppCompatActivity() {
     }
 
     private fun setActionListeners() {
-        // toggle mic
-        findViewById<View>(R.id.btnMic).setOnClickListener { view: View? ->
+        // Toggle mic
+        findViewById<View>(R.id.btnMic).setOnClickListener {
             if (micEnabled) {
-                // this will mute the local participant's mic
+                // Mute the local participant's mic
                 meeting!!.muteMic()
                 Toast.makeText(this@MeetingActivity, "Mic Muted", Toast.LENGTH_SHORT).show()
             } else {
-                // this will unmute the local participant's mic
+                // Unmute the local participant's mic
                 meeting!!.unmuteMic()
                 Toast.makeText(this@MeetingActivity, "Mic Enabled", Toast.LENGTH_SHORT).show()
             }
-            micEnabled=!micEnabled
+            micEnabled = !micEnabled
         }
 
-        // toggle webcam
-        findViewById<View>(R.id.btnWebcam).setOnClickListener { view: View? ->
+        // Toggle webcam
+        findViewById<View>(R.id.btnWebcam).setOnClickListener {
             if (webcamEnabled) {
-                // this will disable the local participant webcam
+                // Disable the local participant webcam
                 meeting!!.disableWebcam()
                 Toast.makeText(this@MeetingActivity, "Webcam Disabled", Toast.LENGTH_SHORT).show()
             } else {
-                // this will enable the local participant webcam
+                // Enable the local participant webcam
                 meeting!!.enableWebcam()
                 Toast.makeText(this@MeetingActivity, "Webcam Enabled", Toast.LENGTH_SHORT).show()
             }
-            webcamEnabled=!webcamEnabled
+            webcamEnabled = !webcamEnabled
         }
 
-
-        // toggle webcam orientation
-        findViewById<View>(R.id.btnWebcamToggle).setOnClickListener { view: View? ->
+        // Toggle webcam orientation
+        findViewById<View>(R.id.btnWebcamToggle).setOnClickListener {
             if (frontFacing) {
-                // this will disable the local participant webcam
+                // Switch to back-facing camera
                 meeting!!.changeWebcam()
                 Toast.makeText(this@MeetingActivity, "Webcam Back-Facing", Toast.LENGTH_SHORT).show()
             } else {
-                // this will enable the local participant webcam
+                // Switch to front-facing camera
                 meeting!!.changeWebcam()
                 Toast.makeText(this@MeetingActivity, "Webcam Front-Facing", Toast.LENGTH_SHORT).show()
             }
-            frontFacing=!frontFacing
+            frontFacing = !frontFacing
         }
     }
 }
