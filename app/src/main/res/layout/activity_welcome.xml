@@ -28,7 +28,7 @@
         android:layout_width="271dp"
         android:layout_height="99dp"
         android:backgroundTint="#004AAD"
-        android:text="Current Session"
+        android:text="Current Wounds"
         android:textSize="24sp"
         android:translationY="-150dp"
         app:cornerRadius="8dp" />

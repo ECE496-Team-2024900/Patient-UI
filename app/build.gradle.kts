@@ -57,4 +57,5 @@ dependencies {
     implementation ("com.squareup.retrofit2:retrofit:2.9.0")
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation ("com.squareup.okhttp3:okhttp:4.9.0") //for network calls
+    implementation ("com.google.android.material:material:1.9.0")
 }
