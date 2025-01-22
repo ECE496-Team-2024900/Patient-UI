@@ -5,8 +5,9 @@ import android.content.res.Resources
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
 import android.widget.LinearLayout
-import android.widget.Toast
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.androidnetworking.AndroidNetworking
 import com.androidnetworking.error.ANError
@@ -76,22 +77,42 @@ class PastTreatmentsListActivity : AppCompatActivity() {
                             }
                         }
                     } else if (status == 204) {
-                        // No treatments exist
-                        Toast.makeText(
-                            this@PastTreatmentsListActivity,
-                            "No treatment sessions are available for this patient.",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        // No treatments exist - Show message on screen
+                        val noTreatmentsMessage = TextView(this@PastTreatmentsListActivity).apply {
+                            text = "No past treatment sessions are available."
+                            textSize = 18f
+                            setTextColor(Color.parseColor("#FF0000")) // Red color for visibility
+                            gravity = Gravity.CENTER
+                            layoutParams = LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.MATCH_PARENT,
+                                LinearLayout.LayoutParams.WRAP_CONTENT
+                            ).apply {
+                                topMargin = 16.dpToPx()
+                            }
+                        }
+
+                        // Add the message to the button container
+                        buttonContainer.addView(noTreatmentsMessage)
                     }
                 }
 
                 override fun onError(anError: ANError) {
                     Log.d("DebugTag", "Got an error")
-                    Toast.makeText(
-                        this@PastTreatmentsListActivity,
-                        "Error: ${anError.message}",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    val errorMessage = TextView(this@PastTreatmentsListActivity).apply {
+                        text = "Error: ${anError.message}"
+                        textSize = 18f
+                        setTextColor(Color.parseColor("#FF0000")) // Red color for error messages
+                        gravity = Gravity.CENTER
+                        layoutParams = LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT
+                        ).apply {
+                            topMargin = 16.dpToPx()
+                        }
+                    }
+
+                    // Add the error message to the button container
+                    buttonContainer.addView(errorMessage)
                 }
             })
     }
