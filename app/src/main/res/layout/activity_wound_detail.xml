@@ -29,8 +29,6 @@
         android:textColor="#0D47A1"
         android:fontFamily="sans-serif-medium" />
 
-
-
     <!-- Scheduled Session Button -->
     <Button
         android:id="@+id/btnScheduledSession"
