@@ -56,19 +56,6 @@ class LoaderActivity : AppCompatActivity() {
                     val statusCode = anError.errorCode
                     val errorBody = anError.errorBody
 
-                    Log.e("LoaderActivity", "Error detail: ${anError.errorDetail}")
-                    Log.e("LoaderActivity", "Error message: ${anError.message}")
-                    Log.e("LoaderActivity", "Error code: $statusCode")
-                    Log.e("LoaderActivity", "Error body: $errorBody")
-
-                    if (statusCode != 0) {
-                        // Server responded with an error code
-                        Toast.makeText(this@LoaderActivity, "THE error: $statusCode", Toast.LENGTH_SHORT).show()
-                    } else {
-                        // No server response (connection issue)
-                        Toast.makeText(this@LoaderActivity, "Connection error: ${anError.errorDetail}", Toast.LENGTH_SHORT).show()
-                    }
-
                     // Transition to the next activity after 10 seconds
 /*                    Handler(Looper.getMainLooper()).postDelayed({
                         navigateToTimerActivity1()

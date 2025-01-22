@@ -10,13 +10,6 @@
     tools:context=".Instruction1Activity">
 
     <!-- Title TextView -->
-
-    <!-- ImageView for instruction image -->
-
-    <!-- Instruction TextView -->
-
-    <!-- Next Button -->
-
     <TextView
         android:id="@+id/painScoreTitle"
         android:layout_width="match_parent"
@@ -29,6 +22,7 @@
         android:textStyle="bold"
         android:translationY="30dp" />
 
+    <!-- TextView for Prompt -->
     <TextView
         android:id="@+id/painScorePrompt"
         android:layout_width="373dp"
@@ -39,6 +33,7 @@
         android:textSize="27sp"
         android:translationY="50dp" />
 
+    <!-- Done Button -->
     <Button
         android:id="@+id/btnDone"
         android:layout_width="272dp"
@@ -49,6 +44,7 @@
         android:translationY="440dp"
         app:cornerRadius="8dp" />
 
+    <!-- EditText for Pain Score Input -->
     <EditText
         android:id="@+id/painScoreInput"
         android:layout_width="372dp"

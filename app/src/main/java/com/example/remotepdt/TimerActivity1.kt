@@ -60,8 +60,6 @@ class TimerActivity1 : AppCompatActivity() {
                 }
 
                 override fun onError(anError: ANError) {
-                    Log.e("TimerActivity1", "Error: ${anError.errorDetail}")
-                    Toast.makeText(this@TimerActivity1, "Error fetching data", Toast.LENGTH_SHORT).show()
                     startTimer() // Start the timer with the default duration
                 }
             })
@@ -93,7 +91,7 @@ class TimerActivity1 : AppCompatActivity() {
     private fun navigateToNextActivity() {
         val intent = Intent(this, TimerActivity2::class.java)
         startActivity(intent)
-        finish() // Optional: Close TimerActivity1 to prevent going back
+        finish()
     }
 
     private fun finishTimerAndNavigate() {

@@ -1,3 +1,4 @@
+//Instructions to patient before the video call: Instruction to insert the solvent vial
 package com.example.remotepdt
 
 import android.content.Intent
