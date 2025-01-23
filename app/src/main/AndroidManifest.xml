@@ -73,6 +73,13 @@
         <activity
             android:name=".PainScoreActivity"
             android:exported="false" />
+        <activity
+            android:name=".WoundListActivity"
+            android:networkSecurityConfig="@xml/network_security_config"
+            android:exported="false" />
+        <activity
+            android:name=".WoundDetailActivity"
+            android:exported="false" />
     </application>
   
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
