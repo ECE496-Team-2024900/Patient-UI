@@ -31,7 +31,7 @@
         android:id="@+id/instructionText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Please insert the solvent vial\nPress Next when you are ready"
+        android:text="Please insert the solvent vial\nPress next when you are ready"
         android:gravity="center"
         android:textSize="18sp"
         android:layout_marginBottom="32dp" />
