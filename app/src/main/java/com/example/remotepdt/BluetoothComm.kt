@@ -159,7 +159,7 @@ class BluetoothComm private constructor(private val context: Context) {
         private var instance: BluetoothComm? = null
 
         // This is the UUID for communicating over SSP
-        private const val MY_UUID = "00001101-0000-1000-8000-00805F9B34FB" // Standard UUID for SPP (Serial Port Profile)
+        private const val MY_UUID = "00001101-0000-1000-8000-00805F9B34FB"
 
         fun getInstance(context: Context): BluetoothComm {
             return instance ?: synchronized(this) {
