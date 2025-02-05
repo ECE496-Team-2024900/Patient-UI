@@ -20,7 +20,7 @@ import java.io.OutputStream
 import java.util.UUID
 
 
-// Singleton class to ensure all usage is for one BT connection
+// Singleton class to ensure all usage is for one Bluetooth connection
 class BluetoothComm private constructor(private val context: Context) {
 
     private val bluetoothAdapter: BluetoothAdapter? by lazy {
@@ -32,19 +32,20 @@ class BluetoothComm private constructor(private val context: Context) {
     private var inputStream: InputStream? = null
     private var outputStream: OutputStream? = null
 
-
-    // Returns true if Bluetooth is enabled on the device
-    // Should use to check whether the patient has enabled Bluetooth on their device
-    // If not, should prompt them to do so
-    fun isBluetoothEnabled(): Boolean {
-        return bluetoothAdapter?.isEnabled == true
-    }
-
     // Connect to a medical device authorized for this patient
     // Takes the authorized medical device's serial number (required to check identification)
     fun connect(expectedSerial: String) {
+        
+        // Cannot proceed if the device hasn't enabled Bluetooth
+        if(bluetoothAdapter?.isEnabled == false) {
+            Toast.makeText(
+                context, "Please enable Bluetooth to proceed.",
+                Toast.LENGTH_SHORT
+            ).show()
+            return
+        }
 
-        // Checking permission for scanning for BT devices
+        // Checking permission for scanning for Bluetooth devices
         if (ContextCompat.checkSelfPermission(
                 context,
                 Manifest.permission.BLUETOOTH_SCAN
@@ -53,7 +54,7 @@ class BluetoothComm private constructor(private val context: Context) {
             Toast.makeText(context, "Bluetooth permission required to scan for devices.", Toast.LENGTH_SHORT).show()
             return
         }
-        // Searching for nearby BT devices
+        // Searching for nearby Bluetooth devices
         bluetoothAdapter?.startDiscovery()
 
         // Processing each found device to find the desired one
@@ -120,7 +121,7 @@ class BluetoothComm private constructor(private val context: Context) {
             }
         }
 
-        // Registering the receiver for BT discovery action
+        // Registering the receiver for Bluetooth discovery action
         context.registerReceiver(discoveryReceiver, IntentFilter(BluetoothDevice.ACTION_FOUND))
 
         // Stopping discovery after a timeout to avoid unnecessary battery usage (15 seconds for now)
