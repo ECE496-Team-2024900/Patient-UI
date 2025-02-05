@@ -139,7 +139,6 @@ class BluetoothComm private constructor(private val context: Context) {
             val bytesRead = inputStream?.read(buffer) ?: 0
             String(buffer, 0, bytesRead).trim()
         } catch (e: IOException) {
-            Toast.makeText(context, "Failed to receive message: ${e.message}", Toast.LENGTH_SHORT).show()
             ""
         }
     }
@@ -149,12 +148,10 @@ class BluetoothComm private constructor(private val context: Context) {
     fun sendMessage(message: String): Boolean {
         try {
             outputStream?.write(message.toByteArray())
-            Toast.makeText(context, "Message sent", Toast.LENGTH_SHORT).show()
             return true
         } catch (e: IOException) {
-            Toast.makeText(context, "Failed to send message: ${e.message}", Toast.LENGTH_SHORT).show()
+            return false
         }
-        return false
     }
 
     companion object {
