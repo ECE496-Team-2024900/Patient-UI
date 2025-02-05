@@ -71,7 +71,6 @@ class BluetoothComm private constructor(private val context: Context) {
                         intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
                     }
                     if (device != null) {
-                        // Can stop discovering for more devices
                         // Checking permission to stop discovering devices
                         if (ContextCompat.checkSelfPermission(
                                 context,
