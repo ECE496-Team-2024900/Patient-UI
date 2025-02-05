@@ -17,7 +17,7 @@ class MainApplication: Application() {
 
         // Getting serial number for this patient
         AndroidNetworking.get("${BeUrl}/users/get_patient_info")
-            .addQueryParameter("email", "ADD_EMAIL")
+            .addQueryParameter("email", "mickey.mouse@disney.org")
             .addQueryParameter("fields", "medical_device_id")
             .build()
             .getAsJSONObject(object : JSONObjectRequestListener {
