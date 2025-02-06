@@ -35,9 +35,9 @@ class TimerActivity2 : AppCompatActivity() {
         progressBar?.max = 100
 
         // Set up the "Next" button click listener to complete the timer and navigate
-        nextButton.setOnClickListener {
+/*        nextButton.setOnClickListener {
             finishTimerAndNavigate()
-        }
+        }*/
 
         // Fetch treatment session data from the backend for wash timer
         fetchWashTimer()
