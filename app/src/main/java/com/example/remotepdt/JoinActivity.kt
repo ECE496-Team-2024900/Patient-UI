@@ -43,7 +43,7 @@ class JoinActivity : AppCompatActivity() {
     }
 
     //Replace with the token you generated from the VideoSDK Dashboard
-    private var sampleToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcGlrZXkiOiIxMTE3ZTI3Mi02YzRhLTQyMWItOTRiMC1lMGFhYWFhMDlmMTQiLCJwZXJtaXNzaW9ucyI6WyJhbGxvd19qb2luIl0sImlhdCI6MTczNTA4MDQ4MywiZXhwIjoxNzUwNjMyNDgzfQ.eg8cUK4kz6swn_XKXCQXpFUBr0UiFfHDcTlyFEEImjU"
+    private var sampleToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcGlrZXkiOiI5YTcwZWFiNS1lZGUzLTQ2NGUtODllYS1mNmY2MjNhNjA0YjYiLCJwZXJtaXNzaW9ucyI6WyJhbGxvd19qb2luIl0sImlhdCI6MTczMDkyMjU0NSwiZXhwIjoxNzYyNDU4NTQ1fQ.61pgTL01Al9aCgVDHRNZlEf_34SQVGKGk3XNyGtvvj0"
 
     // Lifecycle method called when the activity is created
     override fun onCreate(savedInstanceState: Bundle?) {

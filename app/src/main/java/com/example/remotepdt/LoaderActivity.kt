@@ -43,7 +43,7 @@ class LoaderActivity : AppCompatActivity() {
                     val message = response.optString("message", "")
                     Toast.makeText(this@LoaderActivity, message, Toast.LENGTH_SHORT).show()
 
-                    if (message == "Approval recieved") {
+                    if (message == "Approval received") {
                         // Navigate to TimerActivity1 if message matches
                         navigateToTimerActivity1()
                     } else {
