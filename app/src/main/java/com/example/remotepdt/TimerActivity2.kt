@@ -20,7 +20,6 @@ class TimerActivity2 : AppCompatActivity() {
     private var progressBar: ProgressBar? = null
     private var timerDuration: Long = 10000L // Default to 10 seconds if no duration is fetched
     private var countDownTimer: CountDownTimer? = null // Reference to the timer
-    val treatmentId: Int = intent.getIntExtra("treatment_id", -1)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,6 +27,8 @@ class TimerActivity2 : AppCompatActivity() {
 
         // Initialize AndroidNetworking
         AndroidNetworking.initialize(applicationContext)
+
+        val treatmentId: Int = intent.getIntExtra("treatment_id", -1)
 
         timerText = findViewById(R.id.timerText)
         progressBar = findViewById(R.id.progressBar)
@@ -41,11 +42,11 @@ class TimerActivity2 : AppCompatActivity() {
         }*/
 
         // Fetch treatment session data from the backend for wash timer
-        fetchWashTimer()
+        fetchWashTimer(treatmentId)
     }
 
-    private fun fetchWashTimer() {
-        val url = "http://10.0.2.2:8000/treatment/timer/1" // Android emulator URL
+    private fun fetchWashTimer(treatmentId: Int) {
+        val url = "http://10.0.2.2:8000/treatment/timer/${treatmentId}" // Android emulator URL
 
         AndroidNetworking.get(url)
             .setPriority(Priority.MEDIUM)
@@ -55,16 +56,16 @@ class TimerActivity2 : AppCompatActivity() {
                     // Parse the JSON response to get the wash timer duration
                     val washTimerDuration = response.optLong("light_timer", 10000L)
                     timerDuration = washTimerDuration // Use fetched duration or default
-                    startTimer()
+                    startTimer(treatmentId)
                 }
 
                 override fun onError(anError: ANError) {
-                    startTimer() // Start the timer with the default duration
+                    startTimer(treatmentId) // Start the timer with the default duration
                 }
             })
     }
 
-    private fun startTimer() {
+    private fun startTimer(treatmentId: Int) {
         // Start a countdown timer with the fetched or default duration
         countDownTimer = object : CountDownTimer(timerDuration, 1000) {
             override fun onTick(millisUntilFinished: Long) {
@@ -88,12 +89,12 @@ class TimerActivity2 : AppCompatActivity() {
                 ).show()
 
                 // Navigate to the next activity when the timer finishes
-                navigateToNextActivity()
+                navigateToNextActivity(treatmentId)
             }
         }.start()
     }
 
-    private fun finishTimerAndNavigate() {
+    private fun finishTimerAndNavigate(treatmentId: Int) {
         // Cancel the ongoing timer
         countDownTimer?.cancel()
         countDownTimer = null
@@ -103,10 +104,10 @@ class TimerActivity2 : AppCompatActivity() {
         progressBar?.progress = 100
 
         // Navigate to the next activity
-        navigateToNextActivity()
+        navigateToNextActivity(treatmentId)
     }
 
-    private fun navigateToNextActivity() {
+    private fun navigateToNextActivity(treatmentId: Int) {
         val intent = Intent(this, TimerActivity3::class.java)
         intent.putExtra("treatment_id", treatmentId)
         startActivity(intent)

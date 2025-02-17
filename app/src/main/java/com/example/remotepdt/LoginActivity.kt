@@ -7,13 +7,14 @@ import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 
 class LoginActivity : AppCompatActivity() {
-    // Sharing preferences for data persistence
-    var sharedPreferences: SharedPreferences? = getSharedPreferences("AppPrefs", MODE_PRIVATE)
-    var editor: SharedPreferences.Editor = sharedPreferences!!.edit()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+
+        // Sharing preferences for data persistence
+        var sharedPreferences: SharedPreferences? = getSharedPreferences("AppPrefs", MODE_PRIVATE)
+        var editor: SharedPreferences.Editor = sharedPreferences!!.edit()
 
         // Find the Login button by its ID
         val btnLogin = findViewById<Button>(R.id.btnLogin)

@@ -20,14 +20,15 @@ import java.util.Locale
 
 class PastTreatmentsListActivity : AppCompatActivity() {
     private var BeUrl = "http://10.0.2.2:8000"
-    // Sharing preferences for data persistence
-    var sharedPreferences: SharedPreferences? = getSharedPreferences("AppPrefs", MODE_PRIVATE)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_past_treatments_list)
 
         AndroidNetworking.initialize(applicationContext)
+
+        // Sharing preferences for data persistence
+        var sharedPreferences: SharedPreferences? = getSharedPreferences("AppPrefs", MODE_PRIVATE)
 
         val buttonContainer = findViewById<LinearLayout>(R.id.button_container)
 

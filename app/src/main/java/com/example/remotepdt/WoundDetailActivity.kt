@@ -16,8 +16,6 @@ import org.json.JSONArray
 import org.json.JSONObject
 
 class WoundDetailActivity : AppCompatActivity() {
-    // Sharing preferences for data persistence
-    var sharedPreferences: SharedPreferences? = getSharedPreferences("AppPrefs", MODE_PRIVATE)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,6 +53,9 @@ class WoundDetailActivity : AppCompatActivity() {
     }
 
     private fun fetchTreatmentDetails(woundId: Int, scheduledSessionButton: Button) {
+        // Sharing preferences for data persistence
+        var sharedPreferences: SharedPreferences? = getSharedPreferences("AppPrefs", MODE_PRIVATE)
+
         var BeUrl = "http://10.0.2.2:8000"
         AndroidNetworking.post("${BeUrl}/treatment/get_treatments")
             .addBodyParameter("patient_id", sharedPreferences!!.getInt("mrn", 0).toString())

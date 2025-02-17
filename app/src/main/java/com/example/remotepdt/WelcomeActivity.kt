@@ -16,16 +16,16 @@ import org.json.JSONObject
 class WelcomeActivity : AppCompatActivity() {
     private var BeUrl = "http://10.0.2.2:8002"
 
-    // Sharing preferences for data persistence
-    var sharedPreferences: SharedPreferences? = getSharedPreferences("AppPrefs", MODE_PRIVATE)
-    var editor: SharedPreferences.Editor = sharedPreferences!!.edit()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_welcome)
 
         // Passed from previous page
         val email: String = intent.getStringExtra("email") ?: ""
+
+        // Sharing preferences for data persistence
+        var sharedPreferences: SharedPreferences? = getSharedPreferences("AppPrefs", MODE_PRIVATE)
+        var editor: SharedPreferences.Editor = sharedPreferences!!.edit()
 
         // Find all buttons by their IDs
         val btnCurrentWounds = findViewById<Button>(R.id.btnCurrentWounds)

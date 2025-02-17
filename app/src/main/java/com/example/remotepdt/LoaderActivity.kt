@@ -19,8 +19,6 @@ class LoaderActivity : AppCompatActivity() {
     private val maxRetries = 5 // Maximum number of retries
     private var retryCount = 0 // Current retry count
 
-    val treatmentId: Int = intent.getIntExtra("treatment_id", -1)
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_loader)
@@ -28,13 +26,15 @@ class LoaderActivity : AppCompatActivity() {
         // Initialize AndroidNetworking
         AndroidNetworking.initialize(applicationContext)
 
+        val treatmentId: Int = intent.getIntExtra("treatment_id", -1)
+
         // Start polling for clinician approval
-        checkClinicianApproval()
+        checkClinicianApproval(treatmentId)
     }
 
-    private fun checkClinicianApproval() {
+    private fun checkClinicianApproval(treatmentId: Int) {
         //val url = "http://127.0.0.1:8001/hardware/approval?id=1"
-        val url = "http://10.0.2.2:8001/hardware/approval?id=1"
+        val url = "http://10.0.2.2:8001/hardware/approval?id=${treatmentId}"
 
         AndroidNetworking.get(url)
             .setPriority(Priority.HIGH)
@@ -47,10 +47,10 @@ class LoaderActivity : AppCompatActivity() {
 
                     if (message == "Approval recieved") {
                         // Navigate to TimerActivity1 if message matches
-                        navigateToTimerActivity1()
+                        navigateToTimerActivity1(treatmentId)
                     } else {
                         // Retry polling or stop after max retries
-                        retryPolling()
+                        retryPolling(treatmentId)
                     }
                 }
 
@@ -68,11 +68,11 @@ class LoaderActivity : AppCompatActivity() {
             })
     }
 
-    private fun retryPolling() {
+    private fun retryPolling(treatmentId: Int) {
         if (retryCount < maxRetries) {
             retryCount++
             Handler(Looper.getMainLooper()).postDelayed({
-                checkClinicianApproval()
+                checkClinicianApproval(treatmentId)
             }, pollingInterval)
         } else {
             // Stop polling after max retries
@@ -85,7 +85,7 @@ class LoaderActivity : AppCompatActivity() {
         }
     }
 
-    private fun navigateToTimerActivity1() {
+    private fun navigateToTimerActivity1(treatmentId: Int) {
         val intent = Intent(this, TimerActivity1::class.java)
         intent.putExtra("treatment_id", treatmentId)
         startActivity(intent)
