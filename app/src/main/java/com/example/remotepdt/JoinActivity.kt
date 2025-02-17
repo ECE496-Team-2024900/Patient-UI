@@ -75,14 +75,17 @@ class JoinActivity : AppCompatActivity() {
                         // response will contain `roomId`
                         val meetingId = response.getString("roomId")
 
+                        val treatmentId: Int = intent.getIntExtra("treatment_id", -1)
+
                         // starting the MeetingActivity with received roomId and our sampleToken
                         val intent = Intent(this@JoinActivity, MeetingActivity::class.java)
                         intent.putExtra("token", sampleToken)
                         intent.putExtra("meetingId", meetingId)
+                        intent.putExtra("treatment_id", treatmentId)
 
                         val jsonObject = JSONObject()
                         try {
-                            jsonObject.put("id", "1")
+                            jsonObject.put("id", treatmentId.toString())
                             jsonObject.put("video_call_id", meetingId)
                         } catch (e: JSONException) {
                             e.printStackTrace()

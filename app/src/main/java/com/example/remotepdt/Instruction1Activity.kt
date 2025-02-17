@@ -7,11 +7,12 @@ import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 
 class Instruction1Activity : AppCompatActivity() {
-    val treatmentId: Int = intent.getIntExtra("treatment_id", -1)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_instruction1)
+
+        val treatmentId: Int = intent.getIntExtra("treatment_id", -1)
 
         // Find the Next button by its ID
         val btnNext = findViewById<Button>(R.id.btnNext)
@@ -20,7 +21,7 @@ class Instruction1Activity : AppCompatActivity() {
         btnNext.setOnClickListener {
             // Start Instruction2Activity when the button is clicked
             val intent = Intent(this, Instruction2Activity::class.java)
-            intent.getIntExtra("treatment_id", treatmentId)
+            intent.putExtra("treatment_id", treatmentId)
             startActivity(intent)
         }
     }

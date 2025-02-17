@@ -20,6 +20,8 @@ class MeetingActivity : AppCompatActivity() {
     private var webcamEnabled = true
     private var frontFacing = true
 
+    val treatmentId: Int = intent.getIntExtra("treatment_id", -1)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_meeting)
@@ -62,6 +64,7 @@ class MeetingActivity : AppCompatActivity() {
             // Navigate to LoaderActivity when the meeting ends
 
             val intent = Intent(this@MeetingActivity, LoaderActivity::class.java)
+            intent.putExtra("treatment_id", treatmentId)
             startActivity(intent)
 
             if (!isDestroyed) finish()

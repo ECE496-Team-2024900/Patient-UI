@@ -19,6 +19,8 @@ class LoaderActivity : AppCompatActivity() {
     private val maxRetries = 5 // Maximum number of retries
     private var retryCount = 0 // Current retry count
 
+    val treatmentId: Int = intent.getIntExtra("treatment_id", -1)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_loader)
@@ -85,6 +87,7 @@ class LoaderActivity : AppCompatActivity() {
 
     private fun navigateToTimerActivity1() {
         val intent = Intent(this, TimerActivity1::class.java)
+        intent.putExtra("treatment_id", treatmentId)
         startActivity(intent)
         finish() // Close LoaderActivity
     }
