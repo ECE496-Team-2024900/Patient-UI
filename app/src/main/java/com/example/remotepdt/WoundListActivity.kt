@@ -22,14 +22,14 @@ import org.json.JSONArray
 class WoundListActivity : AppCompatActivity() {
     private var BeUrl = "http://10.0.2.2:8000"
 
-    // Sharing preferences for data persistence
-    var sharedPreferences: SharedPreferences? = getSharedPreferences("AppPrefs", MODE_PRIVATE)
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_wound_list)
 
         AndroidNetworking.initialize(getApplicationContext())
+
+        // Sharing preferences for data persistence
+        var sharedPreferences: SharedPreferences? = getSharedPreferences("AppPrefs", MODE_PRIVATE)
 
         // Adding back button functionality
         val backButton = findViewById<ImageButton>(R.id.backButton)
