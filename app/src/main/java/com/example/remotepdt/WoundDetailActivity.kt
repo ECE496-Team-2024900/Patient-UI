@@ -1,6 +1,7 @@
 package com.example.remotepdt
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -15,6 +16,9 @@ import org.json.JSONArray
 import org.json.JSONObject
 
 class WoundDetailActivity : AppCompatActivity() {
+    // Sharing preferences for data persistence
+    var sharedPreferences: SharedPreferences? = getSharedPreferences("AppPrefs", MODE_PRIVATE)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_wound_detail)
@@ -52,7 +56,10 @@ class WoundDetailActivity : AppCompatActivity() {
 
     private fun fetchTreatmentDetails(woundId: Int, scheduledSessionButton: Button) {
         var BeUrl = "http://10.0.2.2:8000"
-        AndroidNetworking.get("${BeUrl}/treatment/get_all_treatments")
+        AndroidNetworking.post("${BeUrl}/treatment/get_treatments")
+            .addBodyParameter("patient_id", sharedPreferences!!.getInt("mrn", 0).toString())
+            .addBodyParameter("wound_id", woundId.toString())
+            .addBodyParameter("completed", "true")
             .build()
             .getAsJSONObject(object : JSONObjectRequestListener {
                 override fun onResponse(response: JSONObject) {
@@ -60,20 +67,16 @@ class WoundDetailActivity : AppCompatActivity() {
                         val treatmentsArray: JSONArray = response.getJSONArray("message")
                         for (i in 0 until treatmentsArray.length()) {
                             val treatment = treatmentsArray.getJSONObject(i)
-
-                            // Check if the wound ID matches and completed is false
-                            if (treatment.getInt("wound_id") == woundId && !treatment.getBoolean("completed")) {
-                                // Show the button
-                                scheduledSessionButton.visibility = View.VISIBLE
-                                scheduledSessionButton.setOnClickListener {
-                                    Toast.makeText(
-                                        this@WoundDetailActivity,
-                                        "Navigating to scheduled session for Wound $woundId...",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
-                                break
+                            // Show the button
+                            scheduledSessionButton.visibility = View.VISIBLE
+                            scheduledSessionButton.setOnClickListener {
+                                Toast.makeText(
+                                    this@WoundDetailActivity,
+                                    "Navigating to scheduled session for Wound $woundId...",
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
+                            break
                         }
                     } catch (e: Exception) {
                         e.printStackTrace()

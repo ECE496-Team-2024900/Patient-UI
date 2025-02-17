@@ -1,6 +1,7 @@
 package com.example.remotepdt
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.res.ColorStateList
 import android.content.res.Resources
 import android.graphics.Color
@@ -21,6 +22,9 @@ import org.json.JSONArray
 class WoundListActivity : AppCompatActivity() {
     private var BeUrl = "http://10.0.2.2:8000"
 
+    // Sharing preferences for data persistence
+    var sharedPreferences: SharedPreferences? = getSharedPreferences("AppPrefs", MODE_PRIVATE)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_wound_list)
@@ -36,8 +40,8 @@ class WoundListActivity : AppCompatActivity() {
         val buttonContainer = findViewById<LinearLayout>(R.id.button_container)
 
         // Request to get wound list
-        AndroidNetworking.get("${BeUrl}/treatment/get_patient_wounds")
-            .addQueryParameter("id", "1")
+        AndroidNetworking.post("${BeUrl}/treatment/get_wounds")
+            .addBodyParameter("patient_id", sharedPreferences!!.getInt("mrn", 0).toString())
             .build()
             .getAsJSONObject(object : JSONObjectRequestListener {
                 override fun onResponse(response: JSONObject) {

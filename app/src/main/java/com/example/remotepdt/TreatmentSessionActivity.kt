@@ -104,6 +104,7 @@ class TreatmentSessionActivity : AppCompatActivity() {
                 if (sessionComplete == false) {
                     // Start Instruction1Activity when the button is clicked
                     val intent = Intent(this, Instruction1Activity::class.java)
+                    intent.getIntExtra("treatment_id", treatmentId)
                     startActivity(intent)
                 } else {
                     // Show a message if the session is already complete

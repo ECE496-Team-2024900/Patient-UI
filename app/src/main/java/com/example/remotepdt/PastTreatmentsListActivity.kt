@@ -1,5 +1,6 @@
 package com.example.remotepdt
 
+import android.content.SharedPreferences
 import android.content.res.ColorStateList
 import android.content.res.Resources
 import android.graphics.Color
@@ -19,6 +20,8 @@ import java.util.Locale
 
 class PastTreatmentsListActivity : AppCompatActivity() {
     private var BeUrl = "http://10.0.2.2:8000"
+    // Sharing preferences for data persistence
+    var sharedPreferences: SharedPreferences? = getSharedPreferences("AppPrefs", MODE_PRIVATE)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,7 +32,8 @@ class PastTreatmentsListActivity : AppCompatActivity() {
         val buttonContainer = findViewById<LinearLayout>(R.id.button_container)
 
         // Request to get past treatment sessions
-        AndroidNetworking.get("${BeUrl}/treatment/get_all_treatments")
+        AndroidNetworking.post("${BeUrl}/treatment/get_treatments")
+            .addBodyParameter("patient_id", sharedPreferences!!.getInt("mrn", 0).toString())
             .build()
             .getAsJSONObject(object : JSONObjectRequestListener {
                 override fun onResponse(response: JSONObject) {

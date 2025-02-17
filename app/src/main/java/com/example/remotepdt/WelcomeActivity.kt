@@ -1,6 +1,7 @@
 package com.example.remotepdt
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
@@ -11,8 +12,13 @@ import com.androidnetworking.error.ANError
 import com.androidnetworking.interfaces.JSONObjectRequestListener
 import org.json.JSONObject
 
+
 class WelcomeActivity : AppCompatActivity() {
     private var BeUrl = "http://10.0.2.2:8002"
+
+    // Sharing preferences for data persistence
+    var sharedPreferences: SharedPreferences? = getSharedPreferences("AppPrefs", MODE_PRIVATE)
+    var editor: SharedPreferences.Editor = sharedPreferences!!.edit()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +45,12 @@ class WelcomeActivity : AppCompatActivity() {
                         if (message is JSONObject) {
                             // Patient details successfully returned, access the patient's first name for welcome message
                             val patientName = message.optString("first_name", "")
+                            val patientMRN = message.optInt("medical_ref_number", 0)
+
+                            // Storing in shared preferences
+                            editor.putInt("mrn", patientMRN)
+                            editor.commit()
+
                             welcomeTitle.text = getString(R.string.welcome_title, patientName)
                         } else if (message is String) {
                             // Error message returned from backend

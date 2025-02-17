@@ -7,6 +7,8 @@ import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 
 class Instruction2Activity : AppCompatActivity() {
+    val treatmentId: Int = intent.getIntExtra("treatment_id", -1)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_instruction2)
@@ -18,6 +20,7 @@ class Instruction2Activity : AppCompatActivity() {
         btnNext.setOnClickListener {
             // Start JoinActivity when the button is clicked
             val intent = Intent(this, JoinActivity::class.java)
+            intent.getIntExtra("treatment_id", treatmentId)
             startActivity(intent)
         }
     }

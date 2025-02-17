@@ -1,6 +1,7 @@
 package com.example.remotepdt
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Log
@@ -20,6 +21,7 @@ class TimerActivity1 : AppCompatActivity() {
     private var progressBar: ProgressBar? = null
     private var timerDuration: Long = 10000L // default to 10 seconds if no duration is fetched
     private var countDownTimer: CountDownTimer? = null // Reference to the timer
+    val treatmentId: Int = intent.getIntExtra("treatment_id", -1)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,7 +42,7 @@ class TimerActivity1 : AppCompatActivity() {
 
     private fun fetchTreatmentSession() {
         //val url = "http://127.0.0.1:8000/treatment/timer/1"
-        val url = "http://10.0.2.2:8000/treatment/timer/1" //android emulator
+        val url = "http://10.0.2.2:8000/treatment/timer/${treatmentId}" //android emulator
 
         AndroidNetworking.get(url)
             .setPriority(Priority.MEDIUM)
@@ -85,6 +87,7 @@ class TimerActivity1 : AppCompatActivity() {
 
     private fun navigateToNextActivity() {
         val intent = Intent(this, TimerActivity2::class.java)
+        intent.putExtra("treatment_id", treatmentId)
         startActivity(intent)
         finish()
     }

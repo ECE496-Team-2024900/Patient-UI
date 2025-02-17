@@ -20,6 +20,7 @@ class TimerActivity2 : AppCompatActivity() {
     private var progressBar: ProgressBar? = null
     private var timerDuration: Long = 10000L // Default to 10 seconds if no duration is fetched
     private var countDownTimer: CountDownTimer? = null // Reference to the timer
+    val treatmentId: Int = intent.getIntExtra("treatment_id", -1)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -107,6 +108,7 @@ class TimerActivity2 : AppCompatActivity() {
 
     private fun navigateToNextActivity() {
         val intent = Intent(this, TimerActivity3::class.java)
+        intent.putExtra("treatment_id", treatmentId)
         startActivity(intent)
         finish()
     }

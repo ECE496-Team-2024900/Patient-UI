@@ -19,6 +19,7 @@ class TimerActivity3 : AppCompatActivity() {
     private var progressBar: ProgressBar? = null
     private var timerDuration: Long = 10000L // Default to 10 seconds if no duration is fetched
     private var countDownTimer: CountDownTimer? = null // Reference to the timer
+    val treatmentId: Int = intent.getIntExtra("treatment_id", -1)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,7 +40,7 @@ class TimerActivity3 : AppCompatActivity() {
 
     private fun fetchWashTimer() {
         //val url = "http://127.0.0.1:8000/treatment/timer/1"
-        val url = "http://10.0.2.2:8000/treatment/timer/1" //android emulator
+        val url = "http://10.0.2.2:8000/treatment/timer/${treatmentId}" //android emulator
 
         AndroidNetworking.get(url)
             .setPriority(Priority.MEDIUM)
@@ -86,6 +87,7 @@ class TimerActivity3 : AppCompatActivity() {
         // This method can be left empty or used for any further navigation logic
         val intent = Intent(this, PainScoreActivity::class.java)
         startActivity(intent)
+        intent.putExtra("treatment_id", treatmentId)
         finish() // Close TimerActivity3
     }
     private fun finishTimerAndNavigate() {
