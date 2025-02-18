@@ -52,4 +52,14 @@
         android:translationY="15dp"
         app:cornerRadius="8dp" />
 
+    <Button
+        android:id="@+id/btnRequestReschedule"
+        android:layout_width="275dp"
+        android:layout_height="99dp"
+        android:backgroundTint="#004AAD"
+        android:text="Request Reschedule"
+        android:textSize="24sp"
+        android:translationY="15dp"
+        app:cornerRadius="8dp" />
+
 </LinearLayout>

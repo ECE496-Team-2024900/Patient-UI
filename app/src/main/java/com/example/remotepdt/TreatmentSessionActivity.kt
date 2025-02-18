@@ -122,5 +122,52 @@ class TreatmentSessionActivity : AppCompatActivity() {
                 ).show()
             }
         }
+
+        // Find the Start Session button by its ID
+        val btnRequestReschedule = findViewById<Button>(R.id.btnRequestReschedule)
+
+        // Set an OnClickListener on the Start Session button
+        btnRequestReschedule.setOnClickListener {
+            // Get the current time
+            val currentTime = Calendar.getInstance()
+
+            // Check if sessionTime is available and if current time is before the session time
+            if (sessionTime != null && currentTime.before(sessionTime)) {
+                // Check that session is not already complete
+                if (sessionComplete == false) {
+                    val payload = JSONObject().apply {
+                        put("reschedule_requested", true)
+                    }
+                    AndroidNetworking.put("${BeUrl}/treatment/request_reschedule")
+                        .addQueryParameter("id", treatmentId.toString())
+                        .addJSONObjectBody(payload)
+                        .build()
+                        .getAsJSONObject(object : JSONObjectRequestListener {
+                            override fun onResponse(response: JSONObject) {}
+                            override fun onError(anError: ANError?) {
+                                Toast.makeText(
+                                    this@TreatmentSessionActivity,
+                                    anError?.message,
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        })
+                } else {
+                    // Show a message if the session is already complete
+                    Toast.makeText(
+                        this@TreatmentSessionActivity,
+                        "This session is already complete.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            } else {
+                // Show a message if the session has not started yet
+                Toast.makeText(
+                    this@TreatmentSessionActivity,
+                    "The session has already been started.",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
     }
 }
