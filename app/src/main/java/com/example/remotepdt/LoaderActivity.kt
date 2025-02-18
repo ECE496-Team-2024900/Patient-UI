@@ -44,8 +44,33 @@ class LoaderActivity : AppCompatActivity() {
                     Toast.makeText(this@LoaderActivity, message, Toast.LENGTH_SHORT).show()
 
                     if (message == "Approval recieved") {
-                        // Navigate to TimerActivity1 if message matches
-                        navigateToTimerActivity1()
+                        //Approval received from clinician, so we can send bluetooth signal now to start treatment
+                        //Get bluetooth instance
+                        val bluetoothComm = BluetoothComm.getInstance(applicationContext)
+
+                        //Prepare 32-bit start command (opcode 0x01)
+                        val command = ByteArray(4) // 4 bytes = 32 bits
+                        command[0] = 0x01 // Opcode (0x01)
+                        command[1] = 0x00 // Argument bytes (all zero)
+                        command[2] = 0x00
+                        command[3] = 0x00
+                        // Convert to a string preserving bytes
+                        val commandString = String(command, Charsets.ISO_8859_1)
+
+                        // Send bluetooth message to hw device for starting the treatment
+                        val messageSent = bluetoothComm.sendMessage(commandString)
+
+                        // Proceed with treatment if start signal successfully sent to device
+                        if (messageSent) {
+                            // Navigate to TimerActivity1
+                            navigateToTimerActivity1()
+                        } else {
+                            // Display error message
+                            Toast.makeText(
+                                this@LoaderActivity, "An error occurred sending start treatment signal to medical device via bluetooth",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
                     } else {
                         // Retry polling or stop after max retries
                         retryPolling()
