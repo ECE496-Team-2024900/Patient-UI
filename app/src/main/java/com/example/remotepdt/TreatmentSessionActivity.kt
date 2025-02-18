@@ -137,9 +137,9 @@ class TreatmentSessionActivity : AppCompatActivity() {
                 if (sessionComplete == false) {
                     val payload = JSONObject().apply {
                         put("reschedule_requested", true)
+                        put("id", treatmentId)
                     }
                     AndroidNetworking.put("${BeUrl}/treatment/request_reschedule")
-                        .addQueryParameter("id", treatmentId.toString())
                         .addJSONObjectBody(payload)
                         .build()
                         .getAsJSONObject(object : JSONObjectRequestListener {
