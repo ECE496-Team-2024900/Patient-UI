@@ -58,11 +58,13 @@ class MeetingActivity : AppCompatActivity() {
         override fun onMeetingLeft() {
             Log.d("#meeting", "onMeetingLeft()")
             meeting = null
-            if (!isDestroyed) {
-                val intent = Intent(this@MeetingActivity, LoaderActivity::class.java)
-                startActivity(intent)
-                finish()
-            }
+
+            // Navigate to LoaderActivity when the meeting ends
+
+            val intent = Intent(this@MeetingActivity, LoaderActivity::class.java)
+            startActivity(intent)
+
+            if (!isDestroyed) finish()
         }
 
         override fun onParticipantJoined(participant: Participant) {

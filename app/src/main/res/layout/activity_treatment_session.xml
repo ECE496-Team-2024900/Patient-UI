@@ -21,6 +21,7 @@
         android:textSize="42sp"
         android:textStyle="bold" />
 
+    <!-- TextView for Session Date -->
     <TextView
         android:id="@+id/sessionDateText"
         android:layout_width="match_parent"
@@ -30,6 +31,7 @@
         android:textColor="#004AAD"
         android:textSize="27sp" />
 
+    <!-- TextView for Session Time -->
     <TextView
         android:id="@+id/sessionTimeText"
         android:layout_width="match_parent"
@@ -39,6 +41,7 @@
         android:textColor="#004AAD"
         android:textSize="27sp" />
 
+    <!-- Start Session Button -->
     <Button
         android:id="@+id/btnStartSession"
         android:layout_width="275dp"

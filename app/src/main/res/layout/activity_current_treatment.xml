@@ -19,12 +19,12 @@
 
     <!-- Wound Title -->
     <TextView
-        android:id="@+id/wound_title"
+        android:id="@+id/tvWoundTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="32dp"
-        android:text=""
+        android:text="Wound 5"
         android:textSize="32sp"
         android:textColor="#0D47A1"
         android:fontFamily="sans-serif-medium" />
@@ -34,7 +34,7 @@
         android:id="@+id/btnScheduledSession"
         android:layout_width="wrap_content"
         android:layout_height="79dp"
-        android:layout_below="@id/wound_title"
+        android:layout_below="@id/tvWoundTitle"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="24dp"
         android:backgroundTint="#0D47A1"
