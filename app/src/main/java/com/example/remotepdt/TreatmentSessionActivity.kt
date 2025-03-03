@@ -15,6 +15,7 @@ import org.json.JSONObject
 
 class TreatmentSessionActivity : AppCompatActivity() {
     private var BeUrl = "http://10.0.2.2:8000"
+    private var UserBeUrl = "http://10.0.2.2:8002"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,6 +28,8 @@ class TreatmentSessionActivity : AppCompatActivity() {
         val sessionNumberTitle = findViewById<TextView>(R.id.sessionNumberTitle)
         val sessionDateText = findViewById<TextView>(R.id.sessionDateText)
         val sessionTimeText = findViewById<TextView>(R.id.sessionTimeText)
+        var woundId: Int? = null
+        var formattedDate: String? = null
 
         // Used to determine if start session button should be disabled/enabled
         var sessionTime: Calendar? = null
@@ -44,6 +47,7 @@ class TreatmentSessionActivity : AppCompatActivity() {
 
                     // Set session complete
                     sessionComplete = response.optBoolean("completed")
+                    woundId = response.optInt("wound_id", -1)
 
                     // Set date
                     val dateStr = response.optString("date")
@@ -53,7 +57,7 @@ class TreatmentSessionActivity : AppCompatActivity() {
                     try {
                         val date = inputFormat.parse(dateStr)  // Parse the date string
                         if (date != null) {
-                            val formattedDate = outputFormat.format(date)  // Format the date
+                            formattedDate = outputFormat.format(date)  // Format the date
                             sessionDateText.text = formattedDate  // Set the formatted date
                         }
                     } catch (e: Exception) {
@@ -152,6 +156,29 @@ class TreatmentSessionActivity : AppCompatActivity() {
                                 ).show()
                             }
                         })
+                    var clinicianId: String? = null
+                    AndroidNetworking.get("${BeUrl}/treatment/get_wound?id=${woundId}")
+                        .build()
+                        .getAsJSONObject(object : JSONObjectRequestListener {
+                            override fun onResponse(response: JSONObject) {
+                                clinicianId = response.optString("clinician_id")
+                            }
+                            override fun onError(anError: ANError?) {
+                                Toast.makeText(
+                                    this@TreatmentSessionActivity,
+                                    anError?.message,
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        })
+                    val payload2 = JSONObject().apply {
+                        put("type", "clinician")
+                        put("message", "Patient would like the treatment on ${formattedDate} to be rescheduled")
+                        put("email", clinicianId)
+                    }
+                    AndroidNetworking.post("${UserBeUrl}/users/send_email")
+                        .addJSONObjectBody(payload2)
+                        .build()
                 } else {
                     // Show a message if the session is already complete
                     Toast.makeText(
