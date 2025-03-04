@@ -29,6 +29,24 @@ class MainApplication: Application() {
 
                     // Replace fields with the actual serial number
                     bluetoothComm.connect(serialNumber)
+
+                    // Setting device mode
+                    val mode = "TEST" // can be IDLE, TREATMENT, or TEST
+
+                    val modeArgs: Byte = when (mode) {
+                        "IDLE" -> 0b00
+                        "TREATMENT" -> 0b01
+                        "TEST" -> 0b10
+                        else -> throw IllegalArgumentException("Invalid mode")
+                    }
+                    val modeByteArray = byteArrayOf(0x06, modeArgs)
+                    if (!bluetoothComm.sendMessage(modeByteArray)) {
+                        Toast.makeText(
+                            this@MainApplication, "Error in setting device mode",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+
                 }
 
                 override fun onError(anError: ANError) {
