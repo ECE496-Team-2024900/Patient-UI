@@ -144,9 +144,9 @@ class BluetoothComm private constructor(private val context: Context) {
 
     // Sending a message to the connected device
     // Returns true if sent successfully, else false
-    fun sendMessage(message: String): Boolean {
+    fun sendMessage(bytesArray: ByteArray): Boolean {
         try {
-            outputStream?.write(message.toByteArray())
+            outputStream?.write(bytesArray)
             return true
         } catch (e: IOException) {
             return false
