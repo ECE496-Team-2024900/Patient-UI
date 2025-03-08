@@ -13,6 +13,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Handler
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import java.io.IOException
 import java.io.InputStream
@@ -34,7 +35,7 @@ class BluetoothComm private constructor(private val context: Context) {
 
     // Connect to a medical device authorized for this patient
     // Takes the authorized medical device's serial number (required to check identification)
-    fun connect(expectedSerial: String) {
+    fun connect(expectedSerial: String, activity: WelcomeActivity) {
         
         // Cannot proceed if the device hasn't enabled Bluetooth
         if(bluetoothAdapter?.isEnabled == false) {
@@ -46,11 +47,26 @@ class BluetoothComm private constructor(private val context: Context) {
         }
 
         // Checking permission for scanning for Bluetooth devices
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) { // Android 12+
+            if (ContextCompat.checkSelfPermission(activity, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(activity, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+
+                ActivityCompat.requestPermissions(
+                    activity,
+                    arrayOf(Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_CONNECT),
+                    1001
+                )
+                return
+            }
+        }
+
         if (ContextCompat.checkSelfPermission(
                 context,
                 Manifest.permission.BLUETOOTH_SCAN
             ) != PackageManager.PERMISSION_GRANTED
         ) {
+            Toast.makeText(context, "Got BT permission to scan for devices.", Toast.LENGTH_SHORT).show()
+        } else {
             Toast.makeText(context, "Bluetooth permission required to scan for devices.", Toast.LENGTH_SHORT).show()
             return
         }
@@ -64,6 +80,7 @@ class BluetoothComm private constructor(private val context: Context) {
                 if (BluetoothDevice.ACTION_FOUND == action) {
                     // API requires version 33 or above and current min set to 24
                     // Hence, using the appropriate call depending on version
+                    Toast.makeText(context, "Found a device.", Toast.LENGTH_SHORT).show()
                     val device: BluetoothDevice? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                         intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE, BluetoothDevice::class.java)
                     } else {
@@ -77,8 +94,9 @@ class BluetoothComm private constructor(private val context: Context) {
                                 Manifest.permission.BLUETOOTH_CONNECT
                             ) == PackageManager.PERMISSION_GRANTED
                         ) {
-                            Toast.makeText(context, "Bluetooth permission required to scan for devices.", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "Bluetooth permission required to connect to device.", Toast.LENGTH_SHORT).show()
                         } else {
+                            Toast.makeText(context, "Got BT permission to connect to devices.", Toast.LENGTH_SHORT).show()
                             bluetoothAdapter?.cancelDiscovery()
                         }
                         context.unregisterReceiver(this)
