@@ -32,7 +32,7 @@ class LoaderActivity : AppCompatActivity() {
 
     private fun checkClinicianApproval() {
         //val url = "http://127.0.0.1:8001/hardware/approval?id=1"
-        val url = "http://10.0.2.2:8001/hardware/approval?id=1"
+        val url = "http://10.0.2.2:8001/hardware/status?id=1"
 
         AndroidNetworking.get(url)
             .setPriority(Priority.HIGH)
@@ -43,7 +43,7 @@ class LoaderActivity : AppCompatActivity() {
                     val message = response.optString("message", "")
                     Toast.makeText(this@LoaderActivity, message, Toast.LENGTH_SHORT).show()
 
-                    if (message == "Approval recieved") {
+                    if (message == "Approved") {
                         // Navigate to TimerActivity1 if message matches
                         navigateToTimerActivity1()
                     } else {
