@@ -13,6 +13,7 @@ import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.widget.Toast
+import org.json.JSONObject
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
@@ -36,7 +37,7 @@ class BluetoothComm private constructor(private val context: Context) {
     // Connect to a medical device authorized for this patient
     // Takes the authorized medical device's serial number (required to check identification)
     @SuppressLint("MissingPermission")
-    fun connect(expectedSerial: String, activity: WelcomeActivity) {
+    fun connect(activity: WelcomeActivity) {
         
         // Cannot proceed if the device hasn't enabled Bluetooth
         if(bluetoothAdapter?.isEnabled == false) {
@@ -71,7 +72,10 @@ class BluetoothComm private constructor(private val context: Context) {
                     BluetoothDevice.ACTION_FOUND -> {
                         // API requires version 33 or above and current min set to 24
                         // Hence, using the appropriate call depending on version
+
+                        // TESTING TOAST
                         Toast.makeText(context, "Found a device.", Toast.LENGTH_SHORT).show()
+
                         val device: BluetoothDevice? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                             intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE, BluetoothDevice::class.java)
                         } else {
@@ -80,9 +84,11 @@ class BluetoothComm private constructor(private val context: Context) {
                         }
 
                         if (device != null && device.name == "HC-05") {
-                            // Checking permission to stop discovering devices
-                            //bluetoothAdapter?.cancelDiscovery()
+                            // Found device - don't need to search anymore
+                            bluetoothAdapter?.cancelDiscovery()
                             this@BluetoothComm.unregisterReceiver(this)
+
+                            // TESTING TOAST
                             Toast.makeText(
                                 context,
                                 "Device has name: ${device.name}",
@@ -97,8 +103,10 @@ class BluetoothComm private constructor(private val context: Context) {
                                             MY_UUID
                                         )
                                     )
+                                    // Blocking until the socket connection is formed
                                     socket!!.connect()
 
+                                    // TESTING TOAST
                                     Handler(Looper.getMainLooper()).post {
                                         Toast.makeText(
                                             context,
@@ -111,41 +119,29 @@ class BluetoothComm private constructor(private val context: Context) {
                                     outputStream = socket!!.outputStream
                                     inputStream = socket!!.inputStream
 
-                                    val response = this@BluetoothComm.receiveMessage()
+                                    val initialResponse = this@BluetoothComm.receiveMessage()
+                                    // TO-DO: Replace with the actual message
+                                    if(initialResponse != "MESSAGE_NAME") {
+                                        Handler(Looper.getMainLooper()).post {
+                                            Toast.makeText(context, "Error with initial response", Toast.LENGTH_SHORT).show()
+                                        }
+                                        return@Thread
+                                    }
+
+                                    // TESTING TOAST
                                     Handler(Looper.getMainLooper()).post {
                                         Toast.makeText(
                                             context,
-                                            response,
+                                            initialResponse,
                                             Toast.LENGTH_SHORT
                                         ).show()
                                     }
 
+
                                     //val startTreatmentCommand = byteArrayOf(0x01)
                                     outputStream!!.write("2".toByteArray())
 
-
-                                    // IMPORTANT: Commenting code out for now as not sure if getting ID has been implemented by HW
-                                    // Enabled and correct once implemented
-
-                                    // Need to change the string SERIAL-NUM here to whatever hardware required to ask for serial number
-//                                    outputStream!!.write("SERIAL-NUM\n".toByteArray())
-//
-//                                    // Processing the retrieved serial number
-//                                    val buffer = ByteArray(1024)
-//                                    val bytesRead = inputStream!!.read(buffer)
-//                                    val receivedSerial = String(buffer, 0, bytesRead).trim()
-//
-//                                    if (receivedSerial == expectedSerial) {
-//                                        Handler(Looper.getMainLooper()).post {
-//                                            Toast.makeText(context, "Connected to ${device.name}", Toast.LENGTH_SHORT).show()
-//                                        }
-//                                    } else {
-//                                        socket.close()
-//                                        Handler(Looper.getMainLooper()).post {
-//                                            Toast.makeText(context, "Could not detect your medical device. Please try again.", Toast.LENGTH_SHORT).show()
-//                                        }
-//                                    }
-                                    // Error handling
+                                // Error handling
                                 } catch (e: IOException) {
                                     Handler(Looper.getMainLooper()).post {
                                         Toast.makeText(context, "Connection failed: ${e.message}", Toast.LENGTH_SHORT).show()
@@ -169,7 +165,7 @@ class BluetoothComm private constructor(private val context: Context) {
     }
 
     // Receiving a message from the connected medical device
-    // Returns the message if recieved successfully, else an empty string
+    // Returns the message if received successfully, else an empty string
     fun receiveMessage(): String {
         return try {
             val buffer = ByteArray(1024)
@@ -180,11 +176,22 @@ class BluetoothComm private constructor(private val context: Context) {
         }
     }
 
-    // Sending a message to the connected device
+    // Sending a message directly as bytes to the connected device
     // Returns true if sent successfully, else false
-    fun sendMessage(bytesArray: ByteArray): Boolean {
+    fun sendMessageBytes(bytesArray: ByteArray): Boolean {
         try {
             outputStream?.write(bytesArray)
+            return true
+        } catch (e: IOException) {
+            return false
+        }
+    }
+
+    // Sending a message as a JSON object to the connected device
+    // Returns true if sent successfully, else false
+    fun sendMessageJson(jsonObject: JSONObject): Boolean {
+        try {
+            outputStream?.write(jsonObject.toString().toByteArray())
             return true
         } catch (e: IOException) {
             return false
