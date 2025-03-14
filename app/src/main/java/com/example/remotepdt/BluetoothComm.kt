@@ -79,14 +79,13 @@ class BluetoothComm private constructor(private val context: Context) {
                             intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
                         }
 
-                        val requiredMac = "CHANGE"
-                        if (device != null && device.address.equals(requiredMac,ignoreCase=true)) {
+                        if (device != null && device.name == "HC-05") {
                             // Checking permission to stop discovering devices
-                            bluetoothAdapter?.cancelDiscovery()
+                            //bluetoothAdapter?.cancelDiscovery()
                             this@BluetoothComm.unregisterReceiver(this)
                             Toast.makeText(
                                 context,
-                                "Device has address: ${device.address}",
+                                "Device has name: ${device.name}",
                                 Toast.LENGTH_LONG
                             ).show()
 
@@ -100,11 +99,30 @@ class BluetoothComm private constructor(private val context: Context) {
                                     )
                                     socket!!.connect()
 
+                                    Handler(Looper.getMainLooper()).post {
+                                        Toast.makeText(
+                                            context,
+                                            "Successfully formed a connection",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+
                                     // Storing the output and input streams for communication
                                     outputStream = socket!!.outputStream
                                     inputStream = socket!!.inputStream
 
-                                    outputStream!!.write("Hello remote PDT!\n".toByteArray())
+                                    val response = this@BluetoothComm.receiveMessage()
+                                    Handler(Looper.getMainLooper()).post {
+                                        Toast.makeText(
+                                            context,
+                                            response,
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+
+                                    //val startTreatmentCommand = byteArrayOf(0x01)
+                                    outputStream!!.write("2".toByteArray())
+
 
                                     // IMPORTANT: Commenting code out for now as not sure if getting ID has been implemented by HW
                                     // Enabled and correct once implemented
