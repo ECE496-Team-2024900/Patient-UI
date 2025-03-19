@@ -1,6 +1,7 @@
 package com.example.remotepdt
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
@@ -24,14 +25,20 @@ class TreatmentSessionActivity : AppCompatActivity() {
         // Passed from previous page
         val treatmentId: Int = intent.getIntExtra("treatment_id", -1)
 
-        // Find TextViews by ID
+        // Find TextViews and Buttons by ID
         val sessionNumberTitle = findViewById<TextView>(R.id.sessionNumberTitle)
         val sessionDateText = findViewById<TextView>(R.id.sessionDateText)
         val sessionTimeText = findViewById<TextView>(R.id.sessionTimeText)
         var woundId: Int? = null
         var formattedDate: String? = null
+        val btnStartSession = findViewById<Button>(R.id.btnStartSession)
+        val btnRequestReschedule = findViewById<Button>(R.id.btnRequestReschedule)
+        val btnBackToTreatments = findViewById<Button>(R.id.btnBackToTreatments)
 
-        // Used to determine if start session button should be disabled/enabled
+        // Set Start Session button as disabled initially
+        btnStartSession.isEnabled = false
+        btnStartSession.setBackgroundColor(Color.parseColor("#A9A9A9")) // Light grey (#A9A9A9)
+
         var sessionTime: Calendar? = null
         var sessionComplete = true
 
@@ -42,7 +49,7 @@ class TreatmentSessionActivity : AppCompatActivity() {
             .getAsJSONObject(object : JSONObjectRequestListener {
                 override fun onResponse(response: JSONObject) {
                     // Set session number
-                    val sessionNumber = response.optInt("session_number",-1)
+                    val sessionNumber = response.optInt("session_number", -1)
                     sessionNumberTitle.text = getString(R.string.session_label, sessionNumber)
 
                     // Set session complete
@@ -52,35 +59,41 @@ class TreatmentSessionActivity : AppCompatActivity() {
                     // Set date
                     val dateStr = response.optString("date")
                     val inputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-                    val outputFormat = SimpleDateFormat("EEEE, MMMM dd, yyyy", Locale.getDefault()) //eg. "Tuesday, December 31, 2024"
+                    val outputFormat = SimpleDateFormat("EEEE, MMMM dd, yyyy", Locale.getDefault())
 
                     try {
-                        val date = inputFormat.parse(dateStr)  // Parse the date string
+                        val date = inputFormat.parse(dateStr)
                         if (date != null) {
                             formattedDate = outputFormat.format(date)  // Format the date
                             sessionDateText.text = formattedDate  // Set the formatted date
                         }
                     } catch (e: Exception) {
                         e.printStackTrace()
-                        sessionDateText.text = getString(R.string.invalid_date)  // Fallback in case of parsing error
+                        sessionDateText.text = getString(R.string.invalid_date)
                     }
 
                     // Set time
                     val timeStr = response.optString("time")
                     val timeInputFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-                    val timeOutputFormat = SimpleDateFormat("h:mm a", Locale.getDefault())  // Output format for time (12-hour clock)
+                    val timeOutputFormat = SimpleDateFormat("h:mm a", Locale.getDefault())
 
                     try {
-                        val time = timeInputFormat.parse(timeStr)  // Parse the time string
+                        val time = timeInputFormat.parse(timeStr)
                         if (time != null) {
-                            sessionTime = Calendar.getInstance()
-                            sessionTime?.time = time // Set session time here
-                            val formattedTime = timeOutputFormat.format(time)  // Format the time
-                            sessionTimeText.text = getString(R.string.starts_at, formattedTime)  // Use string resource with formatted time
+                            sessionTime = Calendar.getInstance().apply { this.time = time }
+                            val formattedTime = timeOutputFormat.format(time)
+                            sessionTimeText.text = getString(R.string.starts_at, formattedTime)
+
+                            // Check if the current time is >= sessionTime
+                            val currentTime = Calendar.getInstance()
+                            if (currentTime >= sessionTime) {
+                                btnStartSession.isEnabled = true
+                                btnStartSession.setBackgroundColor(Color.parseColor("#004AAD")) // Blue (#004AAD)
+                            }
                         }
                     } catch (e: Exception) {
                         e.printStackTrace()
-                        sessionTimeText.text = getString(R.string.invalid_time)  // Use string resource
+                        sessionTimeText.text = getString(R.string.invalid_time)
                     }
                 }
 
@@ -92,25 +105,17 @@ class TreatmentSessionActivity : AppCompatActivity() {
                         Toast.LENGTH_SHORT
                     ).show()
                 }
-        })
+            })
 
-        // Find the Start Session button by its ID
-        val btnStartSession = findViewById<Button>(R.id.btnStartSession)
-
-        // Set an OnClickListener on the Start Session button
+        // Set OnClickListener for Start Session Button
         btnStartSession.setOnClickListener {
-            // Get the current time
             val currentTime = Calendar.getInstance()
 
-            // Check if sessionTime is available and if current time is after the session time
-            if (sessionTime != null && currentTime.after(sessionTime)) {
-                // Check that session is not already complete
-                if (sessionComplete == false) {
-                    // Start Instruction1Activity when the button is clicked
+            if (sessionTime != null && currentTime >= sessionTime) {
+                if (!sessionComplete) {
                     val intent = Intent(this, Instruction1Activity::class.java)
                     startActivity(intent)
                 } else {
-                    // Show a message if the session is already complete
                     Toast.makeText(
                         this@TreatmentSessionActivity,
                         "This session is already complete.",
@@ -118,7 +123,6 @@ class TreatmentSessionActivity : AppCompatActivity() {
                     ).show()
                 }
             } else {
-                // Show a message if the session has not started yet
                 Toast.makeText(
                     this@TreatmentSessionActivity,
                     "The session has not started yet. Please wait until the scheduled time.",
@@ -195,6 +199,16 @@ class TreatmentSessionActivity : AppCompatActivity() {
                     Toast.LENGTH_SHORT
                 ).show()
             }
+        // Set OnClickListener for Request Reschedule Button
+        btnRequestReschedule.setOnClickListener {
+            Toast.makeText(this, "Reschedule request feature coming soon!", Toast.LENGTH_SHORT).show()
+        }
+
+        // Set OnClickListener for Back to Treatments Button
+        btnBackToTreatments.setOnClickListener {
+            val intent = Intent(this, CurrentTreatmentsListActivity::class.java)
+            startActivity(intent)
+            finish()
         }
     }
 }
