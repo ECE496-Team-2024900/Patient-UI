@@ -16,6 +16,7 @@ import org.json.JSONObject
 
 class TreatmentSessionActivity : AppCompatActivity() {
     private var BeUrl = "http://10.0.2.2:8000"
+    private var UserBeUrl = "http://10.0.2.2:8002"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,6 +29,8 @@ class TreatmentSessionActivity : AppCompatActivity() {
         val sessionNumberTitle = findViewById<TextView>(R.id.sessionNumberTitle)
         val sessionDateText = findViewById<TextView>(R.id.sessionDateText)
         val sessionTimeText = findViewById<TextView>(R.id.sessionTimeText)
+        var woundId: Int? = null
+        var formattedDate: String? = null
         val btnStartSession = findViewById<Button>(R.id.btnStartSession)
         val btnRequestReschedule = findViewById<Button>(R.id.btnRequestReschedule)
         val btnBackToTreatments = findViewById<Button>(R.id.btnBackToTreatments)
@@ -51,6 +54,7 @@ class TreatmentSessionActivity : AppCompatActivity() {
 
                     // Set session complete
                     sessionComplete = response.optBoolean("completed")
+                    woundId = response.optInt("wound_id", -1)
 
                     // Set date
                     val dateStr = response.optString("date")
@@ -60,8 +64,8 @@ class TreatmentSessionActivity : AppCompatActivity() {
                     try {
                         val date = inputFormat.parse(dateStr)
                         if (date != null) {
-                            val formattedDate = outputFormat.format(date)
-                            sessionDateText.text = formattedDate
+                            formattedDate = outputFormat.format(date)  // Format the date
+                            sessionDateText.text = formattedDate  // Set the formatted date
                         }
                     } catch (e: Exception) {
                         e.printStackTrace()
@@ -127,6 +131,74 @@ class TreatmentSessionActivity : AppCompatActivity() {
             }
         }
 
+        // Find the Start Session button by its ID
+        val btnRequestReschedule = findViewById<Button>(R.id.btnRequestReschedule)
+
+        // Set an OnClickListener on the Start Session button
+        btnRequestReschedule.setOnClickListener {
+            // Get the current time
+            val currentTime = Calendar.getInstance()
+
+            // Check if sessionTime is available and if current time is before the session time
+            if (sessionTime != null && currentTime.before(sessionTime)) {
+                // Check that session is not already complete
+                if (sessionComplete == false) {
+                    val payload = JSONObject().apply {
+                        put("reschedule_requested", true)
+                        put("id", treatmentId)
+                    }
+                    AndroidNetworking.put("${BeUrl}/treatment/request_reschedule")
+                        .addJSONObjectBody(payload)
+                        .build()
+                        .getAsJSONObject(object : JSONObjectRequestListener {
+                            override fun onResponse(response: JSONObject) {}
+                            override fun onError(anError: ANError?) {
+                                Toast.makeText(
+                                    this@TreatmentSessionActivity,
+                                    anError?.message,
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        })
+                    var clinicianId: String? = null
+                    AndroidNetworking.get("${BeUrl}/treatment/get_wound?id=${woundId}")
+                        .build()
+                        .getAsJSONObject(object : JSONObjectRequestListener {
+                            override fun onResponse(response: JSONObject) {
+                                clinicianId = response.optString("clinician_id")
+                            }
+                            override fun onError(anError: ANError?) {
+                                Toast.makeText(
+                                    this@TreatmentSessionActivity,
+                                    anError?.message,
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        })
+                    val payload2 = JSONObject().apply {
+                        put("type", "clinician")
+                        put("message", "Patient would like the treatment on ${formattedDate} to be rescheduled")
+                        put("email", clinicianId)
+                    }
+                    AndroidNetworking.post("${UserBeUrl}/users/send_email")
+                        .addJSONObjectBody(payload2)
+                        .build()
+                } else {
+                    // Show a message if the session is already complete
+                    Toast.makeText(
+                        this@TreatmentSessionActivity,
+                        "This session is already complete.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            } else {
+                // Show a message if the session has not started yet
+                Toast.makeText(
+                    this@TreatmentSessionActivity,
+                    "The session has already been started.",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         // Set OnClickListener for Request Reschedule Button
         btnRequestReschedule.setOnClickListener {
             Toast.makeText(this, "Reschedule request feature coming soon!", Toast.LENGTH_SHORT).show()
