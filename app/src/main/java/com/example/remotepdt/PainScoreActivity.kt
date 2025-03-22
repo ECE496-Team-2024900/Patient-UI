@@ -27,6 +27,9 @@ class PainScoreActivity : AppCompatActivity() {
 
         // Set an OnClickListener on the Done button
         btnDone.setOnClickListener {
+            // Treatment is done - stop polling for information
+            UpdatePolling.getInstance(applicationContext).stop()
+
             // Get the pain score entered in the input field
             val painScoreText = painScoreInput.text.toString()
             val painScore = painScoreText.toIntOrNull() ?: -1 //default value of -1 if empty

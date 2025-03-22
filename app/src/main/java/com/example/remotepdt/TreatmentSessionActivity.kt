@@ -1,5 +1,6 @@
 package com.example.remotepdt
 
+import UpdatePolling
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -115,6 +116,8 @@ class TreatmentSessionActivity : AppCompatActivity() {
                 if (!sessionComplete) {
                     val intent = Intent(this, Instruction1Activity::class.java)
                     startActivity(intent)
+                    // Treatment about to start - begin polling for information
+                    UpdatePolling.getInstance(applicationContext).start()
                 } else {
                     Toast.makeText(
                         this@TreatmentSessionActivity,
