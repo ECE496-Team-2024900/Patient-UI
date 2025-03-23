@@ -44,8 +44,35 @@ class LoaderActivity : AppCompatActivity() {
                     Toast.makeText(this@LoaderActivity, message, Toast.LENGTH_SHORT).show()
 
                     if (message == "Approved") {
-                        // Navigate to TimerActivity1 if message matches
-                        navigateToTimerActivity1()
+                        val url2 = "http://10.0.2.2:8000/treatment/parameters/get?id=1"
+                        AndroidNetworking.get(url2).build().getAsJSONObject(object : JSONObjectRequestListener {
+                            override fun onResponse(response: JSONObject) {
+                                val parameters = JSONObject().apply {
+                                    put("hardwareId", 100)
+                                    put("infusionVolume", response.optDouble("drug_volume_required", 0.0))
+                                    put("laserPowerLevel", response.optDouble("laser_power_required", 0.0))
+                                    put("firstTimeDelay", response.optDouble("first_wait", 0.0))
+                                    put("secondTimeDelay", response.optDouble("second_wait", 0.0))
+                                    put("washVolume", response.optDouble("wash_volume_required ", 0.0))
+                                }
+                                val messageSent = BluetoothComm.getInstance(applicationContext).sendMessageJson(parameters)
+                                if (messageSent) {
+                                    // Navigate to TimerActivity1 if message matches
+                                    navigateToTimerActivity1()
+                                } else {
+                                    // Display error message
+                                    Toast.makeText(
+                                        this@LoaderActivity, "An error occurred sending treatment parameters to medical device via bluetooth",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                }
+                            }
+
+                            override fun onError(anError: ANError?) {
+                                val statusCode = anError?.errorCode
+                                val errorBody = anError?.errorBody
+                            }
+                        })
                     } else {
                         // Retry polling or stop after max retries
                         retryPolling()
