@@ -1,6 +1,9 @@
 package com.example.remotepdt
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -8,6 +11,8 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.androidnetworking.AndroidNetworking
 import com.androidnetworking.error.ANError
 import com.androidnetworking.interfaces.JSONObjectRequestListener
@@ -15,80 +20,164 @@ import org.json.JSONObject
 
 class WelcomeActivity : AppCompatActivity() {
     private var BeUrl = "http://10.0.2.2:8002"
+    private val BLUETOOTH_PERMISSION_REQUEST_CODE = 1001
+
     private val statusUpdateHandler = Handler(Looper.getMainLooper())
-    private val statusUpdateInterval: Long = 15000 // Poll every 15 seconds
+    private val statusUpdateInterval: Long = 5000 // Poll every 5 seconds
 
     private val statusUpdateRunnable = object : Runnable {
         override fun run() {
-            requestStatusUpdate() // Poll for new status updates
+            requestStatusUpdate()
             statusUpdateHandler.postDelayed(this, statusUpdateInterval)
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Initializing BT connection
+        val bluetoothComm = BluetoothComm.getInstance(applicationContext)
+        bluetoothComm.connect(this)
+
         setContentView(R.layout.activity_welcome)
 
-        val bluetoothComm = BluetoothComm.getInstance(applicationContext)
-        bluetoothComm.connect() // Connect Bluetooth on startup
-
+        // Passed from previous page
         val email: String = intent.getStringExtra("email") ?: ""
+
+        // Find all buttons by their IDs
+        val btnCurrentWounds = findViewById<Button>(R.id.btnCurrentWounds)
+        val btnLogout = findViewById<Button>(R.id.btnLogout)
+
+        // Find TextView by ID
         val welcomeTitle = findViewById<TextView>(R.id.welcomeTitle)
 
-        // Fetch patient details from backend
-        AndroidNetworking.get("$BeUrl/users/get_patient_info")
+        // Get patient details - pass in the patient email as a parameter
+        AndroidNetworking.get("${BeUrl}/users/get_patient_info")
             .addQueryParameter("email", email)
             .build()
             .getAsJSONObject(object : JSONObjectRequestListener {
                 override fun onResponse(response: JSONObject) {
-                    val patientName = response.optJSONObject("message")?.optString("first_name", "") ?: "Patient"
-                    welcomeTitle.text = getString(R.string.welcome_title, patientName)
+                    try {
+                        val message = response.opt("message")
+                        if (message is JSONObject) {
+                            // Patient details successfully returned, access the patient's first name for welcome message
+                            val patientName = message.optString("first_name", "")
+                            welcomeTitle.text = getString(R.string.welcome_title, patientName)
+                        } else if (message is String) {
+                            // Error message returned from backend
+                            Toast.makeText(
+                                this@WelcomeActivity,
+                                message,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    } catch (e: Exception) {
+                        // Error occurred when trying to process patient details
+                        e.printStackTrace()
+                        Toast.makeText(
+                            this@WelcomeActivity,
+                            "Failure in processing the patient info.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                 }
 
+                // Error occurred when trying to retrieve patient details
                 override fun onError(anError: ANError) {
-                    Toast.makeText(this@WelcomeActivity, "Error retrieving patient info", Toast.LENGTH_SHORT).show()
+                    anError.printStackTrace()
+                    val errorMessage = anError.message ?: "An error occurred retrieving patient info"
+                    Toast.makeText(
+                        this@WelcomeActivity, errorMessage,
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             })
 
-        findViewById<Button>(R.id.btnCurrentWounds).setOnClickListener {
-            startActivity(Intent(this, WoundListActivity::class.java))
+        // Set an OnClickListener on the Current Wounds button
+        btnCurrentWounds.setOnClickListener {
+            // Navigate to current wounds page when the button is clicked
+            val intent = Intent(this, WoundListActivity::class.java)
+            intent.putExtra("treatment_id", 1) //id of 1 is a placeholder for now
+            startActivity(intent)
         }
 
-        findViewById<Button>(R.id.btnLogout).setOnClickListener {
-            startActivity(Intent(this, LoginActivity::class.java))
+        // Set an OnClickListener on the Logout button
+        btnLogout.setOnClickListener {
+            // Navigate back to login page when the button is clicked
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
         }
-
-        statusUpdateHandler.post(statusUpdateRunnable) // Start polling
+        statusUpdateHandler.post(statusUpdateRunnable)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        statusUpdateHandler.removeCallbacks(statusUpdateRunnable) // Stop polling on exit
+        statusUpdateHandler.removeCallbacks(statusUpdateRunnable)
     }
 
-    /**
-     * Requests and processes a status update from the Bluetooth device.
-     */
+    fun requestBluetoothPermissions(): Boolean {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) { // Android 12+
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_CONNECT),
+                    BLUETOOTH_PERMISSION_REQUEST_CODE
+                )
+                return true
+            }
+        } else { // Android 11 and below
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION),
+                    BLUETOOTH_PERMISSION_REQUEST_CODE
+                )
+                return true
+            }
+        }
+        return false
+    }
+
+
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        if (requestCode == BLUETOOTH_PERMISSION_REQUEST_CODE) {
+            if (grantResults.isNotEmpty() && grantResults.all { it == PackageManager.PERMISSION_GRANTED }) {
+                // Permission granted, retry Bluetooth scanning
+                val bluetoothComm = BluetoothComm.getInstance(applicationContext)
+                bluetoothComm.connect(this)
+            } else {
+                Toast.makeText(this, "Bluetooth permissions denied.", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    //Request a status update from the Bluetooth device
     fun requestStatusUpdate() {
         val bluetoothComm = BluetoothComm.getInstance(applicationContext)
 
-        if (!bluetoothComm.requestStatusUpdate()) {
-            Toast.makeText(this, "Failed to send status update request.", Toast.LENGTH_SHORT).show()
-            return
-        }
-
         Thread {
-            val progress = bluetoothComm.receiveStatusUpdate()
-
+            val progress = bluetoothComm.sendStatusUpdateCommand()
             if (progress != null) {
-                sendProgressToTreatmentMicroservice(progress, 1) // Replace 1 with real treatment ID
+                sendProgressToTreatmentMicroservice(progress, 1) // Replace 1 with actual treatment ID
+            } else {
+                runOnUiThread {
+                    Toast.makeText(this, "Invalid or missing status response", Toast.LENGTH_SHORT).show()
+                }
             }
         }.start()
     }
 
-    /**
-     * Sends the treatment progress to the backend.
-     */
+    //Send status to backend microservice
     fun sendProgressToTreatmentMicroservice(progress: Int, treatmentId: Int) {
         val jsonObject = JSONObject().apply { put("treatment_progress", progress) }
 
