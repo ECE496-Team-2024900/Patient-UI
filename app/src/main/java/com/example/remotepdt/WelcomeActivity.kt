@@ -19,6 +19,7 @@ import org.json.JSONObject
 class WelcomeActivity : AppCompatActivity() {
     private var BeUrl = "http://10.0.2.2:8002"
     private val BLUETOOTH_PERMISSION_REQUEST_CODE = 1001
+    private var hardwareID = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,6 +81,68 @@ class WelcomeActivity : AppCompatActivity() {
                     ).show()
                 }
             })
+
+        // TEST CONNECTION with hardware device
+        // Send ACK signal and expect a response to test if communication is successful
+        //Prepare 32-bit start command (opcode 0x05)
+        val command = ByteArray(4) // 4 bytes = 32 bits
+        command[0] = 0x05 // Opcode (0x05)
+        command[1] = 0x00 // Argument bytes (all zero)
+        command[2] = 0x00
+        command[3] = 0x00
+
+        // Send bluetooth message to hw device for testing connection
+        val messageSent = bluetoothComm.sendMessageBytes(command)
+
+        // Get response if signal successfully sent to device
+        if (messageSent) {
+            // Get response from device
+            // Need to read until delimiter is found ("\n") to ensure full message is received
+            val response = StringBuilder()
+            var delimiterFound = false
+            var tries = 20  // Setting a max number of tries so that loop doesn't run forever in case of no response from device
+            while (!delimiterFound && tries > 0) {
+                tries--
+                val str = bluetoothComm.receiveMessage()
+                if (str.isNotEmpty()) {
+                    response.append(str)
+                    if (str.contains("\n")) { // Delimiter found - can stop reading
+                        delimiterFound = true
+                    }
+                }
+            }
+            val fullResponse = response.toString().trim()
+
+            if (delimiterFound && fullResponse.contains("Secure Connection, HW Handshake Number:")) {
+                // Save HW handshake number (hardwareID)
+                hardwareID = fullResponse.substringAfter("Secure Connection, HW Handshake Number:").trim()
+                if (hardwareID.isNotEmpty()) {
+                    // Display success message
+                    Toast.makeText(
+                        this@WelcomeActivity, "Successful connection with medical device via bluetooth.",
+                        Toast.LENGTH_LONG
+                    ).show()
+                } else {
+                    // Display error message
+                    Toast.makeText(
+                        this@WelcomeActivity, "Failed to extract hardware ID despite successful connection with medical device via bluetooth.",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            } else {
+                // Display error message
+                Toast.makeText(
+                    this@WelcomeActivity, "Unsuccessful connection with medical device via bluetooth.",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        } else {
+            // Display error message
+            Toast.makeText(
+                this@WelcomeActivity, "Unsuccessful connection with medical device via bluetooth.",
+                Toast.LENGTH_LONG
+            ).show()
+        }
 
         // Set an OnClickListener on the Current Wounds button
         btnCurrentWounds.setOnClickListener {
