@@ -19,6 +19,9 @@ class LoaderActivity : AppCompatActivity() {
     private val maxRetries = 5 // Maximum number of retries
     private var retryCount = 0 // Current retry count
 
+    //Get bluetooth instance
+    private val bluetoothComm = BluetoothComm.getInstance(applicationContext)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_loader)
@@ -44,8 +47,24 @@ class LoaderActivity : AppCompatActivity() {
                     Toast.makeText(this@LoaderActivity, message, Toast.LENGTH_SHORT).show()
 
                     if (message == "Approved") {
-                        // Navigate to TimerActivity1 if message matches
-                        navigateToTimerActivity1()
+                        //Approval received from clinician, so we can send bluetooth signal now to start treatment
+                        //Prepare 32-bit start command (opcode 0x01)
+                        val command = "1".toByteArray()
+
+                        // Send bluetooth message to hw device for starting the treatment
+                        val messageSent = bluetoothComm.sendMessageBytes(command)
+
+                        // Proceed with treatment if start signal successfully sent to device
+                        if (messageSent) {
+                            // Navigate to TimerActivity1
+                            navigateToTimerActivity1()
+                        } else {
+                            // Display error message
+                            Toast.makeText(
+                                this@LoaderActivity, "An error occurred sending start treatment signal to medical device via bluetooth",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
                     } else {
                         // Retry polling or stop after max retries
                         retryPolling()
