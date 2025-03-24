@@ -205,21 +205,6 @@ class BluetoothComm private constructor(private val context: Context) {
         }
     }
 
-    fun sendStatusUpdateCommand(): Int? {
-        try {
-            outputStream?.write("9".toByteArray())
-        } catch (e: IOException) {
-            Handler(Looper.getMainLooper()).post {
-                Toast.makeText(context, "Failed to send status command: ${e.message}", Toast.LENGTH_SHORT).show()
-            }
-            return null
-        }
-
-        val response = receiveMessage()
-        val percentage = response.toIntOrNull()
-        return if (percentage != null && percentage in 0..100) percentage else null
-    }
-
     companion object {
         @Volatile
         private var instance: BluetoothComm? = null

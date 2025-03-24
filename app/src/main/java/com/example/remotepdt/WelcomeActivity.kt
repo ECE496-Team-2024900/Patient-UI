@@ -5,8 +5,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
@@ -22,15 +20,8 @@ class WelcomeActivity : AppCompatActivity() {
     private var BeUrl = "http://10.0.2.2:8002"
     private val BLUETOOTH_PERMISSION_REQUEST_CODE = 1001
 
-    private val statusUpdateHandler = Handler(Looper.getMainLooper())
-    private val statusUpdateInterval: Long = 5000 // Poll every 5 seconds
-
-    private val statusUpdateRunnable = object : Runnable {
-        override fun run() {
-            requestStatusUpdate()
-            statusUpdateHandler.postDelayed(this, statusUpdateInterval)
-        }
-    }
+    //New: Instance of BluetoothStatusPoller
+    private lateinit var statusPoller: BluetoothStatusPoller
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -107,14 +98,19 @@ class WelcomeActivity : AppCompatActivity() {
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
         }
-        statusUpdateHandler.post(statusUpdateRunnable)
+
+        //Start status polling using the new class
+        statusPoller = BluetoothStatusPoller(this, treatmentId = 1)
+        statusPoller.startPolling()
     }
 
+    //Stop polling when activity is destroyed
     override fun onDestroy() {
         super.onDestroy()
-        statusUpdateHandler.removeCallbacks(statusUpdateRunnable)
+        statusPoller.stopPolling()
     }
 
+    // Bluetooth permission request logic (untouched)
     fun requestBluetoothPermissions(): Boolean {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) { // Android 12+
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED ||
@@ -141,8 +137,6 @@ class WelcomeActivity : AppCompatActivity() {
         return false
     }
 
-
-
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -159,41 +153,5 @@ class WelcomeActivity : AppCompatActivity() {
                 Toast.makeText(this, "Bluetooth permissions denied.", Toast.LENGTH_SHORT).show()
             }
         }
-    }
-
-    //Request a status update from the Bluetooth device
-    fun requestStatusUpdate() {
-        val bluetoothComm = BluetoothComm.getInstance(applicationContext)
-
-        Thread {
-            val progress = bluetoothComm.sendStatusUpdateCommand()
-            if (progress != null) {
-                sendProgressToTreatmentMicroservice(progress, 1) // Replace 1 with actual treatment ID
-            } else {
-                runOnUiThread {
-                    Toast.makeText(this, "Invalid or missing status response", Toast.LENGTH_SHORT).show()
-                }
-            }
-        }.start()
-    }
-
-    //Send status to backend microservice
-    fun sendProgressToTreatmentMicroservice(progress: Int, treatmentId: Int) {
-        val jsonObject = JSONObject().apply { put("treatment_progress", progress) }
-
-        val url = "$BeUrl/treatment/parameters/set?id=$treatmentId"
-
-        AndroidNetworking.put(url)
-            .addJSONObjectBody(jsonObject)
-            .build()
-            .getAsJSONObject(object : JSONObjectRequestListener {
-                override fun onResponse(response: JSONObject) {
-                    Toast.makeText(this@WelcomeActivity, "Progress updated!", Toast.LENGTH_SHORT).show()
-                }
-
-                override fun onError(anError: ANError) {
-                    Toast.makeText(this@WelcomeActivity, "Failed to update progress", Toast.LENGTH_SHORT).show()
-                }
-            })
     }
 }
