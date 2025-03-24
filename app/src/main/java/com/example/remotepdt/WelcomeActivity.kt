@@ -84,12 +84,8 @@ class WelcomeActivity : AppCompatActivity() {
 
         // TEST CONNECTION with hardware device
         // Send ACK signal and expect a response to test if communication is successful
-        //Prepare 32-bit start command (opcode 0x05)
-        val command = ByteArray(4) // 4 bytes = 32 bits
-        command[0] = 0x05 // Opcode (0x05)
-        command[1] = 0x00 // Argument bytes (all zero)
-        command[2] = 0x00
-        command[3] = 0x00
+        //Prepare 32-bit test connection command (opcode 0x05)
+        val command = "5".toByteArray()
 
         // Send bluetooth message to hw device for testing connection
         val messageSent = bluetoothComm.sendMessageBytes(command)
