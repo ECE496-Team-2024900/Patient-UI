@@ -74,7 +74,8 @@ class TreatmentSessionActivity : AppCompatActivity() {
 
                     // Set time
                     val timeStr = response.optString("time")
-                    val timeInputFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+                    val timeInputFormat =
+                        SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
                     val timeOutputFormat = SimpleDateFormat("h:mm a", Locale.getDefault())
 
                     try {
@@ -99,7 +100,8 @@ class TreatmentSessionActivity : AppCompatActivity() {
 
                 override fun onError(anError: ANError) {
                     anError.printStackTrace()
-                    val errorMessage = anError.message ?: "An error occurred retrieving session info"
+                    val errorMessage =
+                        anError.message ?: "An error occurred retrieving session info"
                     Toast.makeText(
                         this@TreatmentSessionActivity, errorMessage,
                         Toast.LENGTH_SHORT
@@ -130,9 +132,6 @@ class TreatmentSessionActivity : AppCompatActivity() {
                 ).show()
             }
         }
-
-        // Find the Start Session button by its ID
-        val btnRequestReschedule = findViewById<Button>(R.id.btnRequestReschedule)
 
         // Set an OnClickListener on the Start Session button
         btnRequestReschedule.setOnClickListener {
@@ -167,6 +166,7 @@ class TreatmentSessionActivity : AppCompatActivity() {
                             override fun onResponse(response: JSONObject) {
                                 clinicianId = response.optString("clinician_id")
                             }
+
                             override fun onError(anError: ANError?) {
                                 Toast.makeText(
                                     this@TreatmentSessionActivity,
@@ -177,7 +177,10 @@ class TreatmentSessionActivity : AppCompatActivity() {
                         })
                     val payload2 = JSONObject().apply {
                         put("type", "clinician")
-                        put("message", "Patient would like the treatment on ${formattedDate} to be rescheduled")
+                        put(
+                            "message",
+                            "Patient would like the treatment on ${formattedDate} to be rescheduled"
+                        )
                         put("email", clinicianId)
                     }
                     AndroidNetworking.post("${UserBeUrl}/users/send_email")
@@ -199,16 +202,18 @@ class TreatmentSessionActivity : AppCompatActivity() {
                     Toast.LENGTH_SHORT
                 ).show()
             }
-        // Set OnClickListener for Request Reschedule Button
-        btnRequestReschedule.setOnClickListener {
-            Toast.makeText(this, "Reschedule request feature coming soon!", Toast.LENGTH_SHORT).show()
-        }
+            // Set OnClickListener for Request Reschedule Button
+            btnRequestReschedule.setOnClickListener {
+                Toast.makeText(this, "Reschedule request feature coming soon!", Toast.LENGTH_SHORT)
+                    .show()
+            }
 
-        // Set OnClickListener for Back to Treatments Button
-        btnBackToTreatments.setOnClickListener {
-            val intent = Intent(this, CurrentTreatmentsListActivity::class.java)
-            startActivity(intent)
-            finish()
+            // Set OnClickListener for Back to Treatments Button
+            btnBackToTreatments.setOnClickListener {
+                val intent = Intent(this, CurrentTreatmentsListActivity::class.java)
+                startActivity(intent)
+                finish()
+            }
         }
     }
 }
