@@ -18,9 +18,8 @@ class LoaderActivity : AppCompatActivity() {
     private val pollingInterval: Long = 5000 // Poll every 5 seconds
     private val maxRetries = 5 // Maximum number of retries
     private var retryCount = 0 // Current retry count
+    private var bluetoothComm: BluetoothComm? = null
 
-    //Get bluetooth instance
-    private val bluetoothComm = BluetoothComm.getInstance(applicationContext)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,6 +27,9 @@ class LoaderActivity : AppCompatActivity() {
 
         // Initialize AndroidNetworking
         AndroidNetworking.initialize(applicationContext)
+
+        //Get bluetooth instance
+        bluetoothComm = BluetoothComm.getInstance(applicationContext)
 
         // Start polling for clinician approval
         checkClinicianApproval()
@@ -70,7 +72,7 @@ class LoaderActivity : AppCompatActivity() {
                                     val command = "1".toByteArray()
 
                                     // Send bluetooth message to hw device for starting the treatment
-                                    val startMessage = bluetoothComm.sendAndReceiveMessage(command)
+                                    val startMessage = bluetoothComm!!.sendAndReceiveMessage(command)
                                     Toast.makeText(this@LoaderActivity, "Start treatment: $startMessage", Toast.LENGTH_LONG).show()
 
                                     // Proceed with treatment if start signal successfully sent to device

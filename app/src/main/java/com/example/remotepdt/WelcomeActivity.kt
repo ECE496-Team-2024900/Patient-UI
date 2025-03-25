@@ -28,6 +28,9 @@ class WelcomeActivity : AppCompatActivity() {
         val bluetoothComm = BluetoothComm.getInstance(applicationContext)
         bluetoothComm.connect(this)
 
+        // Not recommended, but if needed, can force a pause here
+        //Thread.sleep(2000)
+
         setContentView(R.layout.activity_welcome)
 
         // Passed from previous page
