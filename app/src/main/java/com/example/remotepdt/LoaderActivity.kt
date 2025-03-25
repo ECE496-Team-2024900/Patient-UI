@@ -19,6 +19,9 @@ class LoaderActivity : AppCompatActivity() {
     private val maxRetries = 5 // Maximum number of retries
     private var retryCount = 0 // Current retry count
 
+    //Get bluetooth instance
+    private val bluetoothComm = BluetoothComm.getInstance(applicationContext)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_loader)
@@ -57,10 +60,31 @@ class LoaderActivity : AppCompatActivity() {
                                     put("secondTimeDelay", response.optDouble("second_wait", 0.0))
                                     put("washVolume", response.optDouble("wash_volume_required ", 0.0))
                                 }
-                                val messageSent = BluetoothComm.getInstance(applicationContext).sendMessageBytes(parameters.toString().toByteArray())
-                                Toast.makeText(this@LoaderActivity, "Message status: $messageSent", Toast.LENGTH_LONG).show()
-                                if (messageSent) {
+                                val paramsSent = BluetoothComm.getInstance(applicationContext).sendMessageBytes(parameters.toString().toByteArray())
+                                Toast.makeText(this@LoaderActivity, "Params sent status: $paramsSent", Toast.LENGTH_LONG).show()
+                                if (paramsSent) {
                                     // Navigate to TimerActivity1 if message matches
+
+                                    //Approval received from clinician, so we can send bluetooth signal now to start treatment
+                                    //Prepare 32-bit start command (opcode 0x01)
+                                    val command = "1".toByteArray()
+
+                                    // Send bluetooth message to hw device for starting the treatment
+                                    val messageSent = bluetoothComm.sendMessageBytes(command)
+                                    Toast.makeText(this@LoaderActivity, "Start treatment status $messageSent", Toast.LENGTH_LONG).show()
+
+                                    // Proceed with treatment if start signal successfully sent to device
+                                    if (messageSent) {
+                                        // Navigate to TimerActivity1
+                                        navigateToTimerActivity1()
+                                    } else {
+                                        // Display error message
+                                        Toast.makeText(
+                                            this@LoaderActivity, "An error occurred sending start treatment signal to medical device via bluetooth",
+                                            Toast.LENGTH_LONG
+                                        ).show()
+                                    }
+                                    
                                     navigateToTimerActivity1()
                                 } else {
                                     // Display error message
