@@ -222,17 +222,6 @@ class BluetoothComm private constructor(private val context: Context) {
         }
     }
 
-    // Sending a message as a JSON object to the connected device
-    // Returns true if sent successfully, else false
-    fun sendMessageJson(jsonObject: JSONObject): Boolean {
-        try {
-            outputStream?.write(jsonObject.toString().toByteArray())
-            return true
-        } catch (e: IOException) {
-            return false
-        }
-    }
-
     fun unregisterReceiver(broadcastReceiver: BroadcastReceiver) {
         if(receiverRegistered) {
             context.unregisterReceiver(broadcastReceiver)
