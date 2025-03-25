@@ -16,7 +16,7 @@ class UpdatePolling private constructor(private val context: Context) {
     private val bluetoothComm = BluetoothComm.getInstance(context)
     private val handlerThread = HandlerThread("UpdatePollingThread").apply { start() }
     private val handler = Handler(handlerThread.looper)
-    private val BeUrl = "http://10.0.2.2:8002"
+    private val BeUrl = "http://hardware-comm.onrender.com"
     private val treatmentId = 1
     private val interval = 5000 // polling every 5 seconds
 
@@ -25,6 +25,13 @@ class UpdatePolling private constructor(private val context: Context) {
             val messageSent = bluetoothComm.sendMessageBytes("8".toByteArray()) // Send message
             if(messageSent) {
                 val response = bluetoothComm.receiveMessage()
+                Handler(Looper.getMainLooper()).post {
+                    Toast.makeText(
+                        context,
+                        "Recieved: $response",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
                 val jsonBody = JSONObject()
                 jsonBody.put("data", response)
                 AndroidNetworking.put("$BeUrl/hardware/set_sensor_data_updates")
@@ -34,6 +41,13 @@ class UpdatePolling private constructor(private val context: Context) {
                     .getAsJSONObject(object : JSONObjectRequestListener {
                         override fun onResponse(response: JSONObject) {
                             // clinician got response
+                            Handler(Looper.getMainLooper()).post {
+                                Toast.makeText(
+                                    context,
+                                    "Stored reply",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
                         }
                         override fun onError(anError: ANError) {
                             // handle error
