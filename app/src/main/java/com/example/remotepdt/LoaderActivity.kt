@@ -70,11 +70,11 @@ class LoaderActivity : AppCompatActivity() {
                                     val command = "1".toByteArray()
 
                                     // Send bluetooth message to hw device for starting the treatment
-                                    val messageSent = bluetoothComm.sendMessageBytes(command)
-                                    Toast.makeText(this@LoaderActivity, "Start treatment status $messageSent", Toast.LENGTH_LONG).show()
+                                    val startMessage = bluetoothComm.sendAndReceiveMessage(command)
+                                    Toast.makeText(this@LoaderActivity, "Start treatment: $startMessage", Toast.LENGTH_LONG).show()
 
                                     // Proceed with treatment if start signal successfully sent to device
-                                    if (messageSent) {
+                                    if (startMessage != "") {
                                         // Navigate to TimerActivity1
                                         navigateToTimerActivity1()
                                     } else {

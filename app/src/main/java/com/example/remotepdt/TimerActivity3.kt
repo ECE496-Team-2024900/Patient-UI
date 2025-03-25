@@ -86,15 +86,18 @@ class TimerActivity3 : AppCompatActivity() {
     }
 
     private fun navigateToNextActivity() {
+        // Treatment is done - stop polling for information
+        BluetoothPoller.getInstance(applicationContext).stop()
+
         //Next is the pain score activity, so we can send bluetooth signal now to end treatment
         //Prepare 32-bit end treatment command (opcode 0x03)
         val command = "3".toByteArray()
 
         // Send bluetooth message to hw device for ending the treatment
-        val messageSent = bluetoothComm.sendMessageBytes(command)
+        val endMessage = bluetoothComm.sendAndReceiveMessage(command)
 
         // Proceed with treatment if end treatment signal successfully sent to device
-        if (messageSent) {
+        if (endMessage != "") {
             // Navigate to PainScoreActivity
             val intent = Intent(this, PainScoreActivity::class.java)
             startActivity(intent)
