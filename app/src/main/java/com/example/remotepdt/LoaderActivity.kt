@@ -71,6 +71,7 @@ class LoaderActivity : AppCompatActivity() {
                                     Toast.makeText(this@LoaderActivity, "Retry: $retries", Toast.LENGTH_LONG).show()
                                     paramsSent = BluetoothComm.getInstance(applicationContext).sendMessageBytes(parameters.toString().toByteArray())
                                     retries--
+                                    Thread.sleep(100)
                                 }
                                 Toast.makeText(this@LoaderActivity, "Params sent status: $paramsSent", Toast.LENGTH_LONG).show()
                                 if (paramsSent) {
