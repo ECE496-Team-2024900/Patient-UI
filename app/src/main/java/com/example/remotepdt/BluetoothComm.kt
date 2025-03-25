@@ -138,9 +138,9 @@ class BluetoothComm private constructor(private val context: Context) {
                                         ).show()
                                     }
 
-
+                                    this@BluetoothComm.testConnection()
                                     //val startTreatmentCommand = byteArrayOf(0x01)
-                                    outputStream!!.write("2".toByteArray())
+                                    //outputStream!!.write("2".toByteArray())
 
                                     // Error handling
                                 } catch (e: IOException) {
@@ -188,8 +188,17 @@ class BluetoothComm private constructor(private val context: Context) {
         synchronized(lock) {
             return try {
                 val buffer = ByteArray(1024)
-                val bytesRead = inputStream?.read(buffer) ?: 0
-                String(buffer, 0, bytesRead).trim()
+                val message = StringBuilder()
+                var bytesRead: Int
+                while (inputStream?.read(buffer).also { bytesRead = it ?: -1 } != -1) {
+                    for (i in 0 until bytesRead) {
+                        if (buffer[i] == '\n'.code.toByte()) {
+                            return message.toString().trim()
+                        }
+                        message.append(buffer[i].toInt().toChar())
+                    }
+                }
+                message.toString().trim()
             } catch (e: IOException) {
                 ""
             }
@@ -228,6 +237,42 @@ class BluetoothComm private constructor(private val context: Context) {
         if(receiverRegistered) {
             context.unregisterReceiver(broadcastReceiver)
             receiverRegistered = false
+        }
+    }
+
+    private fun testConnection() {
+        // TEST CONNECTION with hardware device
+        // Send ACK signal and expect a response to test if communication is successful
+        //Prepare 32-bit test connection command (opcode 0x05)
+        val command = "5".toByteArray()
+        var response = ""
+        var tries = 20  // Setting a max number of tries so that loop doesn't run forever in case of no response from device
+        while (tries > 0) {
+            tries--
+            response = this@BluetoothComm.sendAndReceiveMessage(command)
+            if(response != "") {
+                break
+            }
+        }
+        if (response.contains("Secure Connection, HW Handshake Number:")) {
+            // Save HW handshake number (hardwareID)
+            val hardwareID = response.substringAfter("Secure Connection, HW Handshake Number:").trim()
+            if (hardwareID.isNotEmpty()) {
+                // Display success message
+                Handler(Looper.getMainLooper()).post {
+                    Toast.makeText(context, "Successful connection with medical device", Toast.LENGTH_LONG).show()
+                }
+            } else {
+                // Display error message
+                Handler(Looper.getMainLooper()).post {
+                    Toast.makeText(context, "Failed to extract hardware ID despite successful connection", Toast.LENGTH_LONG).show()
+                }
+            }
+        } else {
+            // Display error message
+            Handler(Looper.getMainLooper()).post {
+                Toast.makeText(context, "Unsuccessful connection with medical device via BT", Toast.LENGTH_LONG).show()
+            }
         }
     }
 
