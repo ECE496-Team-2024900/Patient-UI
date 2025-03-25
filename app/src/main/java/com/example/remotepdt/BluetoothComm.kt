@@ -193,7 +193,7 @@ class BluetoothComm private constructor(private val context: Context) {
     }
 
     private fun sendAndReceive(bytesArray: ByteArray): String {
-        //synchronized(lock) {
+        synchronized(lock) {
             val messageSent = this@BluetoothComm.sendMessageBytes(bytesArray)
             Handler(Looper.getMainLooper()).post {
                 Toast.makeText(
@@ -206,36 +206,62 @@ class BluetoothComm private constructor(private val context: Context) {
                 return this@BluetoothComm.receiveMessage()
             }
             return ""
-//        }
+        }
     }
 
     // Receiving a message from the connected medical device
     // Returns the message if received successfully, else an empty string
-    fun receiveMessage(): String {
-        //synchronized(lock) {
+//    fun receiveMessage(): String {
+//        synchronized(lock) {
+//            return try {
+//                val buffer = ByteArray(1024)
+//                val message = StringBuilder()
+//                var bytesRead: Int
+//                while (inputStream?.read(buffer).also { bytesRead = it ?: -1 } != -1) {
+//                    for (i in 0 until bytesRead) {
+//                        if (buffer[i] == '\n'.code.toByte()) {
+//                            return message.toString().trim()
+//                        }
+//                        message.append(buffer[i].toInt().toChar())
+//                    }
+//                }
+//                message.toString().trim()
+//            } catch (e: IOException) {
+//                ""
+//            }
+//        }
+//    }
+
+    fun receiveMessage(timeoutMs: Long = 3000): String {
+        synchronized(lock) {
+            val buffer = ByteArray(1024)
+            val message = StringBuilder()
+            val startTime = System.currentTimeMillis()
+
             return try {
-                val buffer = ByteArray(1024)
-                val message = StringBuilder()
-                var bytesRead: Int
-                while (inputStream?.read(buffer).also { bytesRead = it ?: -1 } != -1) {
-                    for (i in 0 until bytesRead) {
-                        if (buffer[i] == '\n'.code.toByte()) {
-                            return message.toString().trim()
+                while (System.currentTimeMillis() - startTime < timeoutMs) {
+                    if (inputStream?.available() ?: 0 > 0) {
+                        val bytesRead = inputStream!!.read(buffer)
+                        for (i in 0 until bytesRead) {
+                            if (buffer[i] == '\n'.code.toByte()) {
+                                return message.toString().trim()
+                            }
+                            message.append(buffer[i].toInt().toChar())
                         }
-                        message.append(buffer[i].toInt().toChar())
                     }
+                    Thread.sleep(50)
                 }
-                message.toString().trim()
+                ""
             } catch (e: IOException) {
                 ""
             }
-        //}
+        }
     }
 
     // Sending a message directly as bytes to the connected device
     // Returns true if sent successfully, else false
     fun sendMessageBytes(bytesArray: ByteArray): Boolean {
-//        synchronized(lock) {
+        synchronized(lock) {
             if(outputStream == null) {
                 return false
             }
@@ -246,7 +272,7 @@ class BluetoothComm private constructor(private val context: Context) {
             } catch (e: IOException) {
                 return false
             }
-//        }
+        }
     }
 
     fun unregisterReceiver(broadcastReceiver: BroadcastReceiver) {

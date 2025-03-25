@@ -2,6 +2,7 @@ import android.content.Context
 import android.os.Handler
 import android.os.HandlerThread
 import android.os.Looper
+import android.util.Log
 import android.widget.Toast
 import com.androidnetworking.AndroidNetworking
 import com.androidnetworking.error.ANError
@@ -16,7 +17,7 @@ class BluetoothPoller private constructor(private val context: Context) {
     private val handler = Handler(handlerThread.looper)
     private val BeUrl = "http://hardware-comm.onrender.com"
     private val treatmentId = 1
-    private val interval = 5000L // polling every 5 seconds
+    private val interval = 1000L // polling every 5 seconds
 
     private val sendRunnable = object : Runnable {
         override fun run() {
@@ -40,15 +41,16 @@ class BluetoothPoller private constructor(private val context: Context) {
 //        }
 //
 //        val response = bluetoothComm.receiveMessage()
-        val response = bluetoothComm.sendAndReceiveMessage("9".toByteArray())
+        val response = bluetoothComm.sendAndReceiveMessage("9\r\n".toByteArray())
 
-        handler.post {
-            Toast.makeText(
-                context,
-                "Recieved: $response",
-                Toast.LENGTH_LONG
-            ).show()
-        }
+//        handler.post {
+//            Toast.makeText(
+//                context,
+//                "Recieved 1: $response",
+//                Toast.LENGTH_LONG
+//            ).show()
+//        }
+        Log.d("COMMAND 9: ", response)
         val progress = response.toIntOrNull()
         if (progress != null && progress in 0..100) {
             sendProgressToBackend(progress)
@@ -56,43 +58,44 @@ class BluetoothPoller private constructor(private val context: Context) {
     }
 
     private fun pollSensorData() {
-        val response = bluetoothComm.sendAndReceiveMessage("8".toByteArray())
+        val response = bluetoothComm.sendAndReceiveMessage("8\r\n".toByteArray())
+        Log.d("COMMAND 8: ", response)
 //        val messageSent = bluetoothComm.sendMessageBytes("8".toByteArray())
-        handler.post {
-            Toast.makeText(
-                context,
-                "Recieved: $response",
-                Toast.LENGTH_LONG
-            ).show()
-        }
+//        handler.post {
+//            Toast.makeText(
+//                context,
+//                "Recieved 2: $response",
+//                Toast.LENGTH_LONG
+//            ).show()
+//        }
         val jsonBody = JSONObject()
         jsonBody.put("data", response)
-        AndroidNetworking.put("$BeUrl/hardware/set_sensor_data_updates")
-            .addQueryParameter("id", treatmentId.toString())
-            .addJSONObjectBody(jsonBody)
-            .build()
-            .getAsJSONObject(object : JSONObjectRequestListener {
-                override fun onResponse(response: JSONObject) {
-                    // clinician got response
-                    handler.post {
-                        Toast.makeText(
-                            context,
-                            "Stored reply",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                }
-                override fun onError(anError: ANError) {
-                    // handle error
-                    handler.post {
-                        Toast.makeText(
-                            context,
-                            "Error: ${anError.message}",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                }
-                })
+//        AndroidNetworking.put("$BeUrl/hardware/set_sensor_data_updates")
+//            .addQueryParameter("id", treatmentId.toString())
+//            .addJSONObjectBody(jsonBody)
+//            .build()
+//            .getAsJSONObject(object : JSONObjectRequestListener {
+//                override fun onResponse(response: JSONObject) {
+//                    // clinician got response
+//                    handler.post {
+//                        Toast.makeText(
+//                            context,
+//                            "Stored reply",
+//                            Toast.LENGTH_SHORT
+//                        ).show()
+//                    }
+//                }
+//                override fun onError(anError: ANError) {
+//                    // handle error
+//                    handler.post {
+//                        Toast.makeText(
+//                            context,
+//                            "Error: ${anError.message}",
+//                            Toast.LENGTH_SHORT
+//                        ).show()
+//                    }
+//                }
+//            })
     }
 
     /**
@@ -105,37 +108,37 @@ class BluetoothPoller private constructor(private val context: Context) {
 
         val url = "$BeUrl/hardware/set_treatment_progress?id=$treatmentId"
 
-        AndroidNetworking.put(url)
-            .addJSONObjectBody(jsonObject)
-            .build()
-            .getAsJSONObject(object : JSONObjectRequestListener {
-                override fun onResponse(response: JSONObject?) {
-                    handler.post {
-                        Toast.makeText(
-                            context,
-                            "Recieved: $response",
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
-                    handler.post {
-                        Toast.makeText(
-                            context,
-                            "Progress updated!",
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
-                }
-
-                override fun onError(anError: ANError?) {
-                    handler.post {
-                        Toast.makeText(
-                            context,
-                            "Failed to update progress",
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
-                }
-            })
+//        AndroidNetworking.put(url)
+//            .addJSONObjectBody(jsonObject)
+//            .build()
+//            .getAsJSONObject(object : JSONObjectRequestListener {
+//                override fun onResponse(response: JSONObject?) {
+//                    handler.post {
+//                        Toast.makeText(
+//                            context,
+//                            "Recieved: $response",
+//                            Toast.LENGTH_LONG
+//                        ).show()
+//                    }
+//                    handler.post {
+//                        Toast.makeText(
+//                            context,
+//                            "Progress updated!",
+//                            Toast.LENGTH_LONG
+//                        ).show()
+//                    }
+//                }
+//
+//                override fun onError(anError: ANError?) {
+//                    handler.post {
+//                        Toast.makeText(
+//                            context,
+//                            "Failed to update progress",
+//                            Toast.LENGTH_LONG
+//                        ).show()
+//                    }
+//                }
+//            })
     }
 
     fun start() {
