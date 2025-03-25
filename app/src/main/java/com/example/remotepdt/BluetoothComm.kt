@@ -167,6 +167,13 @@ class BluetoothComm private constructor(private val context: Context) {
     }
 
     fun sendAndReceiveMessage(bytesArray: ByteArray): String {
+        if(connTested) {
+            return this@BluetoothComm.sendAndReceive(bytesArray)
+        }
+        return ""
+    }
+
+    private fun sendAndReceive(bytesArray: ByteArray): String {
         synchronized(lock) {
             val messageSent = this@BluetoothComm.sendMessageBytes(bytesArray)
             Handler(Looper.getMainLooper()).post {
@@ -210,7 +217,7 @@ class BluetoothComm private constructor(private val context: Context) {
     // Returns true if sent successfully, else false
     fun sendMessageBytes(bytesArray: ByteArray): Boolean {
         synchronized(lock) {
-            if(!connTested || outputStream == null) {
+            if(outputStream == null) {
                 return false
             }
             try {
@@ -239,7 +246,7 @@ class BluetoothComm private constructor(private val context: Context) {
         var tries = 20  // Setting a max number of tries so that loop doesn't run forever in case of no response from device
         while (tries > 0) {
             tries--
-            response = this@BluetoothComm.sendAndReceiveMessage(command)
+            response = this@BluetoothComm.sendAndReceive(command)
             if(response != "") {
                 break
             }
