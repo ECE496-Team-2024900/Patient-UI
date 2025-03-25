@@ -38,7 +38,7 @@ class PainScoreActivity : AppCompatActivity() {
                 jsonBody.put("completed", true)
 
                 //PUT request
-                AndroidNetworking.put("$BeUrl/treatment/set_pain_score_and_session_complete")
+                AndroidNetworking.put("http://treatment-t0m8.onrender.com/treatment/set_pain_score_and_session_complete")
                     .addQueryParameter("id", treatmentId.toString()) // Add treatment ID as a query parameter
                     .addJSONObjectBody(jsonBody) // Add JSON body
                     .build()

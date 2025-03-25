@@ -23,7 +23,7 @@ class TreatmentSessionActivity : AppCompatActivity() {
         setContentView(R.layout.activity_treatment_session)
 
         // Passed from previous page
-        val treatmentId: Int = intent.getIntExtra("treatment_id", -1)
+        val treatmentId: Int = intent.getIntExtra("treatment_id", 1)
 
         // Find TextViews and Buttons by ID
         val sessionNumberTitle = findViewById<TextView>(R.id.sessionNumberTitle)
@@ -43,7 +43,7 @@ class TreatmentSessionActivity : AppCompatActivity() {
         var sessionComplete = true
 
         // Get session details (session number, date, time) given treatment session id
-        AndroidNetworking.get("${BeUrl}/treatment/get_session_info")
+        AndroidNetworking.get("http://treatment-t0m8.onrender.com/treatment/get_session_info")
             .addQueryParameter("id", treatmentId.toString())
             .build()
             .getAsJSONObject(object : JSONObjectRequestListener {
@@ -149,7 +149,7 @@ class TreatmentSessionActivity : AppCompatActivity() {
                         put("reschedule_requested", true)
                         put("id", treatmentId)
                     }
-                    AndroidNetworking.put("${BeUrl}/treatment/request_reschedule")
+                    AndroidNetworking.put("http://treatment-t0m8.onrender.com/treatment/request_reschedule")
                         .addJSONObjectBody(payload)
                         .build()
                         .getAsJSONObject(object : JSONObjectRequestListener {
@@ -163,7 +163,7 @@ class TreatmentSessionActivity : AppCompatActivity() {
                             }
                         })
                     var clinicianId: String? = null
-                    AndroidNetworking.get("${BeUrl}/treatment/get_wound?id=${woundId}")
+                    AndroidNetworking.get("http://treatment-t0m8.onrender.com/treatment/get_wound?id=${woundId}")
                         .build()
                         .getAsJSONObject(object : JSONObjectRequestListener {
                             override fun onResponse(response: JSONObject) {
@@ -186,7 +186,7 @@ class TreatmentSessionActivity : AppCompatActivity() {
                         )
                         put("email", clinicianId)
                     }
-                    AndroidNetworking.post("${UserBeUrl}/users/send_email")
+                    AndroidNetworking.post("http://user-cyt8.onrender.com/users/send_email")
                         .addJSONObjectBody(payload2)
                         .build()
                 } else {

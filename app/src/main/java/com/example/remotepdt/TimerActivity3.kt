@@ -39,7 +39,7 @@ class TimerActivity3 : AppCompatActivity() {
 
     private fun fetchWashTimer() {
         //val url = "http://127.0.0.1:8000/treatment/timer/1"
-        val url = "http://10.0.2.2:8000/treatment/timer/1" //android emulator
+        val url = "http://treatment-t0m8.onrender.com/treatment/timer/1" //android emulator
 
         AndroidNetworking.get(url)
             .setPriority(Priority.MEDIUM)

@@ -52,7 +52,7 @@ class WoundDetailActivity : AppCompatActivity() {
 
     private fun fetchTreatmentDetails(woundId: Int, scheduledSessionButton: Button) {
         var BeUrl = "http://10.0.2.2:8000"
-        AndroidNetworking.get("${BeUrl}/treatment/get_all_treatments")
+        AndroidNetworking.get("http://treatment-t0m8.onrender.com/treatment/get_all_treatments")
             .build()
             .getAsJSONObject(object : JSONObjectRequestListener {
                 override fun onResponse(response: JSONObject) {
@@ -71,6 +71,8 @@ class WoundDetailActivity : AppCompatActivity() {
                                         "Navigating to scheduled session for Wound $woundId...",
                                         Toast.LENGTH_SHORT
                                     ).show()
+                                    var intent = Intent(this@WoundDetailActivity, TreatmentSessionActivity::class.java)
+                                    startActivity(intent)
                                 }
                                 break
                             }

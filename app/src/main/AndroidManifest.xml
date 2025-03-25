@@ -17,6 +17,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.RemotePDT"
         android:networkSecurityConfig="@xml/network_security_config"
+        android:usesCleartextTraffic="true"
         tools:targetApi="31">
 
         <activity
@@ -40,9 +41,9 @@
         <activity
             android:name=".Instruction2Activity"
             android:exported="false" />
-        <activity
-            android:name=".Instruction3Activity"
-            android:exported="false" />
+<!--        <activity-->
+<!--            android:name=".Instruction3Activity"-->
+<!--            android:exported="false" />-->
         <activity
             android:name=".JoinActivity"
             android:exported="true"

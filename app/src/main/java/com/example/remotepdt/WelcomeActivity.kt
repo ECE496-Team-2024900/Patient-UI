@@ -40,7 +40,7 @@ class WelcomeActivity : AppCompatActivity() {
         val welcomeTitle = findViewById<TextView>(R.id.welcomeTitle)
 
         // Get patient details - pass in the patient email as a parameter
-        AndroidNetworking.get("${BeUrl}/users/get_patient_info")
+        AndroidNetworking.get("http://user-cyt8.onrender.com/users/get_patient_info")
             .addQueryParameter("email", email)
             .build()
             .getAsJSONObject(object : JSONObjectRequestListener {

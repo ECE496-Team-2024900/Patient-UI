@@ -88,7 +88,7 @@ class JoinActivity : AppCompatActivity() {
                             e.printStackTrace()
                         }
                         // Make a PUT request to update the backend with the meeting ID
-                        AndroidNetworking.put("http://10.0.2.2:8000/treatment/add_video_call_id").addJSONObjectBody(jsonObject).build().getAsJSONObject(object : JSONObjectRequestListener {
+                        AndroidNetworking.put("http://treatment-t0m8.onrender.com/treatment/add_video_call_id").addJSONObjectBody(jsonObject).build().getAsJSONObject(object : JSONObjectRequestListener {
                             override fun onResponse(response: JSONObject?) {
                                 // Start the MeetingActivity on a successful API call
                                 startActivity(intent)
