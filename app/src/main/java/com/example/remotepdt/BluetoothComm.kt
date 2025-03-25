@@ -210,7 +210,7 @@ class BluetoothComm private constructor(private val context: Context) {
     // Returns true if sent successfully, else false
     fun sendMessageBytes(bytesArray: ByteArray): Boolean {
         synchronized(lock) {
-            if(!connTested && outputStream == null) {
+            if(!connTested || outputStream == null) {
                 return false
             }
             try {
