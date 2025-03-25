@@ -100,12 +100,18 @@ class BluetoothComm private constructor(private val context: Context) {
                             // Requesting serial number
                             Thread {
                                 try {
+                                    Handler(Looper.getMainLooper()).post {
+                                        Toast.makeText(
+                                            context,
+                                            "In thread!",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
                                     socket = device.createRfcommSocketToServiceRecord(
                                         UUID.fromString(
                                             MY_UUID
                                         )
                                     )
-                                    // Blocking until the socket connection is formed
                                     socket!!.connect()
 
                                     // TESTING TOAST
@@ -121,7 +127,20 @@ class BluetoothComm private constructor(private val context: Context) {
                                     outputStream = socket!!.outputStream
                                     inputStream = socket!!.inputStream
 
+                                    Handler(Looper.getMainLooper()).post {
+                                        Toast.makeText(
+                                            context,
+                                            "Stored streams!",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+
                                     val initialResponse = this@BluetoothComm.receiveMessage()
+
+                                    Handler(Looper.getMainLooper()).post {
+                                        Toast.makeText(context, "First msg: $initialResponse", Toast.LENGTH_LONG).show()
+                                    }
+
                                     // TO-DO: Replace with the actual message
 //                                    if(initialResponse != "MESSAGE_NAME") {
 //                                        Handler(Looper.getMainLooper()).post {
@@ -160,21 +179,21 @@ class BluetoothComm private constructor(private val context: Context) {
         context.registerReceiver(discoveryReceiver, IntentFilter(BluetoothDevice.ACTION_FOUND))
 
         // Stopping discovery after a timeout to avoid unnecessary battery usage (15 seconds for now)
-        bluetoothHandler.postDelayed({
-            bluetoothAdapter?.cancelDiscovery()
-            this@BluetoothComm.unregisterReceiver(discoveryReceiver)
-        }, 15000)
+//        bluetoothHandler.postDelayed({
+//            bluetoothAdapter?.cancelDiscovery()
+//            this@BluetoothComm.unregisterReceiver(discoveryReceiver)
+//        }, 15000)
     }
 
     fun sendAndReceiveMessage(bytesArray: ByteArray): String {
-        if(connTested) {
+        if(true) {
             return this@BluetoothComm.sendAndReceive(bytesArray)
         }
         return ""
     }
 
     private fun sendAndReceive(bytesArray: ByteArray): String {
-        synchronized(lock) {
+        //synchronized(lock) {
             val messageSent = this@BluetoothComm.sendMessageBytes(bytesArray)
             Handler(Looper.getMainLooper()).post {
                 Toast.makeText(
@@ -187,13 +206,13 @@ class BluetoothComm private constructor(private val context: Context) {
                 return this@BluetoothComm.receiveMessage()
             }
             return ""
-        }
+//        }
     }
 
     // Receiving a message from the connected medical device
     // Returns the message if received successfully, else an empty string
     fun receiveMessage(): String {
-        synchronized(lock) {
+        //synchronized(lock) {
             return try {
                 val buffer = ByteArray(1024)
                 val message = StringBuilder()
@@ -210,24 +229,24 @@ class BluetoothComm private constructor(private val context: Context) {
             } catch (e: IOException) {
                 ""
             }
-        }
+        //}
     }
 
     // Sending a message directly as bytes to the connected device
     // Returns true if sent successfully, else false
     fun sendMessageBytes(bytesArray: ByteArray): Boolean {
-        synchronized(lock) {
+//        synchronized(lock) {
             if(outputStream == null) {
                 return false
             }
             try {
-                outputStream?.write(bytesArray)
-                outputStream?.flush()
+                outputStream!!.write(bytesArray)
+                outputStream!!.flush()
                 return true
             } catch (e: IOException) {
                 return false
             }
-        }
+//        }
     }
 
     fun unregisterReceiver(broadcastReceiver: BroadcastReceiver) {

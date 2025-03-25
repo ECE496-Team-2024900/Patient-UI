@@ -87,7 +87,7 @@ class TimerActivity3 : AppCompatActivity() {
 
     private fun navigateToNextActivity() {
         // Treatment is done - stop polling for information
-        BluetoothPoller.getInstance(applicationContext).stop()
+        //BluetoothPoller.getInstance(applicationContext).stop()
 
         //Next is the pain score activity, so we can send bluetooth signal now to end treatment
         //Prepare 32-bit end treatment command (opcode 0x03)

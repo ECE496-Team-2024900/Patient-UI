@@ -51,71 +51,74 @@ class LoaderActivity : AppCompatActivity() {
                     if (message == "Approved") {
                         Toast.makeText(this@LoaderActivity, "Recieved approval", Toast.LENGTH_LONG).show()
                         val url2 = "http://treatment-t0m8.onrender.com/treatment/parameters/get?id=1"
-                        AndroidNetworking.get(url2).build().getAsJSONObject(object : JSONObjectRequestListener {
-                            override fun onResponse(response: JSONObject) {
-                                Toast.makeText(this@LoaderActivity, "Got treatment params", Toast.LENGTH_LONG).show()
-                                val parameters = JSONObject().apply {
-                                    put("hardwareId", 100)
-                                    put("infusionVolume", response.optDouble("drug_volume_required", 0.0))
-                                    put("laserPowerLevel", response.optDouble("laser_power_required", 0.0))
-                                    put("firstTimeDelay", response.optDouble("first_wait", 0.0))
-                                    put("secondTimeDelay", response.optDouble("second_wait", 0.0))
-                                    put("washVolume", response.optDouble("wash_volume_required ", 0.0))
-                                }
+                        AndroidNetworking.get(url2)
+                            .build().
+                            getAsJSONObject(object : JSONObjectRequestListener {
+                                override fun onResponse(response: JSONObject) {
+                                    Toast.makeText(this@LoaderActivity, "Got treatment params", Toast.LENGTH_LONG).show()
+                                    val parameters = JSONObject().apply {
+                                        put("hardwareID", 100)
+                                        put("infusionVolume", response.optDouble("drug_volume_required", 0.0))
+                                        put("laserPowerLevel", response.optDouble("laser_power_required", 0.0))
+                                        put("firstTimeDelay", response.optDouble("first_wait", 0.0))
+                                        put("secondTimeDelay", response.optDouble("second_wait", 0.0))
+                                        put("washVolume", response.optDouble("wash_volume_required ", 0.0))
+                                    }
 
-                                // Since this is the first command being sent outside of BluetoothComm, there is a chance that the socket
-                                // connection hasn't been established. So, requesting repeatedly.
-                                var paramsSent = false
-                                var retries = 20
-                                while(retries > 0 && !paramsSent) {
-                                    Toast.makeText(this@LoaderActivity, "Retry: $retries", Toast.LENGTH_LONG).show()
-                                    paramsSent = BluetoothComm.getInstance(applicationContext).sendMessageBytes(parameters.toString().toByteArray())
-                                    retries--
-                                    Thread.sleep(100)
-                                }
-                                Toast.makeText(this@LoaderActivity, "Params sent status: $paramsSent", Toast.LENGTH_LONG).show()
-                                if (paramsSent) {
-                                    // Navigate to TimerActivity1 if message matches
+                                    // Since this is the first command being sent outside of BluetoothComm, there is a chance that the socket
+                                    // connection hasn't been established. So, requesting repeatedly.
+                                    var response = ""
+                                    var retries = 20
+                                    while(retries > 0 && response == "") {
+                                        Toast.makeText(this@LoaderActivity, "Retry: $retries", Toast.LENGTH_LONG).show()
+                                        val parametersWithNewLine = parameters.toString()
+                                        response = BluetoothComm.getInstance(applicationContext).sendAndReceiveMessage(parametersWithNewLine.toByteArray())
+                                        retries--
+                                        Thread.sleep(100)
+                                    }
+                                    Toast.makeText(this@LoaderActivity, "Params sent reply: $response", Toast.LENGTH_LONG).show()
+                                    if (response != "") {
+                                        // Navigate to TimerActivity1 if message matches
 
-                                    //Approval received from clinician, so we can send bluetooth signal now to start treatment
-                                    //Prepare 32-bit start command (opcode 0x01)
-                                    val command = "1".toByteArray()
+                                        //Approval received from clinician, so we can send bluetooth signal now to start treatment
+                                        //Prepare 32-bit start command (opcode 0x01)
+                                        val command = "1\r\n".toByteArray()
 
-                                    // Send bluetooth message to hw device for starting the treatment
-                                    val startMessage = bluetoothComm!!.sendAndReceiveMessage(command)
-                                    Toast.makeText(this@LoaderActivity, "Start treatment: $startMessage", Toast.LENGTH_LONG).show()
+                                        // Send bluetooth message to hw device for starting the treatment
+                                        val startMessage = bluetoothComm!!.sendAndReceiveMessage(command)
+                                        Toast.makeText(this@LoaderActivity, "Start treatment: $startMessage", Toast.LENGTH_LONG).show()
 
-                                    // Proceed with treatment if start signal successfully sent to device
-                                    if (startMessage != "") {
-                                        // Navigate to TimerActivity1
-                                        navigateToTimerActivity1()
+                                        // Proceed with treatment if start signal successfully sent to device
+                                        if (startMessage != "") {
+                                            // Navigate to TimerActivity1
+                                            navigateToTimerActivity1()
+                                        } else {
+                                            // Display error message
+                                            Toast.makeText(
+                                                this@LoaderActivity, "An error occurred sending start treatment signal to medical device via bluetooth",
+                                                Toast.LENGTH_LONG
+                                            ).show()
+                                        }
+
+                                        //navigateToTimerActivity1()
                                     } else {
                                         // Display error message
                                         Toast.makeText(
-                                            this@LoaderActivity, "An error occurred sending start treatment signal to medical device via bluetooth",
+                                            this@LoaderActivity, "An error occurred sending treatment parameters to medical device via bluetooth",
                                             Toast.LENGTH_LONG
                                         ).show()
                                     }
-                                    
-                                    //navigateToTimerActivity1()
-                                } else {
+                                }
+
+                                override fun onError(anError: ANError?) {
+                                    val statusCode = anError?.errorCode
+                                    val errorBody = anError?.errorBody
                                     // Display error message
                                     Toast.makeText(
-                                        this@LoaderActivity, "An error occurred sending treatment parameters to medical device via bluetooth",
+                                        this@LoaderActivity, "ERROR: $statusCode $errorBody",
                                         Toast.LENGTH_LONG
                                     ).show()
                                 }
-                            }
-
-                            override fun onError(anError: ANError?) {
-                                val statusCode = anError?.errorCode
-                                val errorBody = anError?.errorBody
-                                // Display error message
-                                Toast.makeText(
-                                    this@LoaderActivity, "ERROR: $statusCode $errorBody",
-                                    Toast.LENGTH_LONG
-                                ).show()
-                            }
                         })
                     } else {
                         // Retry polling or stop after max retries

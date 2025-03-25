@@ -40,18 +40,18 @@ class TimerActivity1 : AppCompatActivity() {
         // Fetch treatment session data from the backend
         fetchTreatmentSession()
 
-        PauseResumeListener.getInstance(applicationContext).setOnPauseResumeListener { ongoingTreatment ->
-            if (ongoingTreatment) {
-                resumeTimer()
-            } else {
-                pauseTimer()
-            }
-        }
+//        PauseResumeListener.getInstance(applicationContext).setOnPauseResumeListener { ongoingTreatment ->
+//            if (ongoingTreatment) {
+//                resumeTimer()
+//            } else {
+//                pauseTimer()
+//            }
+//        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        PauseResumeListener.getInstance(applicationContext).setOnPauseResumeListener(null) // Remove listener
+        //PauseResumeListener.getInstance(applicationContext).setOnPauseResumeListener(null) // Remove listener
     }
 
     private fun fetchTreatmentSession() {

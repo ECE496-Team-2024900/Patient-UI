@@ -119,7 +119,7 @@ class TreatmentSessionActivity : AppCompatActivity() {
                     val intent = Intent(this, Instruction1Activity::class.java)
                     startActivity(intent)
                     // Treatment about to start - begin polling for information
-                    BluetoothPoller.getInstance(applicationContext).start()
+                    //BluetoothPoller.getInstance(applicationContext).start()
                 } else {
                     Toast.makeText(
                         this@TreatmentSessionActivity,
