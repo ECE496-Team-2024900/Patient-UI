@@ -87,7 +87,7 @@ class LoaderActivity : AppCompatActivity() {
                                         ).show()
                                     }
                                     
-                                    navigateToTimerActivity1()
+                                    //navigateToTimerActivity1()
                                 } else {
                                     // Display error message
                                     Toast.makeText(
