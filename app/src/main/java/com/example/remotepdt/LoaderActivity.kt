@@ -62,7 +62,16 @@ class LoaderActivity : AppCompatActivity() {
                                     put("secondTimeDelay", response.optDouble("second_wait", 0.0))
                                     put("washVolume", response.optDouble("wash_volume_required ", 0.0))
                                 }
-                                val paramsSent = BluetoothComm.getInstance(applicationContext).sendMessageBytes(parameters.toString().toByteArray())
+
+                                // Since this is the first command being sent outside of BluetoothComm, there is a chance that the socket
+                                // connection hasn't been established. So, requesting repeatedly.
+                                var paramsSent = false
+                                var retries = 20
+                                while(retries > 0 && !paramsSent) {
+                                    Toast.makeText(this@LoaderActivity, "Retry: $retries", Toast.LENGTH_LONG).show()
+                                    paramsSent = BluetoothComm.getInstance(applicationContext).sendMessageBytes(parameters.toString().toByteArray())
+                                    retries--
+                                }
                                 Toast.makeText(this@LoaderActivity, "Params sent status: $paramsSent", Toast.LENGTH_LONG).show()
                                 if (paramsSent) {
                                     // Navigate to TimerActivity1 if message matches
