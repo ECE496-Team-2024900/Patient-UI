@@ -33,6 +33,7 @@ class BluetoothComm private constructor(private val context: Context) {
     private var outputStream: OutputStream? = null
     private var receiverRegistered = true
     private var socket: BluetoothSocket? = null
+    val lock = Object()
 
     // Connect to a medical device authorized for this patient
     // Takes the authorized medical device's serial number (required to check identification)
@@ -121,12 +122,12 @@ class BluetoothComm private constructor(private val context: Context) {
 
                                     val initialResponse = this@BluetoothComm.receiveMessage()
                                     // TO-DO: Replace with the actual message
-                                    if(initialResponse != "MESSAGE_NAME") {
-                                        Handler(Looper.getMainLooper()).post {
-                                            Toast.makeText(context, "Error with initial response", Toast.LENGTH_SHORT).show()
-                                        }
-                                        return@Thread
-                                    }
+//                                    if(initialResponse != "MESSAGE_NAME") {
+//                                        Handler(Looper.getMainLooper()).post {
+//                                            Toast.makeText(context, "Error with initial response", Toast.LENGTH_SHORT).show()
+//                                        }
+//                                        return@Thread
+//                                    }
 
                                     // TESTING TOAST
                                     Handler(Looper.getMainLooper()).post {
@@ -164,26 +165,51 @@ class BluetoothComm private constructor(private val context: Context) {
         }, 15000)
     }
 
+    fun sendAndReceiveMessage(bytesArray: ByteArray): String {
+        synchronized(lock) {
+            val messageSent = this@BluetoothComm.sendMessageBytes(bytesArray)
+            Handler(Looper.getMainLooper()).post {
+                Toast.makeText(
+                    context,
+                    "Message sent status: $messageSent",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            if(messageSent) {
+                return this@BluetoothComm.receiveMessage()
+            }
+            return ""
+        }
+    }
+
     // Receiving a message from the connected medical device
     // Returns the message if received successfully, else an empty string
     fun receiveMessage(): String {
-        return try {
-            val buffer = ByteArray(1024)
-            val bytesRead = inputStream?.read(buffer) ?: 0
-            String(buffer, 0, bytesRead).trim()
-        } catch (e: IOException) {
-            ""
+        synchronized(lock) {
+            return try {
+                val buffer = ByteArray(1024)
+                val bytesRead = inputStream?.read(buffer) ?: 0
+                String(buffer, 0, bytesRead).trim()
+            } catch (e: IOException) {
+                ""
+            }
         }
     }
 
     // Sending a message directly as bytes to the connected device
     // Returns true if sent successfully, else false
     fun sendMessageBytes(bytesArray: ByteArray): Boolean {
-        try {
-            outputStream?.write(bytesArray)
-            return true
-        } catch (e: IOException) {
-            return false
+        synchronized(lock) {
+            if(outputStream == null) {
+                return false
+            }
+            try {
+                outputStream?.write(bytesArray)
+                outputStream?.flush()
+                return true
+            } catch (e: IOException) {
+                return false
+            }
         }
     }
 

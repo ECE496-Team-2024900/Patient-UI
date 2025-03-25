@@ -20,9 +20,6 @@ class WelcomeActivity : AppCompatActivity() {
     private var BeUrl = "http://10.0.2.2:8002"
     private val BLUETOOTH_PERMISSION_REQUEST_CODE = 1001
 
-    //New: Instance of BluetoothStatusPoller
-    private lateinit var statusPoller: BluetoothStatusPoller
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -98,10 +95,6 @@ class WelcomeActivity : AppCompatActivity() {
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
         }
-
-        //Start status polling using the new class
-        statusPoller = BluetoothStatusPoller(this, treatmentId = 1)
-        statusPoller.startPolling()
     }
 
     //Stop polling when activity is destroyed

@@ -28,7 +28,7 @@ class PainScoreActivity : AppCompatActivity() {
         // Set an OnClickListener on the Done button
         btnDone.setOnClickListener {
             // Treatment is done - stop polling for information
-            UpdatePolling.getInstance(applicationContext).stop()
+            BluetoothPoller.getInstance(applicationContext).stop()
 
             // Get the pain score entered in the input field
             val painScoreText = painScoreInput.text.toString()
