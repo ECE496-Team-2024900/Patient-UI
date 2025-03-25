@@ -38,7 +38,7 @@ class BluetoothComm private constructor(private val context: Context) {
     // Takes the authorized medical device's serial number (required to check identification)
     @SuppressLint("MissingPermission")
     fun connect(activity: WelcomeActivity) {
-        
+
         // Cannot proceed if the device hasn't enabled Bluetooth
         if(bluetoothAdapter?.isEnabled == false) {
             Toast.makeText(
@@ -141,7 +141,7 @@ class BluetoothComm private constructor(private val context: Context) {
                                     //val startTreatmentCommand = byteArrayOf(0x01)
                                     outputStream!!.write("2".toByteArray())
 
-                                // Error handling
+                                    // Error handling
                                 } catch (e: IOException) {
                                     Handler(Looper.getMainLooper()).post {
                                         Toast.makeText(context, "Connection failed: ${e.message}", Toast.LENGTH_SHORT).show()
