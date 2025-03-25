@@ -33,6 +33,7 @@ class BluetoothComm private constructor(private val context: Context) {
     private var outputStream: OutputStream? = null
     private var receiverRegistered = true
     private var socket: BluetoothSocket? = null
+    private var connTested = false
     val lock = Object()
 
     // Connect to a medical device authorized for this patient
@@ -209,7 +210,7 @@ class BluetoothComm private constructor(private val context: Context) {
     // Returns true if sent successfully, else false
     fun sendMessageBytes(bytesArray: ByteArray): Boolean {
         synchronized(lock) {
-            if(outputStream == null) {
+            if(!connTested && outputStream == null) {
                 return false
             }
             try {
@@ -244,6 +245,7 @@ class BluetoothComm private constructor(private val context: Context) {
             }
         }
         if (response.contains("Secure Connection, HW Handshake Number:")) {
+            connTested = true
             // Save HW handshake number (hardwareID)
             val hardwareID = response.substringAfter("Secure Connection, HW Handshake Number:").trim()
             if (hardwareID.isNotEmpty()) {
