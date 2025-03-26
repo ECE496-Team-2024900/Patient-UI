@@ -48,7 +48,7 @@ class JoinActivity2 : AppCompatActivity() {
     // Lifecycle method called when the activity is created
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_join)
+        setContentView(R.layout.activity_join_2)
         AndroidNetworking.initialize(getApplicationContext()); // Initialize networking library
 
         // Reference to the "Create Meeting" button
