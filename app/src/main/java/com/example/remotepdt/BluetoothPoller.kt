@@ -51,7 +51,11 @@ class BluetoothPoller private constructor(private val context: Context) {
 //            ).show()
 //        }
         Log.d("COMMAND 9: ", response)
-        val progress = response.toIntOrNull()
+        val percentageRegex = Regex("""\d+(\.\d+)?%""")
+        val match = percentageRegex.find(response)
+        val progressString = match?.value?.removeSuffix("%")
+        val progress = progressString?.toDoubleOrNull()?.toInt()
+
         if (progress != null && progress in 0..100) {
             sendProgressToBackend(progress)
         }
