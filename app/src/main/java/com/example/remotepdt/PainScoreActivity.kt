@@ -46,7 +46,7 @@ class PainScoreActivity : AppCompatActivity() {
                         override fun onResponse(response: JSONObject) {
                             // Update successful
                             // Go to back to TreatmentSessionActivity
-                            val intent = Intent(this@PainScoreActivity, JoinActivity::class.java)
+                            val intent = Intent(this@PainScoreActivity, JoinActivity2::class.java)
                             intent.putExtra("treatment_id", treatmentId)
                             startActivity(intent)
                         }
