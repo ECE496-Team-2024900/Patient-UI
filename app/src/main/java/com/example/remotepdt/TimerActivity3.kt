@@ -21,11 +21,15 @@ class TimerActivity3 : AppCompatActivity() {
     private var countDownTimer: CountDownTimer? = null // Reference to the timer
 
     //Get bluetooth instance
-    private val bluetoothComm = BluetoothComm.getInstance(applicationContext)
+    // private val bluetoothComm = BluetoothComm.getInstance(applicationContext)
+    private lateinit var bluetoothComm: BluetoothComm
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_timer3)
+
+        // FIXED: initialize after super.onCreate
+        bluetoothComm = BluetoothComm.getInstance(applicationContext)
 
         // Initialize AndroidNetworking
         AndroidNetworking.initialize(applicationContext)
