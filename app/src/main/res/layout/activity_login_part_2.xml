@@ -73,6 +73,18 @@
 
     <Button
         android:layout_marginTop="60dp"
+        android:id="@+id/btnForgotPassword"
+        android:layout_width="321dp"
+        android:layout_height="99dp"
+        android:backgroundTint="#004AAD"
+        android:text="Forgot Password"
+        android:textColor="#B1EDFF"
+        android:drawableRight="@drawable/ic_arrow_front"
+        android:textSize="24sp"
+        app:cornerRadius="1000dp" />
+
+    <Button
+        android:layout_marginTop="20dp"
         android:id="@+id/btnLoggingIn"
         android:layout_width="184dp"
         android:layout_height="99dp"

@@ -21,6 +21,7 @@ class LoginActivity2 : AppCompatActivity() {
         val passwordInput = findViewById<EditText>(R.id.passwordInput)
         emailInput.hint = email
         val btnLoggingIn = findViewById<Button>(R.id.btnLoggingIn)
+        val btnForgotPassword = findViewById<Button>(R.id.btnForgotPassword)
 
         btnLoggingIn.setOnClickListener {
             val password = passwordInput.getText().toString()
@@ -38,6 +39,11 @@ class LoginActivity2 : AppCompatActivity() {
                         ).show()
                     }
                 }
+        }
+
+        btnForgotPassword.setOnClickListener {
+            val intent = Intent(this@LoginActivity2, ForgotPasswordActivity::class.java)
+            startActivity(intent)
         }
     }
 }
