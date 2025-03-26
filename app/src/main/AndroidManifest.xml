@@ -27,7 +27,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
+        <activity
+            android:name=".LoginActivity2"
+            android:exported="false" />
+        <activity
+            android:name=".MultifactorActivity"
+            android:exported="false" />
+        <activity
+            android:name=".LoginActivity3"
+            android:exported="false" />
         <activity
             android:name=".WelcomeActivity"
             android:exported="false" />
@@ -39,9 +47,6 @@
             android:exported="false" />
         <activity
             android:name=".Instruction2Activity"
-            android:exported="false" />
-        <activity
-            android:name=".Instruction3Activity"
             android:exported="false" />
         <activity
             android:name=".JoinActivity"
