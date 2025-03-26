@@ -77,6 +77,9 @@
             android:name=".PainScoreActivity"
             android:exported="false" />
         <activity
+            android:name=".JoinActivity2"
+            android:exported="false" />
+        <activity
             android:name=".WoundListActivity"
             android:networkSecurityConfig="@xml/network_security_config"
             android:exported="false" />
@@ -111,5 +114,5 @@
     <!-- Needed only if your app communicates with already-paired Bluetooth
          devices. -->
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
-  
+
 </manifest>

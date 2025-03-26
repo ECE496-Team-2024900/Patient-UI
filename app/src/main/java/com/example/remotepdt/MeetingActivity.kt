@@ -8,10 +8,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.androidnetworking.AndroidNetworking
+import com.androidnetworking.error.ANError
+import com.androidnetworking.interfaces.JSONObjectRequestListener
 import live.videosdk.rtc.android.Meeting
 import live.videosdk.rtc.android.Participant
 import live.videosdk.rtc.android.VideoSDK
 import live.videosdk.rtc.android.listeners.MeetingEventListener
+import org.json.JSONObject
 
 class MeetingActivity : AppCompatActivity() {
     // declare the variables we will be using to handle the meeting
@@ -19,6 +23,8 @@ class MeetingActivity : AppCompatActivity() {
     private var micEnabled = true
     private var webcamEnabled = true
     private var frontFacing = true
+    private var treatmentId: Int = -1
+    private var BeUrl = "http://10.0.2.2:8000"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,6 +33,7 @@ class MeetingActivity : AppCompatActivity() {
         val token = intent.getStringExtra("token")
         val meetingId = intent.getStringExtra("meetingId")
         val participantName = "patient"
+        treatmentId = intent.getIntExtra("treatment_id", -1)
 
         // 1. Configuration VideoSDK with Token
         VideoSDK.config(token)
@@ -59,10 +66,27 @@ class MeetingActivity : AppCompatActivity() {
             Log.d("#meeting", "onMeetingLeft()")
             meeting = null
 
+            var completed = false
             // Navigate to LoaderActivity when the meeting ends
+            AndroidNetworking.get("${BeUrl}/treatment/get_session_info")
+                .addQueryParameter("id", treatmentId.toString())
+                .build()
+                .getAsJSONObject(object : JSONObjectRequestListener {
+                    override fun onResponse(response: JSONObject) {
+                        completed = response.optBoolean("completed")
+                    }
+                    override fun onError(anError: ANError?) {
+                    }
+                })
 
-            val intent = Intent(this@MeetingActivity, LoaderActivity::class.java)
-            startActivity(intent)
+            if (completed) {
+                    val intent = Intent(this@MeetingActivity, TreatmentSessionActivity::class.java)
+                    intent.putExtra("treatment_id", treatmentId)
+                    startActivity(intent)
+            } else {
+                val intent = Intent(this@MeetingActivity, LoaderActivity::class.java)
+                startActivity(intent)
+            }
 
             if (!isDestroyed) finish()
         }
