@@ -14,6 +14,8 @@ import androidx.core.content.ContextCompat
 import com.androidnetworking.AndroidNetworking
 import com.androidnetworking.error.ANError
 import com.androidnetworking.interfaces.JSONObjectRequestListener
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 import org.json.JSONObject
 
 class WelcomeActivity : AppCompatActivity() {
@@ -92,6 +94,7 @@ class WelcomeActivity : AppCompatActivity() {
 
         // Set an OnClickListener on the Logout button
         btnLogout.setOnClickListener {
+            Firebase.auth.signOut()
             // Navigate back to login page when the button is clicked
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
