@@ -19,25 +19,27 @@
         android:textAlignment="center"
         android:textColor="#004AAD"
         android:textSize="42sp"
-        android:textStyle="bold"
-        android:translationY="30dp" />
+        android:layout_marginTop="40dp"
+        android:textStyle="bold" />
 
     <!-- TextView for Prompt -->
     <TextView
         android:id="@+id/painScorePrompt"
         android:layout_width="373dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
         android:text="Rate your pain during the treatment on a scale of 1-10 (1 being none, 10 being extreme)"
         android:textAlignment="viewStart"
         android:textColor="#004AAD"
-        android:textSize="27sp"
-        android:translationY="50dp" />
+        android:textSize="27sp" />
 
     <!-- EditText for Pain Score Input -->
+
+    <!-- TextView for Prompt -->
     <EditText
         android:id="@+id/painScoreInput"
         android:layout_width="372dp"
-        android:layout_height="79dp"
+        android:layout_height="60dp"
         android:background="@drawable/rounded_box"
         android:ems="10"
         android:hint="Enter your rating"
@@ -46,21 +48,20 @@
         android:textColor="#004AAD"
         android:textSize="25sp" />
 
-    <!-- TextView for Prompt -->
     <TextView
         android:id="@+id/treatmentScorePrompt"
         android:layout_width="373dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:text="Rate the ease of use of the application during the treatment on a scale of 1-10 (1 being easy, 10 being hard)"
         android:textAlignment="viewStart"
         android:textColor="#004AAD"
-        android:textSize="27sp"
-        android:translationY="50dp" />
+        android:textSize="27sp" />
 
     <EditText
         android:id="@+id/treatmentScoreInput"
         android:layout_width="372dp"
-        android:layout_height="79dp"
+        android:layout_height="60dp"
         android:background="@drawable/rounded_box"
         android:ems="10"
         android:hint="Enter your rating"
@@ -72,12 +73,12 @@
     <!-- Done Button -->
     <Button
         android:id="@+id/btnDone"
+        android:layout_marginTop="40dp"
         android:layout_width="272dp"
-        android:layout_height="99dp"
+        android:layout_height="70dp"
         android:backgroundTint="#004AAD"
         android:text="Done!"
         android:textSize="28sp"
-        android:translationY="440dp"
         app:cornerRadius="8dp" />
 
 </LinearLayout>
