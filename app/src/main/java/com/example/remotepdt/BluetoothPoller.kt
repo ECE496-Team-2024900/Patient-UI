@@ -52,12 +52,17 @@ class BluetoothPoller private constructor(private val context: Context) {
 //        }
         Log.d("COMMAND 9: ", response)
         val percentageRegex = Regex("""\d+(\.\d+)?%""")
-        val match = percentageRegex.find(response)
-        val progressString = match?.value?.removeSuffix("%")
-        val progress = progressString?.toDoubleOrNull()?.toInt()
+        val wordRegex = Regex("""^\w+""")
 
-        if (progress != null && progress in 0..100) {
-            sendProgressToBackend(progress)
+        val percentMatch = percentageRegex.find(response)
+        val wordMatch = wordRegex.find(response)
+
+        val percent = percentMatch?.value       // %
+        val phase = wordMatch?.value            // Phase
+
+        if (percent != null && phase != null) {
+            val progressString = "$phase $percent"  // Phase + Percentage
+            sendProgressToBackend(progressString)
         }
     }
 
@@ -105,7 +110,7 @@ class BluetoothPoller private constructor(private val context: Context) {
     /**
      * Sends the received progress to the backend microservice.
      */
-    private fun sendProgressToBackend(progress: Int) {
+    private fun sendProgressToBackend(progress: String) {
         val jsonObject = JSONObject().apply {
             put("data", progress)
         }
