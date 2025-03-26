@@ -45,6 +45,7 @@
         android:hint="Enter your rating"
         android:inputType="number"
         android:padding="12dp"
+        android:backgroundTint="@color/white"
         android:textColor="#004AAD"
         android:textSize="25sp" />
 
@@ -64,6 +65,7 @@
         android:layout_height="60dp"
         android:background="@drawable/rounded_box"
         android:ems="10"
+        android:backgroundTint="@color/white"
         android:hint="Enter your rating"
         android:inputType="number"
         android:padding="12dp"
