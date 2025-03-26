@@ -29,7 +29,7 @@ class CurrentTreatmentsListActivity : AppCompatActivity() {
         val buttonContainer = findViewById<LinearLayout>(R.id.button_container)
 
         // Request to get current treatment sessions
-        AndroidNetworking.get("${BeUrl}/treatment/get_all_treatments")
+        AndroidNetworking.get("http://treatment-t0m8.onrender.com/treatment/get_all_treatments")
             .build()
             .getAsJSONObject(object : JSONObjectRequestListener {
                 override fun onResponse(response: JSONObject) {

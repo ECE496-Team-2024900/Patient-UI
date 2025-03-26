@@ -3,5 +3,8 @@
     <domain-config cleartextTrafficPermitted="true">
         <domain includeSubdomains="true">127.0.0.1</domain>
         <domain includeSubdomains="true">10.0.2.2</domain>
+        <domain includeSubdomains="true">treatment-t0m8.onrender.com</domain>
+        <domain includeSubdomains="true">hardware-comm.onrender.com</domain>
+        <domain includeSubdomains="true">user-cyt8.onrender.com</domain>
     </domain-config>
 </network-security-config>

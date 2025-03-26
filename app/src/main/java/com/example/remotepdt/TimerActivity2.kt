@@ -44,7 +44,7 @@ class TimerActivity2 : AppCompatActivity() {
     }
 
     private fun fetchWashTimer() {
-        val url = "http://10.0.2.2:8000/treatment/timer/1" // Android emulator URL
+        val url = "http://treatment-t0m8.onrender.com/treatment/timer/1" // Android emulator URL
 
         AndroidNetworking.get(url)
             .setPriority(Priority.MEDIUM)
@@ -92,6 +92,12 @@ class TimerActivity2 : AppCompatActivity() {
         }.start()
     }
 
+    private fun navigateToNextActivity() {
+        val intent = Intent(this, TimerActivity3::class.java)
+        startActivity(intent)
+        finish()
+    }
+
     private fun finishTimerAndNavigate() {
         // Cancel the ongoing timer
         countDownTimer?.cancel()
@@ -105,9 +111,4 @@ class TimerActivity2 : AppCompatActivity() {
         navigateToNextActivity()
     }
 
-    private fun navigateToNextActivity() {
-        val intent = Intent(this, TimerActivity3::class.java)
-        startActivity(intent)
-        finish()
-    }
 }

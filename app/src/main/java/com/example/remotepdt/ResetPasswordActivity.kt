@@ -94,7 +94,7 @@ class ResetPasswordActivity : AppCompatActivity() {
     }
 
     private fun updatePasswordInDatabase(email: String, newPassword: String) {
-        val updatePasswordUrl = "http://10.0.2.2:8000/user/update_password/"
+        val updatePasswordUrl = "http://user-cyt8.onrender.com/user/update_password/"
 
         val payload = JSONObject().apply {
             put("email", email)

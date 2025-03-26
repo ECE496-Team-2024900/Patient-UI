@@ -12,6 +12,7 @@ import android.content.IntentFilter
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.widget.Toast
 import org.json.JSONObject
 import java.io.IOException
@@ -28,17 +29,17 @@ class BluetoothComm private constructor(private val context: Context) {
         bluetoothManager?.adapter
     }
 
-    private var bluetoothHandler = Handler()
     private var inputStream: InputStream? = null
     private var outputStream: OutputStream? = null
     private var receiverRegistered = true
     private var socket: BluetoothSocket? = null
+    private val lock = Object()
 
     // Connect to a medical device authorized for this patient
     // Takes the authorized medical device's serial number (required to check identification)
     @SuppressLint("MissingPermission")
     fun connect(activity: WelcomeActivity) {
-        
+
         // Cannot proceed if the device hasn't enabled Bluetooth
         if(bluetoothAdapter?.isEnabled == false) {
             Toast.makeText(
@@ -61,7 +62,9 @@ class BluetoothComm private constructor(private val context: Context) {
         // Searching for nearby Bluetooth devices
         @SuppressLint("MissingPermission")
         val started = bluetoothAdapter?.startDiscovery()
-        Toast.makeText(context, "Discovery started: $started", Toast.LENGTH_SHORT).show()
+        //Toast.makeText(context, "Discovery started: $started", Toast.LENGTH_SHORT).show()
+        Log.d("BT LOGGING: ", "Discovery started: $started")
+
 
         // Processing found device
         val discoveryReceiver = object : BroadcastReceiver() {
@@ -74,7 +77,8 @@ class BluetoothComm private constructor(private val context: Context) {
                         // Hence, using the appropriate call depending on version
 
                         // TESTING TOAST
-                        Toast.makeText(context, "Found a device.", Toast.LENGTH_SHORT).show()
+                        //Toast.makeText(context, "Found a device.", Toast.LENGTH_SHORT).show()
+                        Log.d("BT LOGGING: ", "Found a device")
 
                         val device: BluetoothDevice? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                             intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE, BluetoothDevice::class.java)
@@ -89,63 +93,67 @@ class BluetoothComm private constructor(private val context: Context) {
                             this@BluetoothComm.unregisterReceiver(this)
 
                             // TESTING TOAST
-                            Toast.makeText(
-                                context,
-                                "Device has name: ${device.name}",
-                                Toast.LENGTH_LONG
-                            ).show()
+//                            Toast.makeText(
+//                                context,
+//                                "Device has name: ${device.name}",
+//                                Toast.LENGTH_LONG
+//                            ).show()
+                            Log.d("BT LOGGING: ", "Device has name: ${device.name}")
 
                             // Requesting serial number
                             Thread {
                                 try {
+//                                    Handler(Looper.getMainLooper()).post {
+//                                        Toast.makeText(
+//                                            context,
+//                                            "In thread!",
+//                                            Toast.LENGTH_SHORT
+//                                        ).show()
+//                                    }
+                                    Log.d("BT LOGGING: ", "In thread!")
                                     socket = device.createRfcommSocketToServiceRecord(
                                         UUID.fromString(
                                             MY_UUID
                                         )
                                     )
-                                    // Blocking until the socket connection is formed
                                     socket!!.connect()
 
                                     // TESTING TOAST
-                                    Handler(Looper.getMainLooper()).post {
-                                        Toast.makeText(
-                                            context,
-                                            "Successfully formed a connection",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    }
+//                                    Handler(Looper.getMainLooper()).post {
+//                                        Toast.makeText(
+//                                            context,
+//                                            "Successfully formed a connection",
+//                                            Toast.LENGTH_SHORT
+//                                        ).show()
+//                                    }
 
+                                    Log.d("BT LOGGING: ", "Successfully formed a connection.")
                                     // Storing the output and input streams for communication
                                     outputStream = socket!!.outputStream
                                     inputStream = socket!!.inputStream
 
-                                    val initialResponse = this@BluetoothComm.receiveMessage()
-                                    // TO-DO: Replace with the actual message
-                                    if(initialResponse != "MESSAGE_NAME") {
-                                        Handler(Looper.getMainLooper()).post {
-                                            Toast.makeText(context, "Error with initial response", Toast.LENGTH_SHORT).show()
-                                        }
-                                        return@Thread
-                                    }
-
-                                    // TESTING TOAST
                                     Handler(Looper.getMainLooper()).post {
                                         Toast.makeText(
                                             context,
-                                            initialResponse,
+                                            "Successfully connected with the device.",
                                             Toast.LENGTH_SHORT
                                         ).show()
                                     }
+                                    Log.d("BT LOGGING: ", "Stored sockets.")
 
+                                    val initialResponse = this@BluetoothComm.receiveMessage()
+                                    Log.d("BT LOGGING: ", "First msg: $initialResponse")
 
-                                    //val startTreatmentCommand = byteArrayOf(0x01)
-                                    outputStream!!.write("2".toByteArray())
+//                                    Handler(Looper.getMainLooper()).post {
+//                                        Toast.makeText(context, "First msg: $initialResponse", Toast.LENGTH_LONG).show()
+//                                    }
 
-                                // Error handling
+                                    // Error handling
                                 } catch (e: IOException) {
                                     Handler(Looper.getMainLooper()).post {
                                         Toast.makeText(context, "Connection failed: ${e.message}", Toast.LENGTH_SHORT).show()
                                     }
+                                    Log.e("BT LOGGING: ", "Connection failed: ${e.message}")
                                 }
                             }.start()
                         }
@@ -156,45 +164,72 @@ class BluetoothComm private constructor(private val context: Context) {
 
         // Registering the receiver for Bluetooth discovery action
         context.registerReceiver(discoveryReceiver, IntentFilter(BluetoothDevice.ACTION_FOUND))
+    }
 
-        // Stopping discovery after a timeout to avoid unnecessary battery usage (15 seconds for now)
-        bluetoothHandler.postDelayed({
-            bluetoothAdapter?.cancelDiscovery()
-            this@BluetoothComm.unregisterReceiver(discoveryReceiver)
-        }, 15000)
+    fun sendAndReceiveMessage(bytesArray: ByteArray): String {
+        return this@BluetoothComm.sendAndReceive(bytesArray)
+    }
+
+    private fun sendAndReceive(bytesArray: ByteArray): String {
+        synchronized(lock) {
+            val messageSent = this@BluetoothComm.sendMessageBytes(bytesArray)
+            Handler(Looper.getMainLooper()).post {
+//                Toast.makeText(
+//                    context,
+//                    "Message sent status: $messageSent",
+//                    Toast.LENGTH_SHORT
+//                ).show()
+                Log.d("BT LOGGING: ", "Message sent status: $messageSent")
+            }
+            if(messageSent) {
+                return this@BluetoothComm.receiveMessage()
+            }
+            return ""
+        }
     }
 
     // Receiving a message from the connected medical device
     // Returns the message if received successfully, else an empty string
-    fun receiveMessage(): String {
-        return try {
+    fun receiveMessage(timeoutMs: Long = 3000): String {
+        synchronized(lock) {
             val buffer = ByteArray(1024)
-            val bytesRead = inputStream?.read(buffer) ?: 0
-            String(buffer, 0, bytesRead).trim()
-        } catch (e: IOException) {
-            ""
+            val message = StringBuilder()
+            val startTime = System.currentTimeMillis()
+
+            return try {
+                while (System.currentTimeMillis() - startTime < timeoutMs) {
+                    if (inputStream?.available() ?: 0 > 0) {
+                        val bytesRead = inputStream!!.read(buffer)
+                        for (i in 0 until bytesRead) {
+                            if (buffer[i] == '\n'.code.toByte()) {
+                                return message.toString().trim()
+                            }
+                            message.append(buffer[i].toInt().toChar())
+                        }
+                    }
+                    Thread.sleep(50)
+                }
+                ""
+            } catch (e: IOException) {
+                ""
+            }
         }
     }
 
     // Sending a message directly as bytes to the connected device
     // Returns true if sent successfully, else false
     fun sendMessageBytes(bytesArray: ByteArray): Boolean {
-        try {
-            outputStream?.write(bytesArray)
-            return true
-        } catch (e: IOException) {
-            return false
-        }
-    }
-
-    // Sending a message as a JSON object to the connected device
-    // Returns true if sent successfully, else false
-    fun sendMessageJson(jsonObject: JSONObject): Boolean {
-        try {
-            outputStream?.write(jsonObject.toString().toByteArray())
-            return true
-        } catch (e: IOException) {
-            return false
+        synchronized(lock) {
+            if(outputStream == null) {
+                return false
+            }
+            try {
+                outputStream!!.write(bytesArray)
+                outputStream!!.flush()
+                return true
+            } catch (e: IOException) {
+                return false
+            }
         }
     }
 
@@ -202,6 +237,43 @@ class BluetoothComm private constructor(private val context: Context) {
         if(receiverRegistered) {
             context.unregisterReceiver(broadcastReceiver)
             receiverRegistered = false
+        }
+    }
+
+    // TO-DO
+    private fun testConnection() {
+        // TEST CONNECTION with hardware device
+        // Send ACK signal and expect a response to test if communication is successful
+        //Prepare 32-bit test connection command (opcode 0x05)
+        val command = "5".toByteArray()
+        var response = ""
+        var tries = 20  // Setting a max number of tries so that loop doesn't run forever in case of no response from device
+        while (tries > 0) {
+            tries--
+            response = this@BluetoothComm.sendAndReceive(command)
+            if(response != "") {
+                break
+            }
+        }
+        if (response.contains("Secure Connection, HW Handshake Number:")) {
+            // Save HW handshake number (hardwareID)
+            val hardwareID = response.substringAfter("Secure Connection, HW Handshake Number:").trim()
+            if (hardwareID.isNotEmpty()) {
+                // Display success message
+                Handler(Looper.getMainLooper()).post {
+                    Toast.makeText(context, "Successful connection with medical device", Toast.LENGTH_LONG).show()
+                }
+            } else {
+                // Display error message
+                Handler(Looper.getMainLooper()).post {
+                    Toast.makeText(context, "Failed to extract hardware ID despite successful connection", Toast.LENGTH_LONG).show()
+                }
+            }
+        } else {
+            // Display error message
+            Handler(Looper.getMainLooper()).post {
+                Toast.makeText(context, "Unsuccessful connection with medical device via BT", Toast.LENGTH_LONG).show()
+            }
         }
     }
 

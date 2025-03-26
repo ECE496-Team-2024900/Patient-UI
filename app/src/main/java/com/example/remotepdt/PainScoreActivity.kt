@@ -28,6 +28,7 @@ class PainScoreActivity : AppCompatActivity() {
 
         // Set an OnClickListener on the Done button
         btnDone.setOnClickListener {
+
             // Get the pain score entered in the input field
             val painScoreText = painScoreInput.text.toString()
             val painScore = painScoreText.toIntOrNull() ?: -1 //default value of -1 if empty
@@ -42,7 +43,7 @@ class PainScoreActivity : AppCompatActivity() {
                 jsonBody.put("completed", true)
 
                 //PUT request
-                AndroidNetworking.put("$BeUrl/treatment/set_pain_score_and_session_complete")
+                AndroidNetworking.put("http://treatment-t0m8.onrender.com/treatment/set_pain_score_and_session_complete")
                     .addQueryParameter("id", treatmentId.toString()) // Add treatment ID as a query parameter
                     .addJSONObjectBody(jsonBody) // Add JSON body
                     .build()

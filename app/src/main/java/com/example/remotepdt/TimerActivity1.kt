@@ -1,5 +1,6 @@
 package com.example.remotepdt
 
+import PauseResumeListener
 import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -40,7 +41,7 @@ class TimerActivity1 : AppCompatActivity() {
 
     private fun fetchTreatmentSession() {
         //val url = "http://127.0.0.1:8000/treatment/timer/1"
-        val url = "http://10.0.2.2:8000/treatment/timer/1" //android emulator
+        val url = "http://treatment-t0m8.onrender.com/treatment/timer/1" //android emulator
 
         AndroidNetworking.get(url)
             .setPriority(Priority.MEDIUM)
@@ -51,7 +52,6 @@ class TimerActivity1 : AppCompatActivity() {
                     Log.d("TimerActivity1", "Response: $response")
                     val estimatedDuration = response.optLong("drug_timer", 10000L).toLong()
                     timerDuration = estimatedDuration // Use fetched duration or default
-                    startTimer()
                 }
 
                 override fun onError(anError: ANError) {

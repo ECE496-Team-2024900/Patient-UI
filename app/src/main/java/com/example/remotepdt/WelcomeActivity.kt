@@ -21,6 +21,7 @@ import org.json.JSONObject
 class WelcomeActivity : AppCompatActivity() {
     private var BeUrl = "http://10.0.2.2:8002"
     private val BLUETOOTH_PERMISSION_REQUEST_CODE = 1001
+    private var hardwareID = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,7 +43,7 @@ class WelcomeActivity : AppCompatActivity() {
         val welcomeTitle = findViewById<TextView>(R.id.welcomeTitle)
 
         // Get patient details - pass in the patient email as a parameter
-        AndroidNetworking.get("${BeUrl}/users/get_patient_info_by_email")
+        AndroidNetworking.get("http://user-cyt8.onrender.com/users/get_patient_info")
             .addQueryParameter("email", email)
             .build()
             .getAsJSONObject(object : JSONObjectRequestListener {
@@ -100,6 +101,7 @@ class WelcomeActivity : AppCompatActivity() {
         }
     }
 
+    // Bluetooth permission request logic
     fun requestBluetoothPermissions(): Boolean {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) { // Android 12+
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED ||
@@ -126,8 +128,6 @@ class WelcomeActivity : AppCompatActivity() {
         return false
     }
 
-
-
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -145,6 +145,4 @@ class WelcomeActivity : AppCompatActivity() {
             }
         }
     }
-
-
 }

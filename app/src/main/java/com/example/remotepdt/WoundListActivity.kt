@@ -36,7 +36,7 @@ class WoundListActivity : AppCompatActivity() {
         val buttonContainer = findViewById<LinearLayout>(R.id.button_container)
 
         // Request to get wound list
-        AndroidNetworking.get("${BeUrl}/treatment/get_patient_wounds")
+        AndroidNetworking.get("http://treatment-t0m8.onrender.com/treatment/get_patient_wounds")
             .addQueryParameter("id", "1")
             .build()
             .getAsJSONObject(object : JSONObjectRequestListener {

@@ -41,7 +41,7 @@ class CurrentTreatmentActivity : AppCompatActivity() {
     }
 
     private fun fetchWoundDetails(woundId: Int, woundTitle: TextView) {
-        val url = "http://10.0.2.2:8000/get-wound-details/?wound_id=$woundId" // Replace with the actual endpoint
+        val url = "http://treatment-t0m8.onrender.com/get-wound-details/?wound_id=$woundId" // Replace with the actual endpoint
 
         AndroidNetworking.get(url)
             .setPriority(Priority.HIGH)
