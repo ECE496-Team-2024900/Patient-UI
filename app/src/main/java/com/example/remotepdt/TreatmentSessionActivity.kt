@@ -133,9 +133,6 @@ class TreatmentSessionActivity : AppCompatActivity() {
             }
         }
 
-        // Find the Start Session button by its ID
-        //val btnRequestReschedule = findViewById<Button>(R.id.btnRequestReschedule)
-
         // Set an OnClickListener on the Start Session button
         btnRequestReschedule.setOnClickListener {
             // Get the current time
@@ -147,9 +144,8 @@ class TreatmentSessionActivity : AppCompatActivity() {
                 if (sessionComplete == false) {
                     val payload = JSONObject().apply {
                         put("reschedule_requested", true)
-                        put("id", treatmentId)
                     }
-                    AndroidNetworking.put("${BeUrl}/treatment/request_reschedule")
+                    AndroidNetworking.put("${BeUrl}/treatment/request_reschedule?id=${treatmentId}")
                         .addJSONObjectBody(payload)
                         .build()
                         .getAsJSONObject(object : JSONObjectRequestListener {
@@ -205,18 +201,13 @@ class TreatmentSessionActivity : AppCompatActivity() {
                     Toast.LENGTH_SHORT
                 ).show()
             }
-            // Set OnClickListener for Request Reschedule Button
-            btnRequestReschedule.setOnClickListener {
-                Toast.makeText(this, "Reschedule request feature coming soon!", Toast.LENGTH_SHORT)
-                    .show()
-            }
+        }
 
-            // Set OnClickListener for Back to Treatments Button
-            btnBackToTreatments.setOnClickListener {
-                val intent = Intent(this, CurrentTreatmentsListActivity::class.java)
-                startActivity(intent)
-                finish()
-            }
+        // Set OnClickListener for Back to Treatments Button
+        btnBackToTreatments.setOnClickListener {
+            val intent = Intent(this, CurrentTreatmentsListActivity::class.java)
+            startActivity(intent)
+            finish()
         }
     }
 }

@@ -71,7 +71,11 @@ class WoundDetailActivity : AppCompatActivity() {
                                         "Navigating to scheduled session for Wound $woundId...",
                                         Toast.LENGTH_SHORT
                                     ).show()
-                                    val intent = Intent(this@WoundDetailActivity, TreatmentSessionActivity::class.java)
+                                    val intent = Intent(
+                                        this@WoundDetailActivity,
+                                        TreatmentSessionActivity::class.java
+                                    )
+                                    intent.putExtra("treatment_id", treatment.getInt("id")) // Pass treatment ID
                                     startActivity(intent)
                                 }
                                 break
