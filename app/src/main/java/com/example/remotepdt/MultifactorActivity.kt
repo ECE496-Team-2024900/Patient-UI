@@ -26,7 +26,7 @@ class MultifactorActivity : AppCompatActivity() {
     private lateinit var storedVerificationId: String
     private lateinit var resendToken: PhoneAuthProvider.ForceResendingToken
     private lateinit var patientPhoneNumber: String
-    private var BeUrl = "http://10.0.2.2:8003"
+    private var BeUrl = "http://10.0.2.2:8002"
     private var email = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,7 +35,7 @@ class MultifactorActivity : AppCompatActivity() {
         email = intent.getStringExtra("email") ?: ""
 
         // Get patient details
-        AndroidNetworking.get("${BeUrl}/users/get_patient_info")
+        AndroidNetworking.get("${BeUrl}/users/get_patient_info_by_email")
             .addQueryParameter("email", email)
             .build()
             .getAsJSONObject(object : JSONObjectRequestListener {
