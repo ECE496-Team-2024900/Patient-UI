@@ -1,6 +1,5 @@
 package com.example.remotepdt
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -13,6 +12,7 @@ import com.androidnetworking.error.ANError
 import com.androidnetworking.interfaces.JSONObjectRequestListener
 import org.json.JSONArray
 import org.json.JSONObject
+import android.content.Intent
 
 class WoundDetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -71,6 +71,8 @@ class WoundDetailActivity : AppCompatActivity() {
                                         "Navigating to scheduled session for Wound $woundId...",
                                         Toast.LENGTH_SHORT
                                     ).show()
+                                    val intent = Intent(this@WoundDetailActivity, TreatmentSessionActivity::class.java)
+                                    startActivity(intent)
                                 }
                                 break
                             }
