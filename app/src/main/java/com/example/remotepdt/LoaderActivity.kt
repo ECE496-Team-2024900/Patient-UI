@@ -16,7 +16,7 @@ import org.json.JSONObject
 class LoaderActivity : AppCompatActivity() {
 
     private val pollingInterval: Long = 5000 // Poll every 5 seconds
-    private val maxRetries = 5 // Maximum number of retries
+    private val maxRetries = 10 // Maximum number of retries
     private var retryCount = 0 // Current retry count
     private var bluetoothComm: BluetoothComm? = null
 
@@ -70,13 +70,15 @@ class LoaderActivity : AppCompatActivity() {
                                     var response = ""
                                     var retries = 20
                                     while(retries > 0 && response == "") {
-                                        Toast.makeText(this@LoaderActivity, "Retry: $retries", Toast.LENGTH_LONG).show()
+                                        //Toast.makeText(this@LoaderActivity, "Retry: $retries", Toast.LENGTH_LONG).show()
+                                        Log.d("BT LOGGING:", "Retrying set params: $retries")
                                         val parametersWithNewLine = parameters.toString()
                                         response = BluetoothComm.getInstance(applicationContext).sendAndReceiveMessage(parametersWithNewLine.toByteArray())
                                         retries--
                                         Thread.sleep(100)
                                     }
-                                    Toast.makeText(this@LoaderActivity, "Params sent reply: $response", Toast.LENGTH_LONG).show()
+                                    //Toast.makeText(this@LoaderActivity, "Params sent reply: $response", Toast.LENGTH_LONG).show()
+                                    Log.d("BT LOGGING:", "Params sent reply: $response")
                                     if (response != "") {
                                         // Navigate to TimerActivity1 if message matches
 
@@ -86,7 +88,8 @@ class LoaderActivity : AppCompatActivity() {
 
                                         // Send bluetooth message to hw device for starting the treatment
                                         val startMessage = bluetoothComm!!.sendAndReceiveMessage(command)
-                                        Toast.makeText(this@LoaderActivity, "Start treatment: $startMessage", Toast.LENGTH_LONG).show()
+                                        Log.d("BT LOGGING:", "Start treatment: $startMessage")
+                                        //Toast.makeText(this@LoaderActivity, "Start treatment: $startMessage", Toast.LENGTH_LONG).show()
 
                                         // Proceed with treatment if start signal successfully sent to device
                                         if (startMessage != "") {
@@ -100,6 +103,7 @@ class LoaderActivity : AppCompatActivity() {
                                                 this@LoaderActivity, "An error occurred sending start treatment signal to medical device via bluetooth",
                                                 Toast.LENGTH_LONG
                                             ).show()
+                                            Log.e("BT LOGGING:", "An error occurred sending start treatment signal to medical device via bluetooth")
                                         }
 
                                         //navigateToTimerActivity1()
@@ -109,6 +113,7 @@ class LoaderActivity : AppCompatActivity() {
                                             this@LoaderActivity, "An error occurred sending treatment parameters to medical device via bluetooth",
                                             Toast.LENGTH_LONG
                                         ).show()
+                                        Log.e("BT LOGGING:", "An error occurred sending treatment parameters to medical device via bluetooth")
                                     }
                                 }
 
@@ -117,9 +122,10 @@ class LoaderActivity : AppCompatActivity() {
                                     val errorBody = anError?.errorBody
                                     // Display error message
                                     Toast.makeText(
-                                        this@LoaderActivity, "ERROR: $statusCode $errorBody",
+                                        this@LoaderActivity, "Error: $statusCode $errorBody",
                                         Toast.LENGTH_LONG
                                     ).show()
+                                    Log.e("BT LOGGING:", "Error: $statusCode $errorBody")
                                 }
                         })
                     } else {
@@ -132,7 +138,11 @@ class LoaderActivity : AppCompatActivity() {
                     val statusCode = anError.errorCode
                     val errorBody = anError.errorBody
 
-                    Toast.makeText(this@LoaderActivity, "ERROR $statusCode: $errorBody", Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        this@LoaderActivity, "Error: $statusCode $errorBody",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    Log.e("BT LOGGING:", "Error: $statusCode $errorBody")
 
                     // Transition to the next activity after 10 seconds
 /*                    Handler(Looper.getMainLooper()).postDelayed({

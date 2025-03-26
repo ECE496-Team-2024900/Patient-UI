@@ -89,27 +89,29 @@ class TimerActivity3 : AppCompatActivity() {
         // Treatment is done - stop polling for information
         BluetoothPoller.getInstance(applicationContext).stop()
 
-        //Next is the pain score activity, so we can send bluetooth signal now to end treatment
-        //Prepare 32-bit end treatment command (opcode 0x03)
-        val command = "3\r\n".toByteArray()
+        // TO-DO - end treatment request
 
-        // Send bluetooth message to hw device for ending the treatment
-        val endMessage = bluetoothComm.sendAndReceiveMessage(command)
-
-        // Proceed with treatment if end treatment signal successfully sent to device
-        if (endMessage != "") {
-            Toast.makeText(this@TimerActivity3, "end: $endMessage", Toast.LENGTH_LONG).show()
-            // Navigate to PainScoreActivity
-            val intent = Intent(this, PainScoreActivity::class.java)
-            startActivity(intent)
-            finish() // Close TimerActivity3
-        } else {
-            // Display error message
-            Toast.makeText(
-                this@TimerActivity3, "An error occurred sending end treatment signal to medical device via bluetooth",
-                Toast.LENGTH_LONG
-            ).show()
-        }
+//        //Next is the pain score activity, so we can send bluetooth signal now to end treatment
+//        //Prepare 32-bit end treatment command (opcode 0x03)
+//        val command = "3\r\n".toByteArray()
+//
+//        // Send bluetooth message to hw device for ending the treatment
+//        val endMessage = bluetoothComm.sendAndReceiveMessage(command)
+//
+//        // Proceed with treatment if end treatment signal successfully sent to device
+//        if (endMessage != "") {
+//            Toast.makeText(this@TimerActivity3, "end: $endMessage", Toast.LENGTH_LONG).show()
+//            // Navigate to PainScoreActivity
+//            val intent = Intent(this, PainScoreActivity::class.java)
+//            startActivity(intent)
+//            finish() // Close TimerActivity3
+//        } else {
+//            // Display error message
+//            Toast.makeText(
+//                this@TimerActivity3, "An error occurred sending end treatment signal to medical device via bluetooth",
+//                Toast.LENGTH_LONG
+//            ).show()
+//        }
     }
     private fun finishTimerAndNavigate() {
         // Complete the timer and navigate to the next activity

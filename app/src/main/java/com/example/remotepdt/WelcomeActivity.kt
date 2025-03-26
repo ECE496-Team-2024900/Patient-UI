@@ -28,9 +28,6 @@ class WelcomeActivity : AppCompatActivity() {
         val bluetoothComm = BluetoothComm.getInstance(applicationContext)
         bluetoothComm.connect(this)
 
-        // Not recommended, but if needed, can force a pause here
-        //Thread.sleep(2000)
-
         setContentView(R.layout.activity_welcome)
 
         // Passed from previous page
@@ -85,64 +82,6 @@ class WelcomeActivity : AppCompatActivity() {
                 }
             })
 
-        // TEST CONNECTION with hardware device
-        // Send ACK signal and expect a response to test if communication is successful
-        //Prepare 32-bit test connection command (opcode 0x05)
-//        val command = "5".toByteArray()
-//
-//        // Send bluetooth message to hw device for testing connection
-//        val messageSent = bluetoothComm.sendMessageBytes(command)
-
-        // Get response if signal successfully sent to device
-//        if (messageSent) {
-//            // Get response from device
-//            // Need to read until delimiter is found ("\n") to ensure full message is received
-//            val response = StringBuilder()
-//            var delimiterFound = false
-//            var tries = 20  // Setting a max number of tries so that loop doesn't run forever in case of no response from device
-//            while (!delimiterFound && tries > 0) {
-//                tries--
-//                val str = bluetoothComm.receiveMessage()
-//                if (str.isNotEmpty()) {
-//                    response.append(str)
-//                    if (str.contains("\n")) { // Delimiter found - can stop reading
-//                        delimiterFound = true
-//                    }
-//                }
-//            }
-//            val fullResponse = response.toString().trim()
-//
-//            if (delimiterFound && fullResponse.contains("Secure Connection, HW Handshake Number:")) {
-//                // Save HW handshake number (hardwareID)
-//                hardwareID = fullResponse.substringAfter("Secure Connection, HW Handshake Number:").trim()
-//                if (hardwareID.isNotEmpty()) {
-//                    // Display success message
-//                    Toast.makeText(
-//                        this@WelcomeActivity, "Successful connection with medical device via bluetooth.",
-//                        Toast.LENGTH_LONG
-//                    ).show()
-//                } else {
-//                    // Display error message
-//                    Toast.makeText(
-//                        this@WelcomeActivity, "Failed to extract hardware ID despite successful connection with medical device via bluetooth.",
-//                        Toast.LENGTH_LONG
-//                    ).show()
-//                }
-//            } else {
-//                // Display error message
-//                Toast.makeText(
-//                    this@WelcomeActivity, "Unsuccessful connection with medical device via bluetooth.",
-//                    Toast.LENGTH_LONG
-//                ).show()
-//            }
-//        } else {
-//            // Display error message
-//            Toast.makeText(
-//                this@WelcomeActivity, "Unsuccessful connection with medical device via bluetooth.",
-//                Toast.LENGTH_LONG
-//            ).show()
-//        }
-
         // Set an OnClickListener on the Current Wounds button
         btnCurrentWounds.setOnClickListener {
             // Navigate to current wounds page when the button is clicked
@@ -159,7 +98,7 @@ class WelcomeActivity : AppCompatActivity() {
         }
     }
 
-    // Bluetooth permission request logic (untouched)
+    // Bluetooth permission request logic
     fun requestBluetoothPermissions(): Boolean {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) { // Android 12+
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED ||
