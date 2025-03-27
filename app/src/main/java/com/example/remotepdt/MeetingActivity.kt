@@ -24,7 +24,7 @@ class MeetingActivity : AppCompatActivity() {
     private var webcamEnabled = true
     private var frontFacing = true
     private var treatmentId: Int = -1
-    private var BeUrl = "http://treatment-t0m8.onrender.com/"
+    private var BeUrl = "http://treatment-t0m8.onrender.com"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,20 +66,19 @@ class MeetingActivity : AppCompatActivity() {
             Log.d("#meeting", "onMeetingLeft()")
             meeting = null
 
-            var completed = false
+            var completed = "False"
             // Navigate to LoaderActivity when the meeting ends
-            AndroidNetworking.get("${BeUrl}/treatment/get_session_info")
-                .addQueryParameter("id", treatmentId.toString())
+            AndroidNetworking.get("${BeUrl}/treatment/get_session_info?id=${treatmentId}")
                 .build()
                 .getAsJSONObject(object : JSONObjectRequestListener {
                     override fun onResponse(response: JSONObject) {
-                        completed = response.optBoolean("completed")
+                        completed = response.optString("completed")
                     }
                     override fun onError(anError: ANError?) {
                     }
                 })
 
-            if (completed) {
+            if (completed == "True") {
                     val intent = Intent(this@MeetingActivity, TreatmentSessionActivity::class.java)
                     intent.putExtra("treatment_id", treatmentId)
                     startActivity(intent)

@@ -97,7 +97,7 @@ class LoaderActivity : AppCompatActivity() {
                                         // Proceed with treatment if start signal successfully sent to device
                                         if (startMessage != "") {
                                             // Treatment about to start - begin polling for information
-                                            BluetoothPoller.getInstance(applicationContext).start()
+                                            BluetoothPoller.getInstance(applicationContext, treatmentId).start()
                                             // Navigate to TimerActivity1
                                             navigateToTimerActivity1()
                                         } else {

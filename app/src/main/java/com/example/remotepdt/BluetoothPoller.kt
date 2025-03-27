@@ -10,13 +10,12 @@ import com.androidnetworking.interfaces.JSONObjectRequestListener
 import com.example.remotepdt.BluetoothComm
 import org.json.JSONObject
 
-class BluetoothPoller private constructor(private val context: Context) {
+class BluetoothPoller private constructor(private val context: Context, private var treatmentId: Int) {
 
     private val bluetoothComm = BluetoothComm.getInstance(context)
     private val handlerThread = HandlerThread("BluetoothPoller").apply { start() }
     private val handler = Handler(handlerThread.looper)
     private val BeUrl = "http://hardware-comm.onrender.com"
-    private val treatmentId = 1
     private val interval = 1000L // polling every 5 seconds
 
     private val sendRunnable = object : Runnable {
@@ -28,7 +27,7 @@ class BluetoothPoller private constructor(private val context: Context) {
     }
 
     private fun getPhaseAndPercentage(input: String): String? {
-        val regex = """(.*?) delivering in progress(\d+%)""".toRegex()
+        val regex = """(.*?)(\d+%)""".toRegex()
         val matchResult = regex.find(input)
 
         return matchResult?.let {
@@ -44,7 +43,10 @@ class BluetoothPoller private constructor(private val context: Context) {
         val response = bluetoothComm.sendAndReceiveMessage("9\r\n".toByteArray())
         Log.d("BT LOGGING:", "Command 9 response - $response")
         val formattedResponse = getPhaseAndPercentage(response).toString()
-        sendProgressToBackend(formattedResponse)
+        val trimmedResponse = formattedResponse.trim()
+        if(trimmedResponse.isNotEmpty()) {
+            sendProgressToBackend(trimmedResponse)
+        }
     }
 
     private fun pollSensorData() {
@@ -53,9 +55,10 @@ class BluetoothPoller private constructor(private val context: Context) {
         val jsonBody = JSONObject()
         jsonBody.put("data", response)
 
+        Log.d("BT LOGGING:", "Command 8 about to send $jsonBody to BE for $treatmentId")
+
         // Was commented out during testing!
-        AndroidNetworking.put("$BeUrl/hardware/set_sensor_data_updates")
-            .addQueryParameter("id", treatmentId.toString())
+        AndroidNetworking.put("${BeUrl}/hardware/set_sensor_data_updates?id=${treatmentId}")
             .addJSONObjectBody(jsonBody)
             .build()
             .getAsJSONObject(object : JSONObjectRequestListener {
@@ -93,6 +96,8 @@ class BluetoothPoller private constructor(private val context: Context) {
         }
 
         val url = "$BeUrl/hardware/set_treatment_progress?id=$treatmentId"
+
+        Log.d("BT LOGGING:", "Command 9 about to send $jsonObject to BE $treatmentId")
 
         // Was commented out during testing!
         AndroidNetworking.put(url)
@@ -135,9 +140,9 @@ class BluetoothPoller private constructor(private val context: Context) {
         @Volatile
         private var instance: BluetoothPoller? = null
 
-        fun getInstance(context: Context): BluetoothPoller {
+        fun getInstance(context: Context, treatmentId: Int): BluetoothPoller {
             return instance ?: synchronized(this) {
-                instance ?: BluetoothPoller(context.applicationContext).also { instance = it }
+                instance ?: BluetoothPoller(context.applicationContext, treatmentId).also { instance = it }
             }
         }
     }

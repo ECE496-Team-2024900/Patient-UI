@@ -92,7 +92,7 @@ class TimerActivity3 : AppCompatActivity() {
 
     private fun navigateToNextActivity() {
         // Treatment is done - stop polling for information
-        BluetoothPoller.getInstance(applicationContext).stop()
+        BluetoothPoller.getInstance(applicationContext, treatmentId).stop()
 
         // Navigate to PainScoreActivity
         val intent = Intent(this, PainScoreActivity::class.java)

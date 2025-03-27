@@ -54,6 +54,7 @@ class TimerActivity1 : AppCompatActivity() {
                     Log.d("TimerActivity1", "Response: $response")
                     val estimatedDuration = response.optLong("drug_timer", 10000L).toLong()
                     timerDuration = estimatedDuration // Use fetched duration or default
+                    startTimer()
                 }
 
                 override fun onError(anError: ANError) {
