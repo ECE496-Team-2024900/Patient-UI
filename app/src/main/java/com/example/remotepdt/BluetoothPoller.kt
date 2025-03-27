@@ -27,16 +27,24 @@ class BluetoothPoller private constructor(private val context: Context) {
         }
     }
 
+    private fun getPhaseAndPercentage(input: String): String? {
+        val regex = """(.*?) delivering in progress(\d+%)""".toRegex()
+        val matchResult = regex.find(input)
+
+        return matchResult?.let {
+            val (treatmentPhase, percentage) = it.destructured
+            "${treatmentPhase.trim()}-${percentage.trim()}"
+        }
+    }
+
     /**
      * Sends the status request command and processes the response.
      */
     private fun pollStatus() {
         val response = bluetoothComm.sendAndReceiveMessage("9\r\n".toByteArray())
         Log.d("BT LOGGING:", "Command 9 response - $response")
-        val progress = response.toIntOrNull()
-        if (progress != null && progress in 0..100) {
-            sendProgressToBackend(progress)
-        }
+        val formattedResponse = getPhaseAndPercentage(response).toString()
+        sendProgressToBackend(formattedResponse)
     }
 
     private fun pollSensorData() {
@@ -79,7 +87,7 @@ class BluetoothPoller private constructor(private val context: Context) {
     /**
      * Sends the received progress to the backend microservice.
      */
-    private fun sendProgressToBackend(progress: Int) {
+    private fun sendProgressToBackend(progress: String) {
         val jsonObject = JSONObject().apply {
             put("data", progress)
         }
