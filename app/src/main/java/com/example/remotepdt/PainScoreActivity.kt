@@ -24,6 +24,7 @@ class PainScoreActivity : AppCompatActivity() {
         // Find the Done button and pain score input field by their IDs
         val btnDone = findViewById<Button>(R.id.btnDone)
         val painScoreInput = findViewById<EditText>(R.id.painScoreInput)
+        val treatmentScoreInput = findViewById<EditText>(R.id.treatmentScoreInput)
 
         // Set an OnClickListener on the Done button
         btnDone.setOnClickListener {
@@ -31,11 +32,14 @@ class PainScoreActivity : AppCompatActivity() {
             // Get the pain score entered in the input field
             val painScoreText = painScoreInput.text.toString()
             val painScore = painScoreText.toIntOrNull() ?: -1 //default value of -1 if empty
+            val treatmentScoreText = treatmentScoreInput.text.toString()
+            val treatmentScore = treatmentScoreText.toIntOrNull() ?: -1 //default value of -1 if empty
 
-            if (painScore >= 1 && painScore <= 10) { // Valid input
+            if (painScore >= 1 && painScore <= 10 && treatmentScore >= 1 && treatmentScore <= 10) { // Valid input
                 // Save pain score to backend and update treatment session to completed
                 val jsonBody = JSONObject()
                 jsonBody.put("pain_score", painScore)
+                jsonBody.put("treatment_score", treatmentScore)
                 jsonBody.put("completed", true)
 
                 //PUT request
@@ -65,7 +69,7 @@ class PainScoreActivity : AppCompatActivity() {
             else { //Invalid input (either empty or out of range)
                 //Display error message
                 Toast.makeText(
-                    this@PainScoreActivity, "Please enter a number between 1-10",
+                    this@PainScoreActivity, "Please enter a number between 1-10 for both ratings.",
                     Toast.LENGTH_SHORT
                 ).show()
             }

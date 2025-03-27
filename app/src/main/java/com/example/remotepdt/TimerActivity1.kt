@@ -21,8 +21,7 @@ class TimerActivity1 : AppCompatActivity() {
     private var progressBar: ProgressBar? = null
     private var timerDuration: Long = 10000L // default to 10 seconds if no duration is fetched
     private var countDownTimer: CountDownTimer? = null // Reference to the timer
-    private var isPaused = false
-    private var remainingTime: Long = timerDuration
+    private var treatmentId: Int = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,30 +32,18 @@ class TimerActivity1 : AppCompatActivity() {
 
         timerText = findViewById(R.id.timerText)
         progressBar = findViewById(R.id.progressBar)
+        treatmentId = intent.getIntExtra("treatment_id", -1)
 
         // Set the ProgressBar max value to 100 for percentage-based progress
         progressBar?.max = 100
 
         // Fetch treatment session data from the backend
         fetchTreatmentSession()
-
-//        PauseResumeListener.getInstance(applicationContext).setOnPauseResumeListener { ongoingTreatment ->
-//            if (ongoingTreatment) {
-//                resumeTimer()
-//            } else {
-//                pauseTimer()
-//            }
-//        }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        //PauseResumeListener.getInstance(applicationContext).setOnPauseResumeListener(null) // Remove listener
     }
 
     private fun fetchTreatmentSession() {
         //val url = "http://127.0.0.1:8000/treatment/timer/1"
-        val url = "http://treatment-t0m8.onrender.com/treatment/timer/1" //android emulator
+        val url = "http://treatment-t0m8.onrender.com/treatment/timer/${treatmentId}" //android emulator
 
         AndroidNetworking.get(url)
             .setPriority(Priority.MEDIUM)
@@ -67,30 +54,25 @@ class TimerActivity1 : AppCompatActivity() {
                     Log.d("TimerActivity1", "Response: $response")
                     val estimatedDuration = response.optLong("drug_timer", 10000L).toLong()
                     timerDuration = estimatedDuration // Use fetched duration or default
-                    remainingTime = timerDuration
-                    startTimer(timerDuration)
                 }
 
                 override fun onError(anError: ANError) {
-                    startTimer(timerDuration) // Start the timer with the default duration
+                    startTimer() // Start the timer with the default duration
                 }
             })
     }
 
-    private fun startTimer(timeLeft: Long) {
+    private fun startTimer() {
         // Start a countdown timer with the fetched or default duration
-        countDownTimer = object : CountDownTimer(timeLeft, 1000) {
+        countDownTimer = object : CountDownTimer(timerDuration, 1000) {
             override fun onTick(millisUntilFinished: Long) {
-                if(!isPaused) {
-                    remainingTime = millisUntilFinished
-                    val minutes = (millisUntilFinished / 1000) / 60
-                    val seconds = (millisUntilFinished / 1000) % 60
-                    timerText?.text = String.format("%02d:%02d", minutes, seconds)
+                val minutes = (millisUntilFinished / 1000) / 60
+                val seconds = (millisUntilFinished / 1000) % 60
+                timerText?.text = String.format("%02d:%02d", minutes, seconds)
 
-                    // Update the progress bar
-                    val progress = ((timeLeft - millisUntilFinished) / timerDuration.toFloat() * 100).toInt()
-                    progressBar?.progress = progress
-                }
+                // Update the progress bar
+                val progress = ((timerDuration - millisUntilFinished) / timerDuration.toFloat() * 100).toInt()
+                progressBar?.progress = progress
             }
             override fun onFinish() {
                 timerText?.text = "00:00"
@@ -103,20 +85,9 @@ class TimerActivity1 : AppCompatActivity() {
         }.start()
     }
 
-    private fun pauseTimer() {
-        countDownTimer?.cancel()
-        isPaused = true
-    }
-
-    private fun resumeTimer() {
-        if (!isPaused) return
-        isPaused = false
-        countDownTimer?.cancel()
-        startTimer(remainingTime)
-    }
-
     private fun navigateToNextActivity() {
         val intent = Intent(this, TimerActivity2::class.java)
+        intent.putExtra("treatment_id", treatmentId)
         startActivity(intent)
         finish()
     }

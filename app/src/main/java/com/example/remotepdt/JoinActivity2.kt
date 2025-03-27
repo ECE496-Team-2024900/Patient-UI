@@ -18,7 +18,7 @@ import org.json.JSONException
 import org.json.JSONObject
 
 // JoinActivity handles the creation of video calls and permissions required for it
-class JoinActivity : AppCompatActivity() {
+class JoinActivity2 : AppCompatActivity() {
 
     companion object {
         private const val PERMISSION_REQ_ID = 22 // Permission request code for accessing the microphone and camera
@@ -48,18 +48,15 @@ class JoinActivity : AppCompatActivity() {
     // Lifecycle method called when the activity is created
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_join)
+        setContentView(R.layout.activity_join_2)
         AndroidNetworking.initialize(getApplicationContext()); // Initialize networking library
 
         // Reference to the "Create Meeting" button
         val btnCreate = findViewById<Button>(R.id.btnCreateMeeting)
 
-        // Passed from previous page
-        val treatmentId: Int = intent.getIntExtra("treatment_id", -1)
-
         // Set an OnClickListener to handle button clicks
         btnCreate.setOnClickListener { v: View? ->
-            createMeeting(sampleToken, treatmentId) // Call the function to create a meeting
+            createMeeting(sampleToken) // Call the function to create a meeting
         }
         // Check and request necessary permissions
         checkSelfPermission(REQUESTED_PERMISSIONS[0], PERMISSION_REQ_ID)
@@ -67,7 +64,7 @@ class JoinActivity : AppCompatActivity() {
     }
 
     // Function to create a meeting by making an API call
-    private fun createMeeting(token: String, treatmentId: Int) {
+    private fun createMeeting(token: String) {
         // Making an API call to VideoSDK Server to get a roomId
         AndroidNetworking.post("https://api.videosdk.live/v2/rooms")
             .addHeaders("Authorization", token) //we will pass the token in the Headers
@@ -79,14 +76,13 @@ class JoinActivity : AppCompatActivity() {
                         val meetingId = response.getString("roomId")
 
                         // starting the MeetingActivity with received roomId and our sampleToken
-                        val intent = Intent(this@JoinActivity, MeetingActivity::class.java)
+                        val intent = Intent(this@JoinActivity2, MeetingActivity::class.java)
                         intent.putExtra("token", sampleToken)
                         intent.putExtra("meetingId", meetingId)
-                        intent.putExtra("treatment_id", treatmentId)
 
                         val jsonObject = JSONObject()
                         try {
-                            jsonObject.put("id", treatmentId.toString())
+                            jsonObject.put("id", "1")
                             jsonObject.put("video_call_id", meetingId)
                         } catch (e: JSONException) {
                             e.printStackTrace()
@@ -112,7 +108,7 @@ class JoinActivity : AppCompatActivity() {
                     // Handle errors during the API call
                     anError.printStackTrace()
                     Toast.makeText(
-                        this@JoinActivity, anError.message,
+                        this@JoinActivity2, anError.message,
                         Toast.LENGTH_SHORT
                     ).show()
                 }

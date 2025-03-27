@@ -6,5 +6,6 @@
         <domain includeSubdomains="true">treatment-t0m8.onrender.com</domain>
         <domain includeSubdomains="true">hardware-comm.onrender.com</domain>
         <domain includeSubdomains="true">user-cyt8.onrender.com</domain>
+        <domain includeSubdomains="true">user-auth-hdmm.onrender.com</domain>
     </domain-config>
 </network-security-config>

@@ -28,7 +28,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
+        <activity
+            android:name=".LoginActivity2"
+            android:exported="false" />
+        <activity
+            android:name=".MultifactorActivity"
+            android:exported="false" />
+        <activity
+            android:name=".LoginActivity3"
+            android:exported="false" />
         <activity
             android:name=".WelcomeActivity"
             android:exported="false" />
@@ -41,9 +49,6 @@
         <activity
             android:name=".Instruction2Activity"
             android:exported="false" />
-<!--        <activity-->
-<!--            android:name=".Instruction3Activity"-->
-<!--            android:exported="false" />-->
         <activity
             android:name=".JoinActivity"
             android:exported="true"
@@ -71,6 +76,9 @@
             android:exported="false" />
         <activity
             android:name=".PainScoreActivity"
+            android:exported="false" />
+        <activity
+            android:name=".JoinActivity2"
             android:exported="false" />
         <activity
             android:name=".WoundListActivity"
@@ -107,5 +115,5 @@
     <!-- Needed only if your app communicates with already-paired Bluetooth
          devices. -->
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
-  
+
 </manifest>

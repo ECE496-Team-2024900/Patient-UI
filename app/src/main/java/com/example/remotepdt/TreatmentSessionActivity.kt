@@ -24,7 +24,7 @@ class TreatmentSessionActivity : AppCompatActivity() {
         setContentView(R.layout.activity_treatment_session)
 
         // Passed from previous page
-        val treatmentId: Int = intent.getIntExtra("treatment_id", 1)
+        val treatmentId: Int = intent.getIntExtra("treatment_id", -1)
 
         // Find TextViews and Buttons by ID
         val sessionNumberTitle = findViewById<TextView>(R.id.sessionNumberTitle)
@@ -117,6 +117,7 @@ class TreatmentSessionActivity : AppCompatActivity() {
             if (sessionTime != null && currentTime >= sessionTime) {
                 if (!sessionComplete) {
                     val intent = Intent(this, Instruction1Activity::class.java)
+                    intent.putExtra("treatment_id", treatmentId)
                     startActivity(intent)
                 } else {
                     Toast.makeText(
@@ -134,9 +135,6 @@ class TreatmentSessionActivity : AppCompatActivity() {
             }
         }
 
-        // Find the Start Session button by its ID
-        //val btnRequestReschedule = findViewById<Button>(R.id.btnRequestReschedule)
-
         // Set an OnClickListener on the Start Session button
         btnRequestReschedule.setOnClickListener {
             // Get the current time
@@ -148,7 +146,6 @@ class TreatmentSessionActivity : AppCompatActivity() {
                 if (sessionComplete == false) {
                     val payload = JSONObject().apply {
                         put("reschedule_requested", true)
-                        put("id", treatmentId)
                     }
                     AndroidNetworking.put("http://treatment-t0m8.onrender.com/treatment/request_reschedule")
                         .addJSONObjectBody(payload)
@@ -206,18 +203,13 @@ class TreatmentSessionActivity : AppCompatActivity() {
                     Toast.LENGTH_SHORT
                 ).show()
             }
-            // Set OnClickListener for Request Reschedule Button
-            btnRequestReschedule.setOnClickListener {
-                Toast.makeText(this, "Reschedule request feature coming soon!", Toast.LENGTH_SHORT)
-                    .show()
-            }
+        }
 
-            // Set OnClickListener for Back to Treatments Button
-            btnBackToTreatments.setOnClickListener {
-                val intent = Intent(this, CurrentTreatmentsListActivity::class.java)
-                startActivity(intent)
-                finish()
-            }
+        // Set OnClickListener for Back to Treatments Button
+        btnBackToTreatments.setOnClickListener {
+            val intent = Intent(this, CurrentTreatmentsListActivity::class.java)
+            startActivity(intent)
+            finish()
         }
     }
 }

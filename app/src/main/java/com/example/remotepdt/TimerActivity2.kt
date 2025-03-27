@@ -20,6 +20,7 @@ class TimerActivity2 : AppCompatActivity() {
     private var progressBar: ProgressBar? = null
     private var timerDuration: Long = 10000L // Default to 10 seconds if no duration is fetched
     private var countDownTimer: CountDownTimer? = null // Reference to the timer
+    private var treatmentId: Int = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,6 +31,7 @@ class TimerActivity2 : AppCompatActivity() {
 
         timerText = findViewById(R.id.timerText)
         progressBar = findViewById(R.id.progressBar)
+        treatmentId = intent.getIntExtra("treatment_id", -1)
 
         // Set the ProgressBar max value to 100 for percentage-based progress
         progressBar?.max = 100
@@ -44,7 +46,7 @@ class TimerActivity2 : AppCompatActivity() {
     }
 
     private fun fetchWashTimer() {
-        val url = "http://treatment-t0m8.onrender.com/treatment/timer/1" // Android emulator URL
+        val url = "http://treatment-t0m8.onrender.com/treatment/timer/${treatmentId}" // Android emulator URL
 
         AndroidNetworking.get(url)
             .setPriority(Priority.MEDIUM)
@@ -94,6 +96,7 @@ class TimerActivity2 : AppCompatActivity() {
 
     private fun navigateToNextActivity() {
         val intent = Intent(this, TimerActivity3::class.java)
+        intent.putExtra("treatment_id", treatmentId)
         startActivity(intent)
         finish()
     }

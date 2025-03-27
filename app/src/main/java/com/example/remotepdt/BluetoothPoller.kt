@@ -27,61 +27,41 @@ class BluetoothPoller private constructor(private val context: Context) {
         }
     }
 
+    private fun getPhaseAndPercentage(input: String): String? {
+        val regex = """(.*?) delivering in progress(\d+%)""".toRegex()
+        val matchResult = regex.find(input)
+
+        return matchResult?.let {
+            val (treatmentPhase, percentage) = it.destructured
+            "${treatmentPhase.trim()}-${percentage.trim()}"
+        }
+    }
+
     /**
      * Sends the status request command and processes the response.
      */
     private fun pollStatus() {
-//        val sent = bluetoothComm.sendMessageBytes("9".toByteArray())
-//
-//        if (!sent) {
-//            handler.post {
-//                Toast.makeText(context, "Failed to send status request", Toast.LENGTH_SHORT).show()
-//            }
-//            return
-//        }
-//
-//        val response = bluetoothComm.receiveMessage()
         val response = bluetoothComm.sendAndReceiveMessage("9\r\n".toByteArray())
-
-//        handler.post {
-//            Toast.makeText(
-//                context,
-//                "Recieved 1: $response",
-//                Toast.LENGTH_LONG
-//            ).show()
-//        }
-        Log.d("COMMAND 9: ", response)
-        val percentageRegex = Regex("""\d+(\.\d+)?%""")
-        val percentMatch = percentageRegex.find(response)
-        val percent = percentMatch?.value
-        val phase = response.split(" ").firstOrNull()
-
-        if (percent != null && phase != null) {
-            val progressString = "$phase $percent"
-            sendProgressToBackend(progressString)
-        }
+        Log.d("BT LOGGING:", "Command 9 response - $response")
+        val formattedResponse = getPhaseAndPercentage(response).toString()
+        sendProgressToBackend(formattedResponse)
     }
 
     private fun pollSensorData() {
         val response = bluetoothComm.sendAndReceiveMessage("8\r\n".toByteArray())
-        Log.d("COMMAND 8: ", response)
-//        val messageSent = bluetoothComm.sendMessageBytes("8".toByteArray())
-//        handler.post {
-//            Toast.makeText(
-//                context,
-//                "Recieved 2: $response",
-//                Toast.LENGTH_LONG
-//            ).show()
-//        }
+        Log.d("BT LOGGING: : ", response)
         val jsonBody = JSONObject()
         jsonBody.put("data", response)
-//        AndroidNetworking.put("$BeUrl/hardware/set_sensor_data_updates")
-//            .addQueryParameter("id", treatmentId.toString())
-//            .addJSONObjectBody(jsonBody)
-//            .build()
-//            .getAsJSONObject(object : JSONObjectRequestListener {
-//                override fun onResponse(response: JSONObject) {
-//                    // clinician got response
+
+        // Was commented out during testing!
+        AndroidNetworking.put("$BeUrl/hardware/set_sensor_data_updates")
+            .addQueryParameter("id", treatmentId.toString())
+            .addJSONObjectBody(jsonBody)
+            .build()
+            .getAsJSONObject(object : JSONObjectRequestListener {
+                override fun onResponse(response: JSONObject) {
+                    Log.d("BT LOGGING:", "Command 8 response - $response")
+                    // clinician got response
 //                    handler.post {
 //                        Toast.makeText(
 //                            context,
@@ -89,18 +69,19 @@ class BluetoothPoller private constructor(private val context: Context) {
 //                            Toast.LENGTH_SHORT
 //                        ).show()
 //                    }
-//                }
-//                override fun onError(anError: ANError) {
-//                    // handle error
-//                    handler.post {
-//                        Toast.makeText(
-//                            context,
-//                            "Error: ${anError.message}",
-//                            Toast.LENGTH_SHORT
-//                        ).show()
-//                    }
-//                }
-//            })
+                }
+                override fun onError(anError: ANError) {
+                    // handle error
+                    handler.post {
+                        Toast.makeText(
+                            context,
+                            "Error: ${anError.message}",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                    Log.e("BT LOGGING:", "Error: ${anError.message}")
+                }
+            })
     }
 
     /**
@@ -113,11 +94,12 @@ class BluetoothPoller private constructor(private val context: Context) {
 
         val url = "$BeUrl/hardware/set_treatment_progress?id=$treatmentId"
 
-//        AndroidNetworking.put(url)
-//            .addJSONObjectBody(jsonObject)
-//            .build()
-//            .getAsJSONObject(object : JSONObjectRequestListener {
-//                override fun onResponse(response: JSONObject?) {
+        // Was commented out during testing!
+        AndroidNetworking.put(url)
+            .addJSONObjectBody(jsonObject)
+            .build()
+            .getAsJSONObject(object : JSONObjectRequestListener {
+                override fun onResponse(response: JSONObject?) {
 //                    handler.post {
 //                        Toast.makeText(
 //                            context,
@@ -125,25 +107,19 @@ class BluetoothPoller private constructor(private val context: Context) {
 //                            Toast.LENGTH_LONG
 //                        ).show()
 //                    }
-//                    handler.post {
-//                        Toast.makeText(
-//                            context,
-//                            "Progress updated!",
-//                            Toast.LENGTH_LONG
-//                        ).show()
-//                    }
-//                }
-//
-//                override fun onError(anError: ANError?) {
-//                    handler.post {
-//                        Toast.makeText(
-//                            context,
-//                            "Failed to update progress",
-//                            Toast.LENGTH_LONG
-//                        ).show()
-//                    }
-//                }
-//            })
+                    Log.d("BT LOGGING:", "Command 9 sent $response to BE")
+                }
+
+                override fun onError(anError: ANError?) {
+                    handler.post {
+                        Toast.makeText(
+                            context,
+                            "Failed to update progress",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }
+            })
     }
 
     fun start() {

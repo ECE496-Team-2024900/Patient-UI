@@ -1,12 +1,11 @@
 package com.example.remotepdt
 
+import android.content.Context
 import android.content.Intent
-import android.content.res.ColorStateList
 import android.content.res.Resources
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
-import android.widget.Button
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.Toast
@@ -16,7 +15,7 @@ import com.androidnetworking.error.ANError
 import com.androidnetworking.interfaces.JSONObjectRequestListener
 import com.google.android.material.button.MaterialButton
 import org.json.JSONObject
-import org.json.JSONArray
+
 
 class WoundListActivity : AppCompatActivity() {
     private var BeUrl = "http://10.0.2.2:8000"
@@ -35,9 +34,12 @@ class WoundListActivity : AppCompatActivity() {
 
         val buttonContainer = findViewById<LinearLayout>(R.id.button_container)
 
+        val sharedPref = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val patientId = sharedPref.getString("patientMRN", "")
+
         // Request to get wound list
         AndroidNetworking.get("http://treatment-t0m8.onrender.com/treatment/get_patient_wounds")
-            .addQueryParameter("id", "1")
+            .addQueryParameter("id", patientId)
             .build()
             .getAsJSONObject(object : JSONObjectRequestListener {
                 override fun onResponse(response: JSONObject) {
