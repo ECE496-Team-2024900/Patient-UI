@@ -43,7 +43,10 @@ class BluetoothPoller private constructor(private val context: Context, private 
         val response = bluetoothComm.sendAndReceiveMessage("9\r\n".toByteArray())
         Log.d("BT LOGGING:", "Command 9 response - $response")
         val formattedResponse = getPhaseAndPercentage(response).toString()
-        sendProgressToBackend(formattedResponse)
+        val trimmedResponse = formattedResponse.trim()
+        if(trimmedResponse.isEmpty() == false) {
+            sendProgressToBackend(trimmedResponse)
+        }
     }
 
     private fun pollSensorData() {
