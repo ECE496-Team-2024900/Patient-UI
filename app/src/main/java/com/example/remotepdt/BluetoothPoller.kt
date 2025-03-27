@@ -44,7 +44,7 @@ class BluetoothPoller private constructor(private val context: Context, private 
         Log.d("BT LOGGING:", "Command 9 response - $response")
         val formattedResponse = getPhaseAndPercentage(response).toString()
         val trimmedResponse = formattedResponse.trim()
-        if(trimmedResponse.isEmpty() == false) {
+        if(trimmedResponse.isNotEmpty()) {
             sendProgressToBackend(trimmedResponse)
         }
     }
