@@ -52,16 +52,12 @@ class BluetoothPoller private constructor(private val context: Context) {
 //        }
         Log.d("COMMAND 9: ", response)
         val percentageRegex = Regex("""\d+(\.\d+)?%""")
-        val wordRegex = Regex("""^\w+""")
-
         val percentMatch = percentageRegex.find(response)
-        val wordMatch = wordRegex.find(response)
-
-        val percent = percentMatch?.value       // %
-        val phase = wordMatch?.value            // Phase
+        val percent = percentMatch?.value
+        val phase = response.split(" ").firstOrNull()
 
         if (percent != null && phase != null) {
-            val progressString = "$phase $percent"  // Phase + Percentage
+            val progressString = "$phase $percent"
             sendProgressToBackend(progressString)
         }
     }
