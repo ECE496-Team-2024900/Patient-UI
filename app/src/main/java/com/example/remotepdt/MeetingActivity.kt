@@ -24,7 +24,7 @@ class MeetingActivity : AppCompatActivity() {
     private var webcamEnabled = true
     private var frontFacing = true
     private var treatmentId: Int = -1
-    private var BeUrl = "http://treatment-t0m8.onrender.com/"
+    private var BeUrl = "http://treatment-t0m8.onrender.com"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
