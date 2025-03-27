@@ -19,6 +19,7 @@ class LoaderActivity : AppCompatActivity() {
     private val maxRetries = 10 // Maximum number of retries
     private var retryCount = 0 // Current retry count
     private var bluetoothComm: BluetoothComm? = null
+    private var treatmentId: Int = -1
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,13 +32,15 @@ class LoaderActivity : AppCompatActivity() {
         //Get bluetooth instance
         bluetoothComm = BluetoothComm.getInstance(applicationContext)
 
+        treatmentId = intent.getIntExtra("treatment_id", -1)
+
         // Start polling for clinician approval
         checkClinicianApproval()
     }
 
     private fun checkClinicianApproval() {
         //val url = "http://127.0.0.1:8001/hardware/approval?id=1"
-        val url = "http://hardware-comm.onrender.com/hardware/status?id=1"
+        val url = "http://hardware-comm.onrender.com/hardware/status?id=${treatmentId}"
 
         AndroidNetworking.get(url)
             .build()
@@ -50,7 +53,7 @@ class LoaderActivity : AppCompatActivity() {
 
                     if (message == "Approved") {
                         Toast.makeText(this@LoaderActivity, "Recieved approval", Toast.LENGTH_LONG).show()
-                        val url2 = "http://treatment-t0m8.onrender.com/treatment/parameters/get?id=1"
+                        val url2 = "http://treatment-t0m8.onrender.com/treatment/parameters/get?id=${treatmentId}"
                         AndroidNetworking.get(url2)
                             .build().
                             getAsJSONObject(object : JSONObjectRequestListener {
@@ -130,7 +133,7 @@ class LoaderActivity : AppCompatActivity() {
                         })
                     } else {
                         // Retry polling or stop after max retries
-                        retryPolling()
+                        retryPolling(treatmentId)
                     }
                 }
 
@@ -154,7 +157,7 @@ class LoaderActivity : AppCompatActivity() {
             })
     }
 
-    private fun retryPolling() {
+    private fun retryPolling(treatmentId: Int) {
         if (retryCount < maxRetries) {
             retryCount++
             Handler(Looper.getMainLooper()).postDelayed({
@@ -173,6 +176,7 @@ class LoaderActivity : AppCompatActivity() {
 
     private fun navigateToTimerActivity1() {
         val intent = Intent(this, TimerActivity1::class.java)
+        intent.putExtra("treatment_id", treatmentId)
         startActivity(intent)
         finish() // Close LoaderActivity
     }

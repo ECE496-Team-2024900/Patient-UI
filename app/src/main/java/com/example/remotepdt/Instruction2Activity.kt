@@ -14,10 +14,14 @@ class Instruction2Activity : AppCompatActivity() {
         // Find the Next button by its ID
         val btnNext = findViewById<Button>(R.id.btnNext)
 
+        // Passed from previous page
+        val treatmentId: Int = intent.getIntExtra("treatment_id", -1)
+
         // Set an OnClickListener on the Next button
         btnNext.setOnClickListener {
             // Start JoinActivity when the button is clicked
             val intent = Intent(this, JoinActivity::class.java)
+            intent.putExtra("treatment_id", treatmentId)
             startActivity(intent)
         }
     }

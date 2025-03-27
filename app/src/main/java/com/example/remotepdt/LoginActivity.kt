@@ -11,6 +11,7 @@ import com.androidnetworking.error.ANError
 import com.androidnetworking.interfaces.JSONObjectRequestListener
 import org.json.JSONObject
 
+
 class LoginActivity : AppCompatActivity() {
     private var BeUrl = "http://10.0.2.2:8003"
 
@@ -25,17 +26,27 @@ class LoginActivity : AppCompatActivity() {
         // Set an OnClickListener on the Login button
         btnLogin.setOnClickListener {
             val email = emailInput.getText().toString()
-            AndroidNetworking.get("${BeUrl}/user_auth/check_if_user_exists")
+
+            // For testing
+            val intent = Intent(this@LoginActivity, WelcomeActivity::class.java)
+            intent.putExtra("email", email)
+            startActivity(intent)
+
+            AndroidNetworking.get("http://user-auth-hdmm.onrender.com/user_auth/check_if_user_exists")
                 .addQueryParameter("email", email)
                 .build()
                 .getAsJSONObject(object : JSONObjectRequestListener {
                     override fun onResponse(response: JSONObject?) {
+                        val sharedPref = getSharedPreferences("MyPrefs", MODE_PRIVATE)
+                        val editor = sharedPref.edit()
+                        editor.putString("patientEmail", email)
+                        editor.commit()
                         if (response?.optString("message") == "User does not exist") {
                             val intent = Intent(this@LoginActivity, LoginActivity3::class.java)
                             intent.putExtra("email", email)
                             startActivity(intent)
                         } else {
-                            val intent = Intent(this@LoginActivity, LoginActivity2::class.java)
+                            val intent = Intent(this@LoginActivity, WelcomeActivity::class.java)
                             intent.putExtra("email", email)
                             startActivity(intent)
                         }

@@ -1,6 +1,7 @@
 package com.example.remotepdt
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
@@ -33,7 +34,10 @@ class WelcomeActivity : AppCompatActivity() {
         setContentView(R.layout.activity_welcome)
 
         // Passed from previous page
-        val email: String = intent.getStringExtra("email") ?: ""
+        //val email: String = intent.getStringExtra("email") ?: ""
+        //val email = "mickey.mouse@disney.org"
+        val sharedPref = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val email = sharedPref.getString("patientEmail", "")
 
         // Find all buttons by their IDs
         val btnCurrentWounds = findViewById<Button>(R.id.btnCurrentWounds)
@@ -43,7 +47,7 @@ class WelcomeActivity : AppCompatActivity() {
         val welcomeTitle = findViewById<TextView>(R.id.welcomeTitle)
 
         // Get patient details - pass in the patient email as a parameter
-        AndroidNetworking.get("http://user-cyt8.onrender.com/users/get_patient_info")
+        AndroidNetworking.get("http://user-cyt8.onrender.com/users/get_patient_info_by_email")
             .addQueryParameter("email", email)
             .build()
             .getAsJSONObject(object : JSONObjectRequestListener {
@@ -51,6 +55,12 @@ class WelcomeActivity : AppCompatActivity() {
                     try {
                         val message = response.opt("message")
                         if (message is JSONObject) {
+                            val patientMRN = message.optString("medical_ref_number", "")
+                            val sharedPref = getSharedPreferences("MyPrefs", MODE_PRIVATE)
+                            val editor = sharedPref.edit()
+                            editor.putString("patientMRN", patientMRN)
+                            editor.commit()
+
                             // Patient details successfully returned, access the patient's first name for welcome message
                             val patientName = message.optString("first_name", "")
                             welcomeTitle.text = getString(R.string.welcome_title, patientName)
@@ -88,7 +98,6 @@ class WelcomeActivity : AppCompatActivity() {
         btnCurrentWounds.setOnClickListener {
             // Navigate to current wounds page when the button is clicked
             val intent = Intent(this, WoundListActivity::class.java)
-            intent.putExtra("treatment_id", 1) //id of 1 is a placeholder for now
             startActivity(intent)
         }
 

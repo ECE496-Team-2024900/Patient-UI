@@ -21,6 +21,7 @@ class TimerActivity1 : AppCompatActivity() {
     private var progressBar: ProgressBar? = null
     private var timerDuration: Long = 10000L // default to 10 seconds if no duration is fetched
     private var countDownTimer: CountDownTimer? = null // Reference to the timer
+    private var treatmentId: Int = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,6 +32,7 @@ class TimerActivity1 : AppCompatActivity() {
 
         timerText = findViewById(R.id.timerText)
         progressBar = findViewById(R.id.progressBar)
+        treatmentId = intent.getIntExtra("treatment_id", -1)
 
         // Set the ProgressBar max value to 100 for percentage-based progress
         progressBar?.max = 100
@@ -41,7 +43,7 @@ class TimerActivity1 : AppCompatActivity() {
 
     private fun fetchTreatmentSession() {
         //val url = "http://127.0.0.1:8000/treatment/timer/1"
-        val url = "http://treatment-t0m8.onrender.com/treatment/timer/1" //android emulator
+        val url = "http://treatment-t0m8.onrender.com/treatment/timer/${treatmentId}" //android emulator
 
         AndroidNetworking.get(url)
             .setPriority(Priority.MEDIUM)
@@ -85,6 +87,7 @@ class TimerActivity1 : AppCompatActivity() {
 
     private fun navigateToNextActivity() {
         val intent = Intent(this, TimerActivity2::class.java)
+        intent.putExtra("treatment_id", treatmentId)
         startActivity(intent)
         finish()
     }
