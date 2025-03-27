@@ -37,11 +37,11 @@ class LoginActivity : AppCompatActivity() {
                         editor.putString("patientEmail", email)
                         editor.commit()
                         if (response?.optString("message") == "User does not exist") {
-                            val intent = Intent(this@LoginActivity, LoginActivity3::class.java)
+                            val intent = Intent(this@LoginActivity, WelcomeActivity::class.java)
                             intent.putExtra("email", email)
                             startActivity(intent)
                         } else {
-                            val intent = Intent(this@LoginActivity, LoginActivity2::class.java)
+                            val intent = Intent(this@LoginActivity, WelcomeActivity::class.java)
                             intent.putExtra("email", email)
                             startActivity(intent)
                         }

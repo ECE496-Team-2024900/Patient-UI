@@ -51,7 +51,7 @@ class ResetPasswordActivity : AppCompatActivity() {
             if (validateInputs(email.orEmpty(), newPassword, confirmPassword)) {
                 updatePasswordInDatabase(email.orEmpty(), newPassword)
                 Toast.makeText(this, "Password has been updated", Toast.LENGTH_SHORT).show()
-                val intent = Intent(this, LoginActivity::class.java)
+                val intent = Intent(this, WelcomeActivity::class.java)
                 startActivity(intent)
                 finish() // Close current activity
             } else {

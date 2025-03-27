@@ -55,7 +55,7 @@ class TimerActivity2 : AppCompatActivity() {
                 override fun onResponse(response: JSONObject) {
                     // Parse the JSON response to get the wash timer duration
                     val washTimerDuration = response.optLong("light_timer", 10000L)
-                    timerDuration = washTimerDuration // Use fetched duration or default
+                    timerDuration = 10000L // Use fetched duration or default
                     startTimer()
                 }
 
