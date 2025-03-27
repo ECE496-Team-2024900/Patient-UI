@@ -26,7 +26,7 @@ class MultifactorActivity : AppCompatActivity() {
     private lateinit var storedVerificationId: String
     private lateinit var resendToken: PhoneAuthProvider.ForceResendingToken
     private lateinit var patientPhoneNumber: String
-    private var BeUrl = "http://10.0.2.2:8002"
+    private var BeUrl = "http://user-cyt8.onrender.com/"
     private var email = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {

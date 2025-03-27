@@ -24,7 +24,7 @@ class MeetingActivity : AppCompatActivity() {
     private var webcamEnabled = true
     private var frontFacing = true
     private var treatmentId: Int = -1
-    private var BeUrl = "http://10.0.2.2:8000"
+    private var BeUrl = "http://treatment-t0m8.onrender.com/"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,6 +85,7 @@ class MeetingActivity : AppCompatActivity() {
                     startActivity(intent)
             } else {
                 val intent = Intent(this@MeetingActivity, LoaderActivity::class.java)
+                intent.putExtra("treatment_id", treatmentId)
                 startActivity(intent)
             }
 

@@ -54,9 +54,12 @@ class JoinActivity : AppCompatActivity() {
         // Reference to the "Create Meeting" button
         val btnCreate = findViewById<Button>(R.id.btnCreateMeeting)
 
+        // Passed from previous page
+        val treatmentId: Int = intent.getIntExtra("treatment_id", -1)
+
         // Set an OnClickListener to handle button clicks
         btnCreate.setOnClickListener { v: View? ->
-            createMeeting(sampleToken) // Call the function to create a meeting
+            createMeeting(sampleToken, treatmentId) // Call the function to create a meeting
         }
         // Check and request necessary permissions
         checkSelfPermission(REQUESTED_PERMISSIONS[0], PERMISSION_REQ_ID)
@@ -64,7 +67,7 @@ class JoinActivity : AppCompatActivity() {
     }
 
     // Function to create a meeting by making an API call
-    private fun createMeeting(token: String) {
+    private fun createMeeting(token: String, treatmentId: Int) {
         // Making an API call to VideoSDK Server to get a roomId
         AndroidNetworking.post("https://api.videosdk.live/v2/rooms")
             .addHeaders("Authorization", token) //we will pass the token in the Headers
@@ -79,10 +82,11 @@ class JoinActivity : AppCompatActivity() {
                         val intent = Intent(this@JoinActivity, MeetingActivity::class.java)
                         intent.putExtra("token", sampleToken)
                         intent.putExtra("meetingId", meetingId)
+                        intent.putExtra("treatment_id", treatmentId)
 
                         val jsonObject = JSONObject()
                         try {
-                            jsonObject.put("id", "1")
+                            jsonObject.put("id", treatmentId.toString())
                             jsonObject.put("video_call_id", meetingId)
                         } catch (e: JSONException) {
                             e.printStackTrace()

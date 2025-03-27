@@ -24,7 +24,7 @@ class TreatmentSessionActivity : AppCompatActivity() {
         setContentView(R.layout.activity_treatment_session)
 
         // Passed from previous page
-        val treatmentId: Int = intent.getIntExtra("treatment_id", 1)
+        val treatmentId: Int = intent.getIntExtra("treatment_id", -1)
 
         // Find TextViews and Buttons by ID
         val sessionNumberTitle = findViewById<TextView>(R.id.sessionNumberTitle)
@@ -117,6 +117,7 @@ class TreatmentSessionActivity : AppCompatActivity() {
             if (sessionTime != null && currentTime >= sessionTime) {
                 if (!sessionComplete) {
                     val intent = Intent(this, Instruction1Activity::class.java)
+                    intent.putExtra("treatment_id", treatmentId)
                     startActivity(intent)
                 } else {
                     Toast.makeText(
