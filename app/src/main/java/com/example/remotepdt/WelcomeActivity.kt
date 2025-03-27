@@ -34,10 +34,7 @@ class WelcomeActivity : AppCompatActivity() {
         setContentView(R.layout.activity_welcome)
 
         // Passed from previous page
-        //val email: String = intent.getStringExtra("email") ?: ""
-        //val email = "mickey.mouse@disney.org"
-        val sharedPref = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-        val email = sharedPref.getString("patientEmail", "")
+        val email: String = intent.getStringExtra("email") ?: ""
 
         // Find all buttons by their IDs
         val btnCurrentWounds = findViewById<Button>(R.id.btnCurrentWounds)

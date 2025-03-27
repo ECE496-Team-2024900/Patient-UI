@@ -27,11 +27,6 @@ class LoginActivity : AppCompatActivity() {
         btnLogin.setOnClickListener {
             val email = emailInput.getText().toString()
 
-            // For testing
-            val intent = Intent(this@LoginActivity, WelcomeActivity::class.java)
-            intent.putExtra("email", email)
-            startActivity(intent)
-
             AndroidNetworking.get("http://user-auth-hdmm.onrender.com/user_auth/check_if_user_exists")
                 .addQueryParameter("email", email)
                 .build()
@@ -46,7 +41,7 @@ class LoginActivity : AppCompatActivity() {
                             intent.putExtra("email", email)
                             startActivity(intent)
                         } else {
-                            val intent = Intent(this@LoginActivity, WelcomeActivity::class.java)
+                            val intent = Intent(this@LoginActivity, LoginActivity2::class.java)
                             intent.putExtra("email", email)
                             startActivity(intent)
                         }
